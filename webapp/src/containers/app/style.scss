@@ -1,0 +1,17 @@
+@import "../../components/footer/dimensions";
+@import "../../components/header/dimensions";
+
+.wsb-app-container {
+  background-color: purple;
+}
+
+.wsb-page-wrapper {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.wsb-page {
+  width: 100%;
+  background-color: whitesmoke;
+  min-height: calc(100vh - $footer-height - $header-height);
+}
