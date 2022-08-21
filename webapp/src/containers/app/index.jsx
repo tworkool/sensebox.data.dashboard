@@ -8,10 +8,10 @@ const App = () => {
   return (
     <div className="wsb-app-container">
       <Router>
-        <div className="wsb-page-wrapper">
+        {/* <div className="wsb-page-wrapper">
           <PageManager />
-          <Footer />
-        </div>
+        </div> */}
+        <PageManager />
       </Router>
     </div>
   );

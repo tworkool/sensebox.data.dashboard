@@ -1,4 +1,5 @@
-$header-height: 60px;
+@import "../../utils/colors";
+@import "../../components/dashboard_header/dimensions";
 $footer-height: 40px;
 $content-box-info-width: 300px;
 $content-analytics-sections-height: 40px;
@@ -11,47 +12,45 @@ $content-analytics-sections-height: 40px;
     background-color: antiquewhite;
 }
 
-.sbd-dashboard-header {
-    height: $header-height;
-    background-color: aquamarine;
-}
-
 .sbd-dashboard-content {
-    height: calc(100vh - $header-height - $footer-height);
+    height: calc(100vh - $dashboard-header-height - $footer-height);
     background-color: rgb(176, 127, 255);
     display: flex;
 
     &__box-info {
         width: $content-box-info-width;
         height: 100%;
-        background-color: bisque;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        z-index: 2;
     }
 
     &__analytics {
         width: calc(100% - $content-box-info-width);
         height: 100%;
-        background-color: rgb(196, 241, 255);
 
         &__sections {
             height: $content-analytics-sections-height;
-            background-color: rgb(54, 16, 85);
+            background-color: #ffffff;
+            border-bottom: 1px dashed #8b8b8b;
         }
 
         &__data {
             height: calc(100% - $content-analytics-sections-height);
-            background-color: rgb(16, 69, 85);
+            background-color: rgb(247, 247, 247);
         }
     }
 }
 
 .sbd-dashboard-page-footer {
     height: $footer-height;
-    background-color: rgb(219, 219, 219);
-    margin: 0 20px;
+    background-color: white;
+    border-top: 1px solid $gray-dark;
+    padding: 0 20px;
+    z-index: 5;
 
     &__content {
-        max-width: 1200px;
-        //width: calc(100% - 20px * 2);
+        max-width: 2000px;
         margin: 0 auto;
         height: 100%;
         display: flex;

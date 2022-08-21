@@ -1,0 +1,22 @@
+@import "./dimensions";
+@import "../../utils/colors";
+
+.sbd-dashboard-header {
+    height: $dashboard-header-height;
+    padding: 0 20px;
+    background-color: white;
+    border-bottom: 1px solid $gray-dark;
+    z-index: 5;
+
+    &__content {
+        max-width: 2000px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 auto;
+    }
+
+    &__favorites {
+    }
+}
