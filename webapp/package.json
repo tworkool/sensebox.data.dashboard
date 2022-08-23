@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
-    "@mantine/core": "^4.2.12",
-    "@mantine/hooks": "^4.2.12",
-    "@mantine/notifications": "^4.2.12",
+    "@mantine/core": "^5.2.3",
+    "@mantine/hooks": "^5.2.3",
+    "@mantine/notifications": "^5.2.3",
     "@reduxjs/toolkit": "^1.8.3",
     "cross-fetch": "^3.1.5",
     "prop-types": "^15.6.1",
