@@ -39,7 +39,12 @@ const DashboardPage = () => {
       <div className="sbd-dashboard-content">
         <DashboardBoxInfo />
         <div className="sbd-dashboard-content__analytics">
-          <Tabs color="dark" radius="xs" defaultValue="live-analytics">
+          <Tabs
+            color="dark"
+            radius="xs"
+            defaultValue="live-analytics"
+            className="sbd-mantine-tabs-root"
+          >
             <Tabs.List
               position="center"
               className="sbd-dashboard-content__analytics__tab-header"
@@ -60,20 +65,32 @@ const DashboardPage = () => {
                 Detailed Data
               </Tabs.Tab>
               <Tabs.Tab
-                disabled
+                disabled={false}
                 value="data-map"
                 icon={<MapSearch size={16} />}
               >
                 Data Map
               </Tabs.Tab>
             </Tabs.List>
-            <Tabs.Panel value="live-analytics" pt="xs">
+            <Tabs.Panel
+              value="live-analytics"
+              pt="xs"
+              className="sbd-mantine-tabs-panel"
+            >
               <LiveAnalyticsContainer />
             </Tabs.Panel>
-            <Tabs.Panel value="detailed-data" pt="xs">
+            <Tabs.Panel
+              value="detailed-data"
+              pt="xs"
+              className="sbd-mantine-tabs-panel"
+            >
               <DetailedDataContainer />
             </Tabs.Panel>
-            <Tabs.Panel value="data-map" pt="xs">
+            <Tabs.Panel
+              value="data-map"
+              pt="xs"
+              className="sbd-mantine-tabs-panel"
+            >
               <DataMapContainer />
             </Tabs.Panel>
           </Tabs>

@@ -5,8 +5,19 @@
 $footer-height: 40px;
 $content-analytics-sections-height: 40px;
 
+.sbd-mantine-tabs-panel {
+    height: calc(100% - 48px);
+    overflow: auto;
+    padding: 0 !important;
+}
+
+.sbd-mantine-tabs-root {
+    height: 100%;
+}
+
 .sbd-dashboard-container {
     padding: 10px 20px;
+    height: 100%;
 }
 
 .sbd-dashboard-not-supported {

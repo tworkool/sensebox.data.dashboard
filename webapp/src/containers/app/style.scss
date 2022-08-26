@@ -2,16 +2,18 @@
 @import "../../components/header/dimensions";
 
 .wsb-app-container {
-  background-color: purple;
+    background-color: rgb(255, 0, 0);
+    width: 100vw;
+    height: 100vh;
 }
 
 .wsb-page-wrapper {
-  overflow-y: auto;
-  width: 100%;
+    overflow-y: auto;
+    width: 100%;
 }
 
 .wsb-page {
-  width: 100%;
-  background-color: whitesmoke;
-  min-height: calc(100vh - $footer-height - $header-height);
+    width: 100%;
+    background-color: whitesmoke;
+    min-height: calc(100vh - $footer-height - $header-height);
 }

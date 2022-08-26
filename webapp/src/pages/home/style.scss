@@ -1,4 +1,37 @@
-.wbs-home-page {
-  width: fit-content;
-  color: blue;
+.sbd-home-page {
+    height: 100%;
+    background: rgb(76, 167, 66);
+    background: linear-gradient(150deg, #4ca742 50%, #1cbd89 100%);
+    &__content {
+        position: absolute;
+        inset: 20px;
+    }
+
+    &__feature-container {
+        color: white;
+        margin-bottom: 70px;
+        text-shadow: 2px 2px rgba(0, 0, 0, 0.137);
+    }
+}
+
+.abcde img {
+    margin-left: auto;
+    padding: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.sbd-page-shape-divider {
+    &__shape {
+        aspect-ratio: 1200/120;
+        width: 100%;
+        background-image: url("../../assets/content/waves.svg");
+        background-position: 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    &__rest {
+        background-color: white;
+        height: 50%;
+    }
 }

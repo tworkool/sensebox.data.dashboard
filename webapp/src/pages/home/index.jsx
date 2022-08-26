@@ -1,25 +1,113 @@
-import React, { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { requestWeatherDataFetch } from "../../redux/actions/app_state";
-import { getWeatherData } from "../../redux/selectors/appState";
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  Anchor,
+  Button,
+  Center,
+  Container,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+import DashboardPreviewImage from "../../assets/content/dashboard-preview.jpg";
 import "./style.scss";
+import {
+  AccessPoint,
+  DeviceDesktopAnalytics,
+  MapSearch,
+} from "tabler-icons-react";
 
 const HomePage = () => {
-  const weatherData = useSelector(getWeatherData);
-  const dispatch = useDispatch();
-
-  const handleBtnClick = useCallback(() => {
-    dispatch(requestWeatherDataFetch({ lat: 52.520008, lon: 13.404954 }));
-  }, [dispatch]);
-
-  useEffect(() => {
-    console.log(weatherData);
-  }, [weatherData]);
-
   return (
-    <div className="wsb-page wbs-home-page">
-      <button onClick={handleBtnClick}>Fetch Weather Data</button>
-      <div>{JSON.stringify(weatherData)}</div>
+    <div className="sbd-home-page">
+      <div className="sbd-page-shape-divider__rest"></div>
+      <div className="sbd-page-shape-divider__shape" />
+      <Stack
+        align="center"
+        justify="space-between"
+        className="sbd-home-page__content"
+      >
+        <Container size={1400}>
+          <Stack>
+            <Stack align="flex-start">
+              <Title order={1}>Welcome...</Title>
+              <Title order={5}>
+                {"To the unofficial data dashboard for "}
+                <Anchor href="https://sensebox.de/" target="_blank">
+                  SenseBox
+                </Anchor>
+              </Title>
+            </Stack>
+            <Group grow>
+              <Text>
+                pharetra pharetra massa massa ultricies mi. Sagittis vitae et
+                leo duis. Viverra vitae congue eu consequat. Non quam lacus
+                suspendisse faucibus interdum posuere lorem ipsum. Diam sit amet
+                nisl suscipit adipiscing bibendum est. Arcu cursus vitae congue
+                mauris rhoncus. Non consectetur a erat nam at lectus urna. A
+                condimentum vitae sapien pellentesque habitant. Aliquam eleifend
+                mi in nulla. Morbi leo urna molestie at. Dictum varius duis at
+                consectetur lorem donec massa sapien faucibus. Venenatis a
+                condimentum vitae sapien pellentesque habitant morbi tristique
+                senectus. Sit amet porttitor eget dolor morbi non. Est
+                ullamcorper eget nulla facilisi etiam dignissim diam. Et
+                malesuada fames ac turpis egestas maecenas pharetra convallis.
+                Scelerisque eu ultrices vitae auctor eu augue ut
+              </Text>
+              <Image
+                className="abcde"
+                fit="contain"
+                width={500}
+                radius="md"
+                src={DashboardPreviewImage}
+                alt="Dashboard Preview"
+                withPlaceholder
+              />
+            </Group>
+          </Stack>
+        </Container>
+        <Center>
+          <Button
+            color="dark"
+            radius="xl"
+            size="xl"
+            component={Link}
+            to="/dashboard"
+          >
+            Go to Dashboard
+          </Button>
+        </Center>
+        <Container size={1200} className="sbd-home-page__feature-container">
+          <Group position="center" grow>
+            <Stack align="center" spacing="lg">
+              <AccessPoint size={48} />
+              <Text align="center">
+                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
+                turpis egestas maecenas pharetra convallis. Scelerisque eu
+                ultrices vitae auctor eu augue ut
+              </Text>
+            </Stack>
+            <Stack align="center" spacing="lg">
+              <DeviceDesktopAnalytics size={48} />
+              <Text align="center">
+                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
+                turpis egestas maecenas pharetra convallis. Scelerisque eu
+                ultrices vitae auctor eu augue ut
+              </Text>
+            </Stack>
+            <Stack align="center" spacing="lg">
+              <MapSearch size={48} />
+              <Text align="center">
+                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
+                turpis egestas maecenas pharetra convallis. Scelerisque eu
+                ultrices vitae auctor eu augue ut
+              </Text>
+            </Stack>
+          </Group>
+        </Container>
+      </Stack>
     </div>
   );
 };
