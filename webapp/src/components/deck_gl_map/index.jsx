@@ -7,7 +7,6 @@ import "./style.scss";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN = ENVIRONMENT.MAPBOX_TOKEN;
-console.log(MAPBOX_ACCESS_TOKEN);
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
@@ -39,7 +38,7 @@ const DeckGLMap = () => {
       <Map
         mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
         style={{ width: 600, height: 400 }}
-        mapStyle="mapbox://styles/tworkool/cl79q3tj5000d15l478h9lq58"
+        mapStyle="mapbox://styles/tworkool/cl79px1g3001g14nut07xac6k"
       />
     </DeckGL>
   );

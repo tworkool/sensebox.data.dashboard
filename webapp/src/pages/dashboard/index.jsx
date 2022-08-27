@@ -100,7 +100,12 @@ const DashboardPage = () => {
         <div className="sbd-dashboard-page-footer__content">
           <div>Sensebox Data Dashboard</div>
           <div>
-            <ActionIcon color="dark" variant="filled" size="sm">
+            <ActionIcon
+              color="dark"
+              variant="filled"
+              size="sm"
+              to="https://github.com/tworkool/sensebox.data.dashboard"
+            >
               <BrandGithub />
             </ActionIcon>
           </div>

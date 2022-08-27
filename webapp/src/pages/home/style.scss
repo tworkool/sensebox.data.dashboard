@@ -14,10 +14,20 @@
     }
 }
 
-.abcde img {
+.sbd-home-page-preview-image img {
     margin-left: auto;
     padding: 5px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+
+.sbd-home-page-copyright {
+    position: fixed;
+    top: 0;
+    right: 0;
+    color: gray;
+    font-size: 0.7rem;
+    z-index: 1;
+    padding: 0.5rem;
 }
 
 .sbd-page-shape-divider {

@@ -22,6 +22,7 @@ import {
 const HomePage = () => {
   return (
     <div className="sbd-home-page">
+      <div className="sbd-home-page-copyright">{`© Oliver Tworkowski ${new Date().getFullYear()}`}</div>
       <div className="sbd-page-shape-divider__rest"></div>
       <div className="sbd-page-shape-divider__shape" />
       <Stack
@@ -57,7 +58,7 @@ const HomePage = () => {
                 Scelerisque eu ultrices vitae auctor eu augue ut
               </Text>
               <Image
-                className="abcde"
+                className="sbd-home-page-preview-image"
                 fit="contain"
                 width={500}
                 radius="md"
