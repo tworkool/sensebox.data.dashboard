@@ -1,5 +1,5 @@
 import { ActionIcon, Alert, Tabs } from "@mantine/core";
-import React from "react";
+import React, { createContext } from "react";
 import { useMemo } from "react";
 import {
   AccessPoint,
@@ -14,6 +14,16 @@ import DetailedDataContainer from "../../containers/detailed_data";
 import LiveAnalyticsContainer from "../../containers/live_analytics";
 import DataMapContainer from "../../containers/data_map";
 import "./style.scss";
+
+const DashboardContext = createContext();
+
+const DashboardContextProvider = (props) => {
+  return (
+    <DashboardContext.Provider value={{}}>
+      {props.children}
+    </DashboardContext.Provider>
+  );
+};
 
 const DashboardPage = () => {
   const isMobileDevice = useMemo(() => window.screen.width < 768, []);
@@ -117,3 +127,4 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+export { DashboardContext, DashboardContextProvider };
