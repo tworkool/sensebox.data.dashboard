@@ -3,17 +3,17 @@ import ReactDOM from "react-dom";
 import App from "./containers/app";
 import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-import { Provider as ReduxStoreProvider } from "react-redux";
-import store from "./redux/store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./style.scss";
 
+const queryClient = new QueryClient();
 const root = document.getElementById("root");
 ReactDOM.render(
   <MantineProvider>
     <NotificationsProvider>
-      <ReduxStoreProvider store={store}>
+      <QueryClientProvider client={queryClient}>
         <App />
-      </ReduxStoreProvider>
+      </QueryClientProvider>
     </NotificationsProvider>
   </MantineProvider>,
   root
