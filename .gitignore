@@ -6,3 +6,5 @@ dist/
 report.html
 *.orig
 coverage/
+
+.env.*
