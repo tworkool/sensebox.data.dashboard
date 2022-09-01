@@ -18,6 +18,16 @@ const PageManager = (_props) => {
           }
         />
         <Route
+          path="/dashboard/:boxid"
+          element={
+            <Suspense fallback={<CubeSpinner />}>
+              <DashboardContextProvider>
+                <DashboardPage />
+              </DashboardContextProvider>
+            </Suspense>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <Suspense fallback={<CubeSpinner />}>

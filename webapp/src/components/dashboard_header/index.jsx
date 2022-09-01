@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import {
   Avatar,
   Box,
+  Button,
+  Center,
   Divider,
   Group,
   Highlight,
-  Indicator,
   Kbd,
+  LoadingOverlay,
   Modal,
-  Paper,
   Stack,
   Text,
   TextInput,
@@ -16,26 +17,26 @@ import {
 } from "@mantine/core";
 import { Bookmark, Search } from "tabler-icons-react";
 import "./style.scss";
+import { useNavigate } from "react-router";
 
 const DashboardHeader = () => {
+  const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchContent, setSearchContent] = useState("");
+  const __temp__ = false;
+
   return (
     <div className="sbd-dashboard-header">
       <div className="sbd-dashboard-header__content">
         <div className="sbd-dashboard-header__favorites">
-          {/* <Avatar.Group spacing="sm">
-          <Avatar color="blue"></Avatar>
-          <Avatar color="blue"></Avatar>
-          <Avatar color="blue"></Avatar>
-          <Avatar>+4</Avatar>
-        </Avatar.Group> */}
-          {/* <Avatar.Group spacing="sm">
-          <Avatar src={null} radius="xl" />
-          <Avatar src={null} radius="xl" />
-          <Avatar src={null} radius="xl" />
-          <Avatar radius="xl">+5</Avatar>
-        </Avatar.Group> */}
-          <Indicator
+          <Avatar.Group spacing="sm">
+            <Avatar src={null} radius="xl" />
+            <Avatar src={null} radius="xl" />
+            <Avatar src={null} radius="xl" />
+            <Avatar radius="xl">+5</Avatar>
+          </Avatar.Group>
+          {/* <Indicator
             inline
             size={16}
             offset={7}
@@ -44,11 +45,11 @@ const DashboardHeader = () => {
             withBorder
           >
             <Avatar src={null} radius="xl" />
-          </Indicator>
+          </Indicator> */}
         </div>
         <TextInput
           onClick={() => {
-            setOpened((old) => !old);
+            setOpened(true);
           }}
           placeholder="Find a SenseBox"
           icon={<Search size={16} />}
@@ -67,10 +68,27 @@ const DashboardHeader = () => {
           onClose={() => setOpened(false)}
           title="Search Sensebox"
         >
-          <TextInput
-            placeholder="Find a SenseBox"
-            icon={<Search size={16} />}
-          />
+          <Group spacing="xs" grow>
+            <TextInput
+              defaultValue={searchContent}
+              placeholder="Find a SenseBox"
+              icon={<Search size={16} />}
+              onChange={(e) => {
+                setSearchContent(e.target.value);
+              }}
+            />
+            <div>
+              <Button
+                onClick={() => {
+                  // FETCH BOXES
+                  setOpened(false);
+                }}
+              >
+                Search
+              </Button>
+            </div>
+          </Group>
+
           <Divider
             my="xs"
             variant="dashed"
@@ -82,22 +100,48 @@ const DashboardHeader = () => {
               </>
             }
           />
-          <UnstyledButton className="sbd-dashboard-header-search-result">
-            <Group>
-              <Avatar src={null} radius="xl" />
-              <Stack
-                spacing="xs"
-                className="sbd-dashboard-header-search-result__info"
-              >
-                <Highlight highlight={"cool"} weight={600}>
-                  Die Coolste Sensebox
-                </Highlight>
-                <Text size="xs" color="dimmed">
-                  8128121570175aksnfahf801
-                </Text>
-              </Stack>
-            </Group>
-          </UnstyledButton>
+          <div>
+            <LoadingOverlay visible={isLoading} overlayBlur={2} />
+
+            {__temp__ ? (
+              <Center style={{ height: 200 }}>
+                <div>No Senseboxes found</div>
+              </Center>
+            ) : (
+              [
+                { _id: "aih1gh0ahghhg135135", name: "Cooler Name" },
+                { _id: "9h8z118h108ghg018h", name: "Cool" },
+              ].map((e, i) => (
+                <UnstyledButton
+                  onClick={() => {
+                    navigate(`../dashboard/${e._id}`, { replace: true });
+                    setOpened(false);
+                  }}
+                  key={i}
+                  className="sbd-dashboard-header-search-result"
+                >
+                  <Group>
+                    <Avatar src={null} radius="xl" />
+                    <Stack
+                      spacing="xs"
+                      className="sbd-dashboard-header-search-result__info"
+                    >
+                      <Highlight
+                        highlightColor="blue"
+                        highlight={searchContent}
+                        weight={600}
+                      >
+                        {e.name}
+                      </Highlight>
+                      <Text size="xs" color="dimmed">
+                        {e._id}
+                      </Text>
+                    </Stack>
+                  </Group>
+                </UnstyledButton>
+              ))
+            )}
+          </div>
           <Divider
             my="xs"
             variant="dashed"
