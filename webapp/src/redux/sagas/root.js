@@ -1,8 +1,12 @@
-import { fork, all } from "redux-saga/effects";
-import { watchFetchWeatherData } from "./app_state";
+import { fork } from "redux-saga/effects";
+import {
+  watchFetchSenseboxesData,
+  watchFetchSenseboxInfoData,
+} from "./app_state";
 
 function* rootSaga() {
-  yield all([fork(watchFetchWeatherData)]);
+  yield fork(watchFetchSenseboxInfoData);
+  yield fork(watchFetchSenseboxesData);
 }
 
 export default rootSaga;

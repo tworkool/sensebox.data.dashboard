@@ -1,18 +1,42 @@
 import React from "react";
-import { ActionIcon, Badge, Divider, Group, Skeleton, Space, Text, Tooltip } from "@mantine/core";
-import { Bookmark, MapPin, ScreenShare } from "tabler-icons-react";
+import {
+  ActionIcon,
+  Alert,
+  Badge,
+  Divider,
+  Group,
+  Skeleton,
+  Space,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { AlertCircle, Bookmark, MapPin, ScreenShare } from "tabler-icons-react";
 import "./style.scss";
+import { useSelector } from "react-redux";
+import { getSenseboxInfoData } from "../../redux/selectors/appState";
 
 const DashboardBoxInfo = () => {
+  const senseboxInfoData = useSelector(getSenseboxInfoData);
+
   return (
     <div className="sbd-dashboard-content__box-info">
+      {!senseboxInfoData.data && (
+        <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
+          Something terrible happened! You made a mistake and there is no going
+          back, your data was lost forever!
+        </Alert>
+      )}
+      {senseboxInfoData.data && (
+        <>
           <div>
             <Text size="lg" weight={500}>
-              Mein SenseBox Name Hier!!!
+              {senseboxInfoData.data.name}
             </Text>
-            <Text size="xs">ID: 44c69070-21e3-11ed-8ae8-0800200c9a66</Text>
+            <Text size="xs" color="dimmed">
+              {senseboxInfoData.data._id}
+            </Text>
             <Badge color="green" size="sm" radius="sm">
-              Outdoor
+              {senseboxInfoData.data.exposure}
             </Badge>
           </div>
           <Divider my="sm" label="Position" labelPosition="center" />
@@ -50,7 +74,9 @@ const DashboardBoxInfo = () => {
               </Tooltip>
             </Group>
           </div>
-        </div>
+        </>
+      )}
+    </div>
   );
 };
 

@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getSenseboxesData } from "../../redux/selectors/appState";
+import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
   Avatar,
   Box,
@@ -21,10 +24,11 @@ import { useNavigate } from "react-router";
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const senseboxesData = useSelector(getSenseboxesData);
   const [opened, setOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
-  const __temp__ = false;
 
   return (
     <div className="sbd-dashboard-header">
@@ -81,7 +85,7 @@ const DashboardHeader = () => {
               <Button
                 onClick={() => {
                   // FETCH BOXES
-                  setOpened(false);
+                  dispatch(requestSenseboxesDataFetch({ name: searchContent }));
                 }}
               >
                 Search
@@ -103,15 +107,12 @@ const DashboardHeader = () => {
           <div>
             <LoadingOverlay visible={isLoading} overlayBlur={2} />
 
-            {__temp__ ? (
+            {senseboxesData.data === undefined ? (
               <Center style={{ height: 200 }}>
                 <div>No Senseboxes found</div>
               </Center>
             ) : (
-              [
-                { _id: "aih1gh0ahghhg135135", name: "Cooler Name" },
-                { _id: "9h8z118h108ghg018h", name: "Cool" },
-              ].map((e, i) => (
+              senseboxesData.data.map((e, i) => (
                 <UnstyledButton
                   onClick={() => {
                     navigate(`../dashboard/${e._id}`, { replace: true });

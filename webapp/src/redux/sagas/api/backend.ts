@@ -16,20 +16,18 @@ const BACKEND = {
         var url = "https://api.opensensemap.org/boxes?minimal=true&bbox=-180,-90,180,90&limit=4";
         if (name !== "") url += `&name=${name}`;
         console.log(url);
-        return fetch(url).then((res) => res.json());
+        return fetch(url);
     },
 
     fetchSenseboxInfo: (id: string) => {
-        //if (id.length !== 24) return;
-        var url = "https://api.opensensemap.org/boxes/";
-        url += id;
+        var url = `https://api.opensensemap.org/boxes/${id}`;
         console.log(url);
-        return fetch(url).then((res) => res.json());
+        return fetch(url);
     },
 
     fetchSenseboxes: () => {
         var url = "https://api.opensensemap.org/boxes?minimal=true&bbox=-180,-90,180,90";
-        return fetch(url).then((res) => res.json());
+        return fetch(url);
     },
 
 };

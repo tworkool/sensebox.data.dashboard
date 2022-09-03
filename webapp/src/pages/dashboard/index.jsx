@@ -1,5 +1,5 @@
 import { ActionIcon, Alert, Tabs } from "@mantine/core";
-import React, { createContext } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useMemo } from "react";
 import {
   AccessPoint,
@@ -14,12 +14,43 @@ import DetailedDataContainer from "../../containers/detailed_data";
 import LiveAnalyticsContainer from "../../containers/live_analytics";
 import DataMapContainer from "../../containers/data_map";
 import "./style.scss";
+import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { getSenseboxInfoData } from "../../redux/selectors/appState";
+import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
 
 const DashboardContext = createContext();
 
 const DashboardContextProvider = (props) => {
+  const params = useParams();
+  const dispatch = useDispatch();
+  const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const [selectedSenseboxId, setSelectedSenseboxId] = useState();
+
+  useEffect(() => {
+    if (!params || Object.keys(params).length === 0) return;
+    console.log(params);
+    const param = params?.boxid;
+    if (param === null || param === undefined) {
+      setSelectedSenseboxId(undefined);
+      console.log("PARAMS");
+    } else {
+      dispatch(requestSenseboxInfoDataFetch({ id: param }));
+      console.log("FETCH");
+    }
+  }, [params, dispatch]);
+
+  useEffect(() => {
+    console.log(senseboxInfoData);
+    if (senseboxInfoData.validBoxId) {
+      setSelectedSenseboxId(senseboxInfoData.validBoxId);
+    } else {
+      setSelectedSenseboxId(undefined);
+    }
+  }, [senseboxInfoData]);
+
   return (
-    <DashboardContext.Provider value={{}}>
+    <DashboardContext.Provider value={{ selectedSenseboxId }}>
       {props.children}
     </DashboardContext.Provider>
   );
