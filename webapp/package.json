@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^1.8.3",
     "cross-fetch": "^3.1.5",
     "deck.gl": "^8.8.9",
+    "moment": "^2.29.4",
     "prop-types": "^15.6.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",

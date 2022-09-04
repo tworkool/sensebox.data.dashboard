@@ -5,6 +5,8 @@ import {
   Badge,
   Divider,
   Group,
+  Image,
+  LoadingOverlay,
   Skeleton,
   Space,
   Text,
@@ -14,12 +16,34 @@ import { AlertCircle, Bookmark, MapPin, ScreenShare } from "tabler-icons-react";
 import "./style.scss";
 import { useSelector } from "react-redux";
 import { getSenseboxInfoData } from "../../redux/selectors/appState";
+import { DashboardContext } from "../../pages/dashboard";
+import moment from "moment";
+import { useContext } from "react";
+import { useMemo } from "react";
+import { useState } from "react";
 
 const DashboardBoxInfo = () => {
   const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const dashboardContext = useContext(DashboardContext);
+  const diffFromCreateDate = useMemo(() => {
+    if (!senseboxInfoData.data) return "";
+    const createDate = moment(senseboxInfoData.data.createdAt);
+    const yearsFromCreate = moment().diff(createDate, "years");
+    console.log(createDate, yearsFromCreate);
+    return `Created ${
+      yearsFromCreate === 0
+        ? `${moment().diff(createDate, "days")} day(s)`
+        : `${yearsFromCreate} year(s)`
+    } ago`;
+  }, [senseboxInfoData]);
+  const [isLoadingMap, setIsLoadingMap] = useState(true);
 
   return (
     <div className="sbd-dashboard-content__box-info">
+      <LoadingOverlay
+        visible={dashboardContext.isLoadingSenseboxInfoData}
+        overlayBlur={2}
+      />
       {!senseboxInfoData.data && (
         <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
           Something terrible happened! You made a mistake and there is no going
@@ -35,13 +59,52 @@ const DashboardBoxInfo = () => {
             <Text size="xs" color="dimmed">
               {senseboxInfoData.data._id}
             </Text>
-            <Badge color="green" size="sm" radius="sm">
-              {senseboxInfoData.data.exposure}
-            </Badge>
+            <Space h="xs" />
+            <Group spacing="xs">
+              <Badge color="green" size="sm" radius="sm" variant="dot">
+                {senseboxInfoData.data.exposure}
+              </Badge>
+              <Badge color="grape" size="sm" radius="sm" variant="dot">
+                {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
+              </Badge>
+              <Badge color="yellow" size="sm" radius="sm" variant="dot">
+                {diffFromCreateDate}
+              </Badge>
+              {moment().diff(
+                moment(senseboxInfoData.data.lastMeasurementAt),
+                "days"
+              ) > 3 ? (
+                <Badge color="red" size="sm" radius="sm" variant="filled">
+                  INACTIVE
+                </Badge>
+              ) : (
+                <Badge color="gray" size="sm" radius="sm" variant="filled">
+                  ACTIVE
+                </Badge>
+              )}
+            </Group>
           </div>
+          <Space h="xs" />
+          <Text size="xs">{senseboxInfoData.data.description}</Text>
           <Divider my="sm" label="Position" labelPosition="center" />
-          <Skeleton height={100} visible={true}>
-            https://deck.gl/#/
+          <Skeleton height={150} visible={isLoadingMap}>
+            <iframe
+              style={{ border: "none" }}
+              onLoad={() => {
+                setIsLoadingMap(false);
+              }}
+              src={`https://maps.google.com/maps?q=${senseboxInfoData.data.currentLocation.coordinates[1]},${senseboxInfoData.data.currentLocation.coordinates[0]}&hl=en&z=14&output=embed`}
+            ></iframe>
+            <br />
+            <small>
+              <a
+                href={`https://maps.google.com/maps?q=${senseboxInfoData.data.currentLocation.coordinates[1]},${senseboxInfoData.data.currentLocation.coordinates[0]}&hl=en;z=14&output=embed`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                See map bigger
+              </a>
+            </small>
           </Skeleton>
           <Space h="xs" />
           <Skeleton visible={false}>
@@ -51,9 +114,16 @@ const DashboardBoxInfo = () => {
             </Group>
           </Skeleton>
           <Divider my="sm" label="Images" labelPosition="center" />
-          <Skeleton height={100} visible={true}>
-            No Images Found
-          </Skeleton>
+          {/* <Skeleton visible={false}>
+            <Image
+              //className="sbd-home-page-preview-image"
+              fit="contain"
+              radius="md"
+              src={`https://opensensemap.org/userimages/${senseboxInfoData.data.image}`}
+              alt="Dashboard Preview"
+              withPlaceholder
+            />
+          </Skeleton> */}
           <div style={{ marginTop: "auto" }}>
             <Divider
               my="sm"

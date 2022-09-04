@@ -21,6 +21,8 @@ import {
 import { Bookmark, Search } from "tabler-icons-react";
 import "./style.scss";
 import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -29,6 +31,16 @@ const DashboardHeader = () => {
   const [opened, setOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
+
+  const handleSearchExecution = useCallback(() => {
+    dispatch(requestSenseboxesDataFetch({ name: searchContent }));
+    setIsLoading(true);
+  }, [dispatch, searchContent]);
+
+  useEffect(() => {
+    if (!senseboxesData.data) return;
+    setIsLoading(false);
+  }, [senseboxesData]);
 
   return (
     <div className="sbd-dashboard-header">
@@ -82,14 +94,7 @@ const DashboardHeader = () => {
               }}
             />
             <div>
-              <Button
-                onClick={() => {
-                  // FETCH BOXES
-                  dispatch(requestSenseboxesDataFetch({ name: searchContent }));
-                }}
-              >
-                Search
-              </Button>
+              <Button onClick={handleSearchExecution}>Search</Button>
             </div>
           </Group>
 
