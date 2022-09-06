@@ -6,14 +6,29 @@ import {
   succeedWeatherDataFetch,
   succeedSenseboxInfoDataFetch,
   failSenseboxInfoDataFetch,
+  succeedSenseboxDBMiscDataFetch,
+  failSenseboxDBMiscDataFetch,
 } from "../actions/app_state";
 import {
   SENSEBOXES_FETCH_REQUESTED,
+  SENSEBOX_DB_MISC_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_REQUESTED,
   WEATHER_DATA_FETCH_REQUESTED,
 } from "../action_types/app_state";
 import BACKEND from "./api/backend";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import moment from "moment";
+
+function* completeSagaAction(success, action, actionValue) {
+  yield put(action({ ...actionValue }));
+
+  showNotification({
+    id: `${Object.keys({ [action]: false })[0]}_Notification_${moment().utc()}`,
+    title: success ? "FETCH SUCCESS" : "FETCH ERROR",
+    message: success ? "FETCH SUCCESS" : "FETCH ERROR",
+    color: success ? "green" : "red",
+  });
+}
 
 function* fetchWeatherData(action) {
   showNotification({
@@ -214,6 +229,9 @@ function* fetchSenseboxInfoData(action) {
     console.log(response);
     if (response.status >= 200 && response.status < 300) {
       const data = yield response.json();
+      /* const sensorFilters = data.sensors?.reduce((p, i) => {
+        return {...p, };
+      }, {}); */
 
       yield put(
         succeedSenseboxInfoDataFetch({
@@ -251,6 +269,49 @@ function* fetchSenseboxInfoData(action) {
   }
 }
 
+function* fetchSenseboxDBMiscData(action) {
+  try {
+    const response = yield call(BACKEND.fetchSenseboxDBMiscData);
+    if (response.status >= 200 && response.status < 300) {
+      const rawData = yield response.json();
+      const data = {
+        registeredBoxes: rawData[0],
+        measurementsTotal: rawData[1],
+        measurementsPastHour: rawData[2],
+      };
+
+      yield put(
+        succeedSenseboxDBMiscDataFetch({
+          senseboxDBMiscData: { data: data },
+        })
+      );
+      showNotification({
+        id: "fetch_sensebox_db_misc_data_notification",
+        title: "FETCH SUCCESS",
+        message: "FETCH SUCCESS",
+        color: "green",
+      });
+      /* completeSagaAction(true, succeedSenseboxDBMiscDataFetch, {
+        senseboxDBMiscData: { data: data },
+      }); */
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(
+      failSenseboxDBMiscDataFetch({
+        senseboxDBMiscData: { data: undefined },
+      })
+    );
+    showNotification({
+      id: "fetch_sensebox_db_misc_data_notification",
+      title: "FETCH FAIL",
+      message: "Could not fetch weather data",
+      color: "red",
+    });
+  }
+}
+
 function* watchFetchWeatherData() {
   yield takeLatest(WEATHER_DATA_FETCH_REQUESTED, fetchWeatherData);
 }
@@ -263,8 +324,13 @@ function* watchFetchSenseboxInfoData() {
   yield takeLatest(SENSEBOX_INFO_FETCH_REQUESTED, fetchSenseboxInfoData);
 }
 
+function* watchFetchSenseboxDBMiscData() {
+  yield takeLatest(SENSEBOX_DB_MISC_FETCH_REQUESTED, fetchSenseboxDBMiscData);
+}
+
 export {
   watchFetchWeatherData,
   watchFetchSenseboxesData,
   watchFetchSenseboxInfoData,
+  watchFetchSenseboxDBMiscData,
 };

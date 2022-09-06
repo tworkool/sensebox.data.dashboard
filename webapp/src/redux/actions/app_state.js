@@ -10,6 +10,10 @@ import {
   SENSEBOX_INFO_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_FAILED,
   SENSEBOX_INFO_FETCH_SUCCEEDED,
+
+  SENSEBOX_DB_MISC_FETCH_REQUESTED,
+  SENSEBOX_DB_MISC_FETCH_FAILED,
+  SENSEBOX_DB_MISC_FETCH_SUCCEEDED,
 } from "../action_types/app_state";
 import { createAction } from "redux-actions";
 
@@ -25,6 +29,10 @@ const requestSenseboxInfoDataFetch = createAction(SENSEBOX_INFO_FETCH_REQUESTED)
 const failSenseboxInfoDataFetch = createAction(SENSEBOX_INFO_FETCH_FAILED);
 const succeedSenseboxInfoDataFetch = createAction(SENSEBOX_INFO_FETCH_SUCCEEDED);
 
+const requestSenseboxDBMiscDataFetch = createAction(SENSEBOX_DB_MISC_FETCH_REQUESTED);
+const failSenseboxDBMiscDataFetch = createAction(SENSEBOX_DB_MISC_FETCH_FAILED);
+const succeedSenseboxDBMiscDataFetch = createAction(SENSEBOX_DB_MISC_FETCH_SUCCEEDED);
+
 export {
   requestWeatherDataFetch,
   failWeatherDataFetch,
@@ -37,4 +45,8 @@ export {
   requestSenseboxInfoDataFetch,
   failSenseboxInfoDataFetch,
   succeedSenseboxInfoDataFetch,
+
+  requestSenseboxDBMiscDataFetch,
+  failSenseboxDBMiscDataFetch,
+  succeedSenseboxDBMiscDataFetch,
 };

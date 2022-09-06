@@ -30,6 +30,20 @@ const BACKEND = {
         return fetch(url);
     },
 
+    fetchSenseboxDBMiscData: () => {
+        var url = "https://api.opensensemap.org/stats?human=true";
+        return fetch(url);
+        /* return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([
+                    "318",
+                    "118M",
+                    "393"
+                ]);
+            }, 300);
+        }); */
+    },
+
 };
 
 export default BACKEND;

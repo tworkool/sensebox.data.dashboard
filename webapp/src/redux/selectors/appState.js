@@ -10,4 +10,13 @@ const getSenseboxInfoData = (state) => {
   return state.appState.senseboxInfoData;
 };
 
-export { getWeatherData, getSenseboxesData, getSenseboxInfoData };
+const getSenseboxDBMiscData = (state) => {
+  return state.appState.senseboxDBMiscData;
+};
+
+export {
+  getWeatherData,
+  getSenseboxesData,
+  getSenseboxInfoData,
+  getSenseboxDBMiscData,
+};

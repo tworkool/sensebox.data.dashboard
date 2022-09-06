@@ -11,6 +11,7 @@ import {
   Checkbox,
   Divider,
   Box,
+  Badge,
 } from "@mantine/core";
 import "./style.scss";
 import {
@@ -21,9 +22,71 @@ import {
   Temperature,
 } from "tabler-icons-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { getSenseboxInfoData } from "../../redux/selectors/appState";
+import moment from "moment";
+import { useEffect } from "react";
+import AnalyticsBoxWidget from "../../components/analytics_box_widget";
+import NoDataContainer from "../no_data";
 
 const LiveAnalyticsContainer = () => {
   const [dataView, setdataView] = useState("box-view");
+  const [extraSenseboxInfoSensorData, setExtraSenseboxInfoSensorData] =
+    useState(undefined);
+  const senseboxInfoData = useSelector(getSenseboxInfoData);
+
+  useEffect(() => {
+    const sensors = senseboxInfoData.data?.sensors;
+    if (sensors && sensors.length != 0) {
+      setExtraSenseboxInfoSensorData(
+        sensors.reduce((p, i) => {
+          var isDormant = false;
+          if (i.lastMeasurement?.value === undefined) isDormant = true;
+
+          if (
+            i.lastMeasurement?.createdAt === undefined ||
+            moment().diff(moment(i.lastMeasurement.createdAt), "hours") > 25
+          )
+            isDormant = true;
+
+          var lastMeasurementTime = "-";
+          var lastMeasurementValue = "-";
+          if (!isDormant) {
+            const lastMeasurementTimeMinutes = moment().diff(
+              moment(i.lastMeasurement.createdAt),
+              "minutes"
+            );
+            lastMeasurementTime =
+              lastMeasurementTimeMinutes == 0
+                ? "less than 1 minute"
+                : `${lastMeasurementTimeMinutes} minute(s) ago`;
+            lastMeasurementValue = i.lastMeasurement.value;
+          }
+          return [
+            ...p,
+            {
+              isDormant,
+              lastMeasurementTime,
+              lastMeasurementValue,
+              title: i.title,
+              unit: i.unit,
+              _id: i._id,
+              sensorType: i.sensorType,
+              icon: i.icon,
+            },
+          ];
+        }, [])
+      );
+    }
+  }, [senseboxInfoData]);
+
+  if (extraSenseboxInfoSensorData === undefined) {
+    return (
+      <div className="sbd-live-analytics-container sbd-dashboard-container">
+        <NoDataContainer />
+      </div>
+    );
+  }
 
   return (
     <div className="sbd-live-analytics-container sbd-dashboard-container">
@@ -84,31 +147,9 @@ const LiveAnalyticsContainer = () => {
       />
       {"box-view" === dataView && (
         <div className="sbd-live-analytics-content__box-view">
-          <Card shadow="sm" p="sm" withBorder style={{ width: 320 }}>
-            <Card.Section withBorder inheritPadding py="xs">
-              <Group position="apart">
-                <Group spacing="xs">
-                  <Temperature />
-                  <Text weight={500}>Sensorname</Text>
-                </Group>
-                <Group spacing="xs">
-                  <Text size="xs" weight={600} color="red">
-                    3 min ago
-                  </Text>
-                  <AccessPoint size={18} strokeWidth={2} color={"#E20808"} />
-                </Group>
-              </Group>
-            </Card.Section>
-
-            <Card.Section inheritPadding py="xs">
-              <Text size="sm" color="dimmed">
-                Type: HCD134
-              </Text>
-              <Text size="sm" color="dimmed">
-                Unit: °C
-              </Text>
-            </Card.Section>
-          </Card>
+          {extraSenseboxInfoSensorData.map((e, i) => (
+            <AnalyticsBoxWidget key={i} sensorData={e} />
+          ))}
         </div>
       )}
       {"table-view" === dataView && (
@@ -124,7 +165,32 @@ const LiveAnalyticsContainer = () => {
                 <th></th> {/* Last Measurement at */}
               </tr>
             </thead>
-            <tbody>{/* rows */}</tbody>
+            <tbody>
+              {extraSenseboxInfoSensorData.map((e, i) => (
+                <tr key={i}>
+                  <td></td>
+                  <td>
+                    {e.title}
+                    {e.isDormant && (
+                      <div>
+                        <Badge
+                          color="red"
+                          size="xs"
+                          radius="sm"
+                          variant="filled"
+                        >
+                          INACTIVE
+                        </Badge>
+                      </div>
+                    )}
+                  </td>
+                  <td>{e.sensorType}</td>
+                  <td>{e.lastMeasurementValue}</td>
+                  <td>{e.unit}</td>
+                  <td>{e.lastMeasurementTime}</td>
+                </tr>
+              ))}
+            </tbody>
           </MantineTable>
         </div>
       )}

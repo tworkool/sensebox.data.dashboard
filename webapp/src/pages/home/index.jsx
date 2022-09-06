@@ -18,8 +18,20 @@ import {
   DeviceDesktopAnalytics,
   MapSearch,
 } from "tabler-icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { requestSenseboxDBMiscDataFetch } from "../../redux/actions/app_state";
+import { getSenseboxDBMiscData } from "../../redux/selectors/appState";
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+  const senseboxDBMiscData = useSelector(getSenseboxDBMiscData);
+  console.log(senseboxDBMiscData);
+
+  useEffect(() => {
+    dispatch(requestSenseboxDBMiscDataFetch());
+  }, [dispatch]);
+
   return (
     <div className="sbd-home-page">
       <div className="sbd-home-page-copyright">{`© Oliver Tworkowski ${new Date().getFullYear()}`}</div>
@@ -42,21 +54,38 @@ const HomePage = () => {
               </Title>
             </Stack>
             <Group grow>
-              <Text>
-                pharetra pharetra massa massa ultricies mi. Sagittis vitae et
-                leo duis. Viverra vitae congue eu consequat. Non quam lacus
-                suspendisse faucibus interdum posuere lorem ipsum. Diam sit amet
-                nisl suscipit adipiscing bibendum est. Arcu cursus vitae congue
-                mauris rhoncus. Non consectetur a erat nam at lectus urna. A
-                condimentum vitae sapien pellentesque habitant. Aliquam eleifend
-                mi in nulla. Morbi leo urna molestie at. Dictum varius duis at
-                consectetur lorem donec massa sapien faucibus. Venenatis a
-                condimentum vitae sapien pellentesque habitant morbi tristique
-                senectus. Sit amet porttitor eget dolor morbi non. Est
-                ullamcorper eget nulla facilisi etiam dignissim diam. Et
-                malesuada fames ac turpis egestas maecenas pharetra convallis.
-                Scelerisque eu ultrices vitae auctor eu augue ut
-              </Text>
+              <Stack spacing="xl" justify="space-around">
+                <Text>
+                  pharetra pharetra massa massa ultricies mi. Sagittis vitae et
+                  leo duis. Viverra vitae congue eu consequat. Non quam lacus
+                  suspendisse faucibus interdum posuere lorem ipsum. Diam sit
+                  amet nisl suscipit adipiscing bibendum est. Arcu cursus vitae
+                  congue mauris rhoncus. Non consectetur a erat nam at lectus
+                  urna.
+                </Text>
+                {senseboxDBMiscData?.data && (
+                  <Group>
+                    <div>
+                      <Text size="xl" weight={500}>
+                        {senseboxDBMiscData.data.registeredBoxes}
+                      </Text>
+                      <Text size="sm">Registered Senseboxes</Text>
+                    </div>
+                    <div>
+                      <Text size="xl" weight={500}>
+                        {senseboxDBMiscData.data.measurementsTotal}
+                      </Text>
+                      <Text size="sm">Sensor Measurements ...</Text>
+                    </div>
+                    <div>
+                      <Text size="xl" weight={500}>
+                        {senseboxDBMiscData.data.measurementsPastHour}
+                      </Text>
+                      <Text size="sm">... within the Last Hour</Text>
+                    </div>
+                  </Group>
+                )}
+              </Stack>
               <Image
                 className="sbd-home-page-preview-image"
                 fit="contain"

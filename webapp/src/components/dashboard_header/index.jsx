@@ -23,6 +23,7 @@ import "./style.scss";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useCallback } from "react";
+import NoDataContainer from "../../containers/no_data";
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -89,9 +90,9 @@ const DashboardHeader = () => {
               defaultValue={searchContent}
               placeholder="Find a SenseBox"
               icon={<Search size={16} />}
-              onChange={(e) => {
+              /* onChange={(e) => {
                 setSearchContent(e.target.value);
-              }}
+              }} */
             />
             <div>
               <Button onClick={handleSearchExecution}>Search</Button>
@@ -114,7 +115,7 @@ const DashboardHeader = () => {
 
             {senseboxesData.data === undefined ? (
               <Center style={{ height: 200 }}>
-                <div>No Senseboxes found</div>
+                <NoDataContainer />
               </Center>
             ) : (
               senseboxesData.data.map((e, i) => (
@@ -122,6 +123,7 @@ const DashboardHeader = () => {
                   onClick={() => {
                     navigate(`../dashboard/${e._id}`, { replace: true });
                     setOpened(false);
+                    setSearchContent(e.target.value);
                   }}
                   key={i}
                   className="sbd-dashboard-header-search-result"
