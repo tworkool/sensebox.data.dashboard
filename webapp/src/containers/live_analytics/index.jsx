@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Card,
   Text,
@@ -12,6 +12,7 @@ import {
   Divider,
   Box,
   Badge,
+  Tooltip,
 } from "@mantine/core";
 import "./style.scss";
 import {
@@ -28,14 +29,22 @@ import moment from "moment";
 import { useEffect } from "react";
 import AnalyticsBoxWidget from "../../components/analytics_box_widget";
 import NoDataContainer from "../no_data";
+import { capString } from "../../utils/helpers";
 
 const LiveAnalyticsContainer = () => {
   const [dataView, setdataView] = useState("box-view");
   const [extraSenseboxInfoSensorData, setExtraSenseboxInfoSensorData] =
     useState(undefined);
   const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const [sensorFilters, setSensorFilters] = useState({
+    type: null,
+  });
 
+  // evaluate data and enhance datamodel
   useEffect(() => {
+    // reset filters
+    setSensorFilters({ type: null });
+
     const sensors = senseboxInfoData.data?.sensors;
     if (sensors && sensors.length != 0) {
       setExtraSenseboxInfoSensorData(
@@ -80,6 +89,10 @@ const LiveAnalyticsContainer = () => {
     }
   }, [senseboxInfoData]);
 
+  const handleFilters = useCallback((actionPayload) => {
+    setSensorFilters((old) => ({ ...old, ...actionPayload }));
+  }, []);
+
   if (extraSenseboxInfoSensorData === undefined) {
     return (
       <div className="sbd-live-analytics-container sbd-dashboard-container">
@@ -91,22 +104,59 @@ const LiveAnalyticsContainer = () => {
   return (
     <div className="sbd-live-analytics-container sbd-dashboard-container">
       <Group className="sbd-live-analytics-filters" position="apart">
-        <Chip.Group position="center" defaultValue="1" defaultChecked>
-          <Indicator label="2" size={16} color="black">
-            <Chip value="1" color="dark" size="xs" radius="sm">
-              All
-            </Chip>
-          </Indicator>
-          <Indicator label="1" size={16} color="black">
-            <Chip value="2" color="dark" size="xs" radius="sm">
-              Temperature
-            </Chip>
-          </Indicator>
-          <Indicator label="0" size={16} color="gray">
-            <Chip value="3" color="dark" size="xs" radius="sm" disabled>
-              Light
-            </Chip>
-          </Indicator>
+        <Chip.Group position="center" defaultValue={"0"} defaultChecked>
+          {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
+            <Indicator
+              label={
+                Object.keys(senseboxInfoData.extraData.sensorFilters).length
+              }
+              size={16}
+              color="black"
+            >
+              <Chip
+                value={`${0}`}
+                color="dark"
+                size="xs"
+                radius="sm"
+                onClick={(_) => {
+                  handleFilters({ type: null });
+                }}
+              >
+                All
+              </Chip>
+            </Indicator>
+          )}
+          {senseboxInfoData?.extraData?.sensorFilters !== undefined ? (
+            Object.keys(senseboxInfoData.extraData.sensorFilters).map(
+              (key, i) => {
+                const e = senseboxInfoData.extraData.sensorFilters[key];
+                const labelText = e.sensors.reduce(
+                  (previous, current) =>
+                    `${previous}${previous === "" ? "" : "/"}${current.title}`,
+                  ""
+                );
+                return (
+                  <Tooltip label={labelText} key={i}>
+                    <Indicator label={e.totalAmount} size={16} color="black">
+                      <Chip
+                        value={`${i + 1}`}
+                        color="dark"
+                        size="xs"
+                        radius="sm"
+                        onClick={(_) => {
+                          handleFilters({ type: e.classifier });
+                        }}
+                      >
+                        {`${e.classifier} | ${capString(labelText, 12)}`}
+                      </Chip>
+                    </Indicator>
+                  </Tooltip>
+                );
+              }
+            )
+          ) : (
+            <div>NO FILTERS</div>
+          )}
         </Chip.Group>
         <Checkbox label="Show Inactive" size="xs" />
         <SegmentedControl
@@ -147,9 +197,13 @@ const LiveAnalyticsContainer = () => {
       />
       {"box-view" === dataView && (
         <div className="sbd-live-analytics-content__box-view">
-          {extraSenseboxInfoSensorData.map((e, i) => (
-            <AnalyticsBoxWidget key={i} sensorData={e} />
-          ))}
+          {extraSenseboxInfoSensorData
+            .filter(
+              (item) => !sensorFilters.type || sensorFilters.type === item.unit
+            )
+            .map((e, i) => (
+              <AnalyticsBoxWidget key={i} sensorData={e} />
+            ))}
         </div>
       )}
       {"table-view" === dataView && (
@@ -166,30 +220,35 @@ const LiveAnalyticsContainer = () => {
               </tr>
             </thead>
             <tbody>
-              {extraSenseboxInfoSensorData.map((e, i) => (
-                <tr key={i}>
-                  <td></td>
-                  <td>
-                    {e.title}
-                    {e.isDormant && (
-                      <div>
-                        <Badge
-                          color="red"
-                          size="xs"
-                          radius="sm"
-                          variant="filled"
-                        >
-                          INACTIVE
-                        </Badge>
-                      </div>
-                    )}
-                  </td>
-                  <td>{e.sensorType}</td>
-                  <td>{e.lastMeasurementValue}</td>
-                  <td>{e.unit}</td>
-                  <td>{e.lastMeasurementTime}</td>
-                </tr>
-              ))}
+              {extraSenseboxInfoSensorData
+                .filter(
+                  (item) =>
+                    !sensorFilters.type || sensorFilters.type === item.unit
+                )
+                .map((e, i) => (
+                  <tr key={i}>
+                    <td></td>
+                    <td>
+                      {e.title}
+                      {e.isDormant && (
+                        <div>
+                          <Badge
+                            color="red"
+                            size="xs"
+                            radius="sm"
+                            variant="filled"
+                          >
+                            INACTIVE
+                          </Badge>
+                        </div>
+                      )}
+                    </td>
+                    <td>{e.sensorType}</td>
+                    <td>{e.lastMeasurementValue}</td>
+                    <td>{e.unit}</td>
+                    <td>{e.lastMeasurementTime}</td>
+                  </tr>
+                ))}
             </tbody>
           </MantineTable>
         </div>

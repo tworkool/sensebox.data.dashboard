@@ -18,6 +18,7 @@ import {
 import BACKEND from "./api/backend";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import moment from "moment";
+import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
 
 function* completeSagaAction(success, action, actionValue) {
   yield put(action({ ...actionValue }));
@@ -74,7 +75,8 @@ function* fetchSenseboxesData(action) {
       action.payload.name
     );
     if (response.status >= 200 && response.status < 300) {
-      const data = yield response.json();
+      const rawData = yield response.json();
+      const data = QUERY_DATA_MODIFIERS.limitArrayFromStart(rawData);
 
       yield put(
         succeedSenseboxesDataFetch({
@@ -229,14 +231,35 @@ function* fetchSenseboxInfoData(action) {
     console.log(response);
     if (response.status >= 200 && response.status < 300) {
       const data = yield response.json();
-      /* const sensorFilters = data.sensors?.reduce((p, i) => {
-        return {...p, };
-      }, {}); */
+      const sensorFilters = data.sensors?.reduce((p, i) => {
+        const classifier = i.unit;
+        const sensorInstance = { _id: i._id, title: i.title };
+        if (Object.keys(p).includes(classifier)) {
+          // EDIT filter
+          const newItem = { ...p };
+          newItem[classifier].totalAmount += 1;
+          newItem[classifier].sensors.push(sensorInstance);
+          return newItem;
+        } else {
+          // ADD new filter
+          return {
+            ...p,
+            [classifier]: {
+              classifier,
+              totalAmount: 1,
+              sensors: [sensorInstance],
+            },
+          };
+        }
+      }, {});
 
       yield put(
         succeedSenseboxInfoDataFetch({
           senseboxInfoData: {
             data: data,
+            extraData: {
+              sensorFilters,
+            },
             isLoading: false,
             validBoxId: action.payload.id,
           },

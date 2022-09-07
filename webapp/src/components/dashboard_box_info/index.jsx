@@ -61,9 +61,11 @@ const DashboardBoxInfo = () => {
             </Text>
             <Space h="xs" />
             <Group spacing="xs">
-              <Badge color="green" size="sm" radius="sm" variant="dot">
-                {senseboxInfoData.data.exposure}
-              </Badge>
+              {senseboxInfoData?.data?.exposure !== "unknown" && (
+                <Badge color="green" size="sm" radius="sm" variant="dot">
+                  {senseboxInfoData.data.exposure}
+                </Badge>
+              )}
               <Badge color="grape" size="sm" radius="sm" variant="dot">
                 {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
               </Badge>

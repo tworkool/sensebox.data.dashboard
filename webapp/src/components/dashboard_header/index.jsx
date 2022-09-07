@@ -123,7 +123,7 @@ const DashboardHeader = () => {
                   onClick={() => {
                     navigate(`../dashboard/${e._id}`, { replace: true });
                     setOpened(false);
-                    setSearchContent(e.target.value);
+                    setSearchContent(e.target?.value);
                   }}
                   key={i}
                   className="sbd-dashboard-header-search-result"
