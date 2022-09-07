@@ -26,7 +26,6 @@ import { getSenseboxDBMiscData } from "../../redux/selectors/appState";
 const HomePage = () => {
   const dispatch = useDispatch();
   const senseboxDBMiscData = useSelector(getSenseboxDBMiscData);
-  console.log(senseboxDBMiscData);
 
   useEffect(() => {
     dispatch(requestSenseboxDBMiscDataFetch());

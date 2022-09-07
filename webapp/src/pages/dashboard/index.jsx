@@ -26,7 +26,8 @@ const DashboardContextProvider = (props) => {
   const dispatch = useDispatch();
   const senseboxInfoData = useSelector(getSenseboxInfoData);
   const [selectedSenseboxId, setSelectedSenseboxId] = useState();
-  const [isLoadingSenseboxInfoData, setIsLoadingSenseboxInfoData] = useState(false);
+  const [isLoadingSenseboxInfoData, setIsLoadingSenseboxInfoData] =
+    useState(false);
 
   useEffect(() => {
     if (!params || Object.keys(params).length === 0) return;
@@ -37,20 +38,21 @@ const DashboardContextProvider = (props) => {
       dispatch(requestSenseboxInfoDataFetch({ id: param }));
       setIsLoadingSenseboxInfoData(true);
     }
-  }, [params, dispatch]);
+  }, [params, dispatch, setIsLoadingSenseboxInfoData]);
 
   useEffect(() => {
-    console.log(senseboxInfoData);
     if (senseboxInfoData.validBoxId) {
       setSelectedSenseboxId(senseboxInfoData.validBoxId);
     } else {
       setSelectedSenseboxId(undefined);
     }
     setIsLoadingSenseboxInfoData(false);
-  }, [senseboxInfoData]);
+  }, [senseboxInfoData, setIsLoadingSenseboxInfoData]);
 
   return (
-    <DashboardContext.Provider value={{ selectedSenseboxId, isLoadingSenseboxInfoData }}>
+    <DashboardContext.Provider
+      value={{ selectedSenseboxId, isLoadingSenseboxInfoData }}
+    >
       {props.children}
     </DashboardContext.Provider>
   );

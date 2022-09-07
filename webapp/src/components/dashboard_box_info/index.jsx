@@ -29,7 +29,6 @@ const DashboardBoxInfo = () => {
     if (!senseboxInfoData.data) return "";
     const createDate = moment(senseboxInfoData.data.createdAt);
     const yearsFromCreate = moment().diff(createDate, "years");
-    console.log(createDate, yearsFromCreate);
     return `Created ${
       yearsFromCreate === 0
         ? `${moment().diff(createDate, "days")} day(s)`

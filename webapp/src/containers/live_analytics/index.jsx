@@ -13,14 +13,17 @@ import {
   Box,
   Badge,
   Tooltip,
+  Menu,
+  Button,
+  Space,
+  Stack,
 } from "@mantine/core";
 import "./style.scss";
 import {
   AccessPoint,
   BoxMultiple,
-  Filter,
+  Filter as TablerIconsFilter,
   Table,
-  Temperature,
 } from "tabler-icons-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -38,15 +41,37 @@ const LiveAnalyticsContainer = () => {
   const senseboxInfoData = useSelector(getSenseboxInfoData);
   const [sensorFilters, setSensorFilters] = useState({
     type: null,
+    showInactive: true,
   });
+  const [filteredSenseboxInfoSensorData, setFilteredSenseboxInfoSensorData] =
+    useState(undefined);
+
+  const handleFilters = useCallback((actionPayload) => {
+    setSensorFilters((old) => ({ ...old, ...actionPayload }));
+  }, []);
+
+  const resetFilters = useCallback(() => {
+    setSensorFilters({ type: null, showInactive: true });
+  }, []);
+
+  useEffect(() => {
+    if (!extraSenseboxInfoSensorData) return;
+    setFilteredSenseboxInfoSensorData(
+      extraSenseboxInfoSensorData.filter((item) => {
+        var filterPassed = false;
+        filterPassed = !sensorFilters.type || sensorFilters.type === item.unit;
+        if (!sensorFilters.showInactive && item.isDormant) return false;
+        else return filterPassed;
+      })
+    );
+  }, [sensorFilters, extraSenseboxInfoSensorData]);
 
   // evaluate data and enhance datamodel
   useEffect(() => {
-    // reset filters
-    setSensorFilters({ type: null });
-
     const sensors = senseboxInfoData.data?.sensors;
     if (sensors && sensors.length != 0) {
+      // reset filters
+      resetFilters();
       setExtraSenseboxInfoSensorData(
         sensors.reduce((p, i) => {
           var isDormant = false;
@@ -87,13 +112,9 @@ const LiveAnalyticsContainer = () => {
         }, [])
       );
     }
-  }, [senseboxInfoData]);
+  }, [senseboxInfoData, resetFilters]);
 
-  const handleFilters = useCallback((actionPayload) => {
-    setSensorFilters((old) => ({ ...old, ...actionPayload }));
-  }, []);
-
-  if (extraSenseboxInfoSensorData === undefined) {
+  if (!filteredSenseboxInfoSensorData) {
     return (
       <div className="sbd-live-analytics-container sbd-dashboard-container">
         <NoDataContainer />
@@ -103,7 +124,7 @@ const LiveAnalyticsContainer = () => {
 
   return (
     <div className="sbd-live-analytics-container sbd-dashboard-container">
-      <Group className="sbd-live-analytics-filters" position="apart">
+      <Stack className="sbd-live-analytics-filters">
         <Chip.Group position="center" defaultValue={"0"} defaultChecked>
           {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
             <Indicator
@@ -158,52 +179,97 @@ const LiveAnalyticsContainer = () => {
             <div>NO FILTERS</div>
           )}
         </Chip.Group>
-        <Checkbox label="Show Inactive" size="xs" />
-        <SegmentedControl
-          onChange={(s) => {
-            setdataView(s);
-          }}
-          defaultValue={dataView}
-          size="xs"
-          data={[
-            {
-              value: "table-view",
-              label: (
-                <Center>
-                  <Table size={16} />
-                </Center>
-              ),
-            },
-            {
-              value: "box-view",
-              label: (
-                <Center>
-                  <BoxMultiple size={16} />
-                </Center>
-              ),
-            },
-          ]}
-        />
-      </Group>
+        <Group position="apart" className="full-width">
+          <Group>
+            <Menu
+              closeOnItemClick={false}
+              position="bottom-start"
+              offset={4}
+              withArrow
+              shadow="lg"
+            >
+              <Menu.Target>
+                <Button
+                  variant="default"
+                  color="dark"
+                  size="xs"
+                  leftIcon={<TablerIconsFilter size={14} />}
+                >
+                  Filters
+                </Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                {/* <Menu.Label>Application</Menu.Label> */}
+                <Menu.Item>
+                  <Checkbox
+                    label="Show Inactive"
+                    size="xs"
+                    checked={sensorFilters.showInactive}
+                    onChange={(event) =>
+                      setSensorFilters({
+                        showInactive: event.currentTarget.checked,
+                      })
+                    }
+                  />
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <SegmentedControl
+              onChange={(s) => {
+                setdataView(s);
+              }}
+              defaultValue={dataView}
+              size="xs"
+              //color="dark"
+              data={[
+                {
+                  value: "table-view",
+                  label: (
+                    <Center>
+                      <Table size={16} />
+                      <Box ml={10}>Table View</Box>
+                    </Center>
+                  ),
+                },
+                {
+                  value: "box-view",
+                  label: (
+                    <Center>
+                      <BoxMultiple size={16} />
+                      <Box ml={10}>Widget View</Box>
+                    </Center>
+                  ),
+                },
+              ]}
+            />
+          </Group>
+          <Button color="dark" size="xs" onClick={resetFilters}>
+            Clear
+          </Button>
+        </Group>
+      </Stack>
       <Divider
         my="xs"
-        labelPosition="center"
+        /* labelPosition="center"
         label={
           <>
-            <Filter size={16} />
+            <TablerIconsFilter size={16} />
             <Box ml={5}>Filters</Box>
           </>
-        }
+        } */
       />
+      <Text
+        size="xs"
+        color="dimmed"
+      >{`${filteredSenseboxInfoSensorData.length} of ${extraSenseboxInfoSensorData.length} Results`}</Text>
+      <Space h="xs" />
+
       {"box-view" === dataView && (
         <div className="sbd-live-analytics-content__box-view">
-          {extraSenseboxInfoSensorData
-            .filter(
-              (item) => !sensorFilters.type || sensorFilters.type === item.unit
-            )
-            .map((e, i) => (
-              <AnalyticsBoxWidget key={i} sensorData={e} />
-            ))}
+          {filteredSenseboxInfoSensorData.map((e, i) => (
+            <AnalyticsBoxWidget key={i} sensorData={e} />
+          ))}
         </div>
       )}
       {"table-view" === dataView && (
@@ -220,35 +286,30 @@ const LiveAnalyticsContainer = () => {
               </tr>
             </thead>
             <tbody>
-              {extraSenseboxInfoSensorData
-                .filter(
-                  (item) =>
-                    !sensorFilters.type || sensorFilters.type === item.unit
-                )
-                .map((e, i) => (
-                  <tr key={i}>
-                    <td></td>
-                    <td>
-                      {e.title}
-                      {e.isDormant && (
-                        <div>
-                          <Badge
-                            color="red"
-                            size="xs"
-                            radius="sm"
-                            variant="filled"
-                          >
-                            INACTIVE
-                          </Badge>
-                        </div>
-                      )}
-                    </td>
-                    <td>{e.sensorType}</td>
-                    <td>{e.lastMeasurementValue}</td>
-                    <td>{e.unit}</td>
-                    <td>{e.lastMeasurementTime}</td>
-                  </tr>
-                ))}
+              {filteredSenseboxInfoSensorData.map((e, i) => (
+                <tr key={i}>
+                  <td></td>
+                  <td>
+                    {e.title}
+                    {e.isDormant && (
+                      <div>
+                        <Badge
+                          color="red"
+                          size="xs"
+                          radius="sm"
+                          variant="filled"
+                        >
+                          INACTIVE
+                        </Badge>
+                      </div>
+                    )}
+                  </td>
+                  <td>{e.sensorType}</td>
+                  <td>{e.lastMeasurementValue}</td>
+                  <td>{e.unit}</td>
+                  <td>{e.lastMeasurementTime}</td>
+                </tr>
+              ))}
             </tbody>
           </MantineTable>
         </div>

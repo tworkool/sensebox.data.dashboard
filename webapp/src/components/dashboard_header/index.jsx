@@ -32,10 +32,12 @@ const DashboardHeader = () => {
   const [opened, setOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
+  const [searchHighlightContent, setSearchHighlightContent] = useState("");
 
   const handleSearchExecution = useCallback(() => {
     dispatch(requestSenseboxesDataFetch({ name: searchContent }));
     setIsLoading(true);
+    setSearchHighlightContent(searchContent);
   }, [dispatch, searchContent]);
 
   useEffect(() => {
@@ -90,9 +92,9 @@ const DashboardHeader = () => {
               defaultValue={searchContent}
               placeholder="Find a SenseBox"
               icon={<Search size={16} />}
-              /* onChange={(e) => {
+              onChange={(e) => {
                 setSearchContent(e.target.value);
-              }} */
+              }}
             />
             <div>
               <Button onClick={handleSearchExecution}>Search</Button>
@@ -123,7 +125,6 @@ const DashboardHeader = () => {
                   onClick={() => {
                     navigate(`../dashboard/${e._id}`, { replace: true });
                     setOpened(false);
-                    setSearchContent(e.target?.value);
                   }}
                   key={i}
                   className="sbd-dashboard-header-search-result"
@@ -136,7 +137,7 @@ const DashboardHeader = () => {
                     >
                       <Highlight
                         highlightColor="blue"
-                        highlight={searchContent}
+                        highlight={searchHighlightContent}
                         weight={600}
                       >
                         {e.name}
