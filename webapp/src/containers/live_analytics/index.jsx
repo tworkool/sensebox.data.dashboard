@@ -17,6 +17,8 @@ import {
   Button,
   Space,
   Stack,
+  Radio,
+  Popover,
 } from "@mantine/core";
 import "./style.scss";
 import {
@@ -33,6 +35,7 @@ import { useEffect } from "react";
 import AnalyticsBoxWidget from "../../components/analytics_box_widget";
 import NoDataContainer from "../no_data";
 import { capString } from "../../utils/helpers";
+import CONSTANTS from "../../utils/constants";
 
 const LiveAnalyticsContainer = () => {
   const [dataView, setdataView] = useState("box-view");
@@ -79,7 +82,8 @@ const LiveAnalyticsContainer = () => {
 
           if (
             i.lastMeasurement?.createdAt === undefined ||
-            moment().diff(moment(i.lastMeasurement.createdAt), "hours") > 25
+            moment().diff(moment(i.lastMeasurement.createdAt), "hours") >
+              CONSTANTS.SENSEBOX_SENSOR_INACTIVITY_TIME_HOURS
           )
             isDormant = true;
 
@@ -125,7 +129,7 @@ const LiveAnalyticsContainer = () => {
   return (
     <div className="sbd-live-analytics-container sbd-dashboard-container">
       <Stack className="sbd-live-analytics-filters">
-        <Chip.Group position="center" defaultValue={"0"} defaultChecked>
+        {/* <Chip.Group position="center" defaultValue={"0"} defaultChecked>
           {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
             <Indicator
               label={
@@ -178,17 +182,46 @@ const LiveAnalyticsContainer = () => {
           ) : (
             <div>NO FILTERS</div>
           )}
-        </Chip.Group>
+        </Chip.Group> */}
         <Group position="apart" className="full-width">
+          <SegmentedControl
+            onChange={(s) => {
+              setdataView(s);
+            }}
+            defaultValue={dataView}
+            size="xs"
+            //color="dark"
+            data={[
+              {
+                value: "table-view",
+                label: (
+                  <Center>
+                    <Table size={16} />
+                    <Box ml={10}>Table View</Box>
+                  </Center>
+                ),
+              },
+              {
+                value: "box-view",
+                label: (
+                  <Center>
+                    <BoxMultiple size={16} />
+                    <Box ml={10}>Widget View</Box>
+                  </Center>
+                ),
+              },
+            ]}
+          />
           <Group>
-            <Menu
-              closeOnItemClick={false}
-              position="bottom-start"
+            <Popover
+              width={280}
+              //closeOnItemClick={false}
+              position="bottom-end"
               offset={4}
               withArrow
               shadow="lg"
             >
-              <Menu.Target>
+              <Popover.Target>
                 <Button
                   variant="default"
                   color="dark"
@@ -197,68 +230,102 @@ const LiveAnalyticsContainer = () => {
                 >
                   Filters
                 </Button>
-              </Menu.Target>
+              </Popover.Target>
 
-              <Menu.Dropdown>
-                {/* <Menu.Label>Application</Menu.Label> */}
-                <Menu.Item>
-                  <Checkbox
-                    label="Show Inactive"
+              <Popover.Dropdown>
+                <Divider
+                  my="xs"
+                  labelPosition="center"
+                  label={
+                    <>
+                      <Box ml={5}>General</Box>
+                    </>
+                  }
+                />
+                <Checkbox
+                  label="Show Inactive"
+                  size="xs"
+                  checked={sensorFilters.showInactive}
+                  onChange={(event) =>
+                    handleFilters({
+                      showInactive: event.currentTarget.checked,
+                    })
+                  }
+                />
+                <Divider
+                  my="xs"
+                  labelPosition="center"
+                  label={
+                    <>
+                      <Box ml={5}>Types</Box>
+                    </>
+                  }
+                />
+                {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
+                  <Radio.Group
+                    name="sensor-filter-types"
+                    orientation="vertical"
+                    spacing="xs"
                     size="xs"
-                    checked={sensorFilters.showInactive}
-                    onChange={(event) =>
-                      setSensorFilters({
-                        showInactive: event.currentTarget.checked,
-                      })
+                    withAsterisk
+                    value={
+                      sensorFilters.type === null ? "0" : sensorFilters.type
                     }
-                  />
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-            <SegmentedControl
-              onChange={(s) => {
-                setdataView(s);
-              }}
-              defaultValue={dataView}
-              size="xs"
-              //color="dark"
-              data={[
-                {
-                  value: "table-view",
-                  label: (
-                    <Center>
-                      <Table size={16} />
-                      <Box ml={10}>Table View</Box>
-                    </Center>
-                  ),
-                },
-                {
-                  value: "box-view",
-                  label: (
-                    <Center>
-                      <BoxMultiple size={16} />
-                      <Box ml={10}>Widget View</Box>
-                    </Center>
-                  ),
-                },
-              ]}
-            />
+                    onChange={(e) => {
+                      handleFilters({ type: e === "0" ? null : e });
+                    }}
+                  >
+                    <Indicator
+                      label={extraSenseboxInfoSensorData.length}
+                      size={16}
+                      color="gray"
+                      position="middle-end"
+                      radius="xs"
+                    >
+                      <Radio value={"0"} label={"All"} />
+                    </Indicator>
+                    {Object.keys(senseboxInfoData.extraData.sensorFilters).map(
+                      (key, i) => {
+                        const e = senseboxInfoData.extraData.sensorFilters[key];
+                        const labelText = e.sensors.reduce(
+                          (previous, current) =>
+                            `${previous}${previous === "" ? "" : "/"}${
+                              current.title
+                            }`,
+                          ""
+                        );
+                        return (
+                          <Tooltip label={labelText} key={i}>
+                            <Indicator
+                              label={e.totalAmount}
+                              size={16}
+                              color="gray"
+                              position="middle-end"
+                              radius="xs"
+                            >
+                              <Radio
+                                value={e.classifier}
+                                label={capString(
+                                  `${e.classifier} | ${labelText}`,
+                                  30
+                                )}
+                              />
+                            </Indicator>
+                          </Tooltip>
+                        );
+                      }
+                    )}
+                  </Radio.Group>
+                )}
+              </Popover.Dropdown>
+            </Popover>
+            <Button color="dark" size="xs" onClick={resetFilters}>
+              Clear
+            </Button>
           </Group>
-          <Button color="dark" size="xs" onClick={resetFilters}>
-            Clear
-          </Button>
         </Group>
       </Stack>
-      <Divider
-        my="xs"
-        /* labelPosition="center"
-        label={
-          <>
-            <TablerIconsFilter size={16} />
-            <Box ml={5}>Filters</Box>
-          </>
-        } */
-      />
+      <Divider my="xs" />
       <Text
         size="xs"
         color="dimmed"

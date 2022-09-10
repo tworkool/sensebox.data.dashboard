@@ -147,12 +147,14 @@ const DashboardPage = () => {
               color="dark"
               variant="filled"
               size="sm"
-              to="https://github.com/tworkool/sensebox.data.dashboard"
+              component="a"
+              href="https://github.com/tworkool/sensebox.data.dashboard"
+              target="_blank"
             >
               <BrandGithub />
             </ActionIcon>
           </div>
-          <div>{`© Oliver Tworkowski ${new Date().getFullYear()}`}</div>
+          <div>{`© Oliver Tworkowski 2022 - ${new Date().getFullYear()}`}</div>
         </div>
       </div>
     </div>

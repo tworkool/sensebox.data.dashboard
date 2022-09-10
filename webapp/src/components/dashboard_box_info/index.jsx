@@ -21,6 +21,7 @@ import moment from "moment";
 import { useContext } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
+import CONSTANTS from "../../utils/constants";
 
 const DashboardBoxInfo = () => {
   const senseboxInfoData = useSelector(getSenseboxInfoData);
@@ -74,7 +75,7 @@ const DashboardBoxInfo = () => {
               {moment().diff(
                 moment(senseboxInfoData.data.lastMeasurementAt),
                 "days"
-              ) > 3 ? (
+              ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
                 <Badge color="red" size="sm" radius="sm" variant="filled">
                   INACTIVE
                 </Badge>
@@ -139,7 +140,12 @@ const DashboardBoxInfo = () => {
                 </ActionIcon>
               </Tooltip>
               <Tooltip label="View Box on Opensensemap">
-                <ActionIcon size="lg">
+                <ActionIcon
+                  size="lg"
+                  component="a"
+                  href={`https://opensensemap.org/explore/${dashboardContext.selectedSenseboxId}`}
+                  target="_blank"
+                >
                   <ScreenShare size={26} />
                 </ActionIcon>
               </Tooltip>
