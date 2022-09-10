@@ -19,6 +19,7 @@ import {
   Stack,
   Radio,
   Popover,
+  TextInput,
 } from "@mantine/core";
 import "./style.scss";
 import {
@@ -45,6 +46,7 @@ const LiveAnalyticsContainer = () => {
   const [sensorFilters, setSensorFilters] = useState({
     type: null,
     showInactive: true,
+    search: "",
   });
   const [filteredSenseboxInfoSensorData, setFilteredSenseboxInfoSensorData] =
     useState(undefined);
@@ -54,17 +56,27 @@ const LiveAnalyticsContainer = () => {
   }, []);
 
   const resetFilters = useCallback(() => {
-    setSensorFilters({ type: null, showInactive: true });
+    setSensorFilters({ type: null, showInactive: true, search: "" });
   }, []);
 
   useEffect(() => {
     if (!extraSenseboxInfoSensorData) return;
     setFilteredSenseboxInfoSensorData(
       extraSenseboxInfoSensorData.filter((item) => {
-        var filterPassed = false;
-        filterPassed = !sensorFilters.type || sensorFilters.type === item.unit;
         if (!sensorFilters.showInactive && item.isDormant) return false;
-        else return filterPassed;
+        const typeFilter =
+          !sensorFilters.type || sensorFilters.type === item.unit;
+        var searchFilter;
+        if (sensorFilters.search === "") {
+          searchFilter = true;
+        } else {
+          /* searchFilter = `${item.unit} ${item.title}`.includes(
+            sensorFilters.search
+          ); */
+          const regex = new RegExp(`${sensorFilters.search}`, "i");
+          searchFilter = !!`${item.unit} ${item.title}`.match(regex);
+        }
+        return typeFilter && searchFilter;
       })
     );
   }, [sensorFilters, extraSenseboxInfoSensorData]);
@@ -193,20 +205,20 @@ const LiveAnalyticsContainer = () => {
             //color="dark"
             data={[
               {
-                value: "table-view",
-                label: (
-                  <Center>
-                    <Table size={16} />
-                    <Box ml={10}>Table View</Box>
-                  </Center>
-                ),
-              },
-              {
                 value: "box-view",
                 label: (
                   <Center>
                     <BoxMultiple size={16} />
                     <Box ml={10}>Widget View</Box>
+                  </Center>
+                ),
+              },
+              {
+                value: "table-view",
+                label: (
+                  <Center>
+                    <Table size={16} />
+                    <Box ml={10}>Table View</Box>
                   </Center>
                 ),
               },
@@ -223,17 +235,18 @@ const LiveAnalyticsContainer = () => {
             >
               <Popover.Target>
                 <Button
-                  variant="default"
+                  //variant="default"
+                  variant="subtle"
                   color="dark"
                   size="xs"
-                  leftIcon={<TablerIconsFilter size={14} />}
+                  leftIcon={<TablerIconsFilter size={18} />}
                 >
                   Filters
                 </Button>
               </Popover.Target>
 
               <Popover.Dropdown>
-                <Divider
+                {/* <Divider
                   my="xs"
                   labelPosition="center"
                   label={
@@ -241,17 +254,32 @@ const LiveAnalyticsContainer = () => {
                       <Box ml={5}>General</Box>
                     </>
                   }
-                />
-                <Checkbox
-                  label="Show Inactive"
-                  size="xs"
-                  checked={sensorFilters.showInactive}
-                  onChange={(event) =>
-                    handleFilters({
-                      showInactive: event.currentTarget.checked,
-                    })
-                  }
-                />
+                /> */}
+                <Stack spacing="xs">
+                  <TextInput
+                    placeholder="Search"
+                    radius="xs"
+                    variant="filled"
+                    size="sm"
+                    withAsterisk
+                    value={sensorFilters.search}
+                    onChange={(event) => {
+                      handleFilters({
+                        search: event.currentTarget.value,
+                      });
+                    }}
+                  />
+                  <Checkbox
+                    label="Show Inactive"
+                    size="xs"
+                    checked={sensorFilters.showInactive}
+                    onChange={(event) =>
+                      handleFilters({
+                        showInactive: event.currentTarget.checked,
+                      })
+                    }
+                  />
+                </Stack>
                 <Divider
                   my="xs"
                   labelPosition="center"
@@ -319,8 +347,13 @@ const LiveAnalyticsContainer = () => {
                 )}
               </Popover.Dropdown>
             </Popover>
-            <Button color="dark" size="xs" onClick={resetFilters}>
-              Clear
+            <Button
+              variant="outline"
+              color="dark"
+              size="xs"
+              onClick={resetFilters}
+            >
+              Clear Filters
             </Button>
           </Group>
         </Group>

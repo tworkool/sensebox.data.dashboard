@@ -102,13 +102,14 @@ const DashboardPage = () => {
                 Live Data
               </Tabs.Tab>
               <Tabs.Tab
+                disabled
                 value="detailed-data"
                 icon={<DeviceDesktopAnalytics size={16} />}
               >
                 Detailed Data
               </Tabs.Tab>
               <Tabs.Tab
-                disabled={false}
+                disabled
                 value="data-map"
                 icon={<MapSearch size={16} />}
               >
