@@ -33,14 +33,14 @@ const _fetchMock = (mockData, status, delay): Promise<MockResponse> => {
 }
 
 const _fetch = (url, mockData: Object | undefined = undefined, status: Object = { text: "MOCK DATA NO ERRORS", code: 200 }, delay = 2000, logging = true) => {
-    if (mockData === undefined) {
-        if (logging)
-            console.log("Fetching by URL...", url);
-        return fetch(url);
-    } else {
+    if (ENVIRONMENT.MOCK_API_DATA === true && mockData !== undefined) {
         if (logging)
             console.log("Fetching Mock Data", mockData);
         return _fetchMock(mockData, status, delay);
+    } else {
+        if (logging)
+            console.log("Fetching by URL...", url);
+        return fetch(url);
     }
 }
 
@@ -63,7 +63,6 @@ const BACKEND = {
     fetchSenseboxInfo: (id: string) => {
         var url = `https://api.opensensemap.org/boxes/${id}`;
         return _fetch(url, MOCK_DATA.senseboxInfoDataInactiveActiveSensors);
-        //return _fetch(url);
     },
 
     fetchSenseboxes: () => {
@@ -74,7 +73,6 @@ const BACKEND = {
     fetchSenseboxDBMiscData: () => {
         var url = "https://api.opensensemap.org/stats?human=true";
         return _fetch(url, MOCK_DATA.DBMiscData);
-        //return _fetch(url);
     },
 
 };
