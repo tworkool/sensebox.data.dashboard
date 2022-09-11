@@ -42,10 +42,16 @@ const LiveAnalyticsContainer = () => {
   const [extraSenseboxInfoSensorData, setExtraSenseboxInfoSensorData] =
     useState(undefined);
   const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const sensorFilterDefaultValues = useMemo(
+    () => ({
+      type: null,
+      showInactive: true,
+      search: "",
+    }),
+    []
+  );
   const [sensorFilters, setSensorFilters] = useState({
-    type: null,
-    showInactive: true,
-    search: "",
+    ...sensorFilterDefaultValues,
   });
   const [filteredSenseboxInfoSensorData, setFilteredSenseboxInfoSensorData] =
     useState(undefined);
@@ -76,9 +82,23 @@ const LiveAnalyticsContainer = () => {
     setSensorFilters((old) => ({ ...old, ...actionPayload }));
   }, []);
 
-  const resetFilters = useCallback(() => {
-    setSensorFilters({ type: null, showInactive: true, search: "" });
-  }, []);
+  const resetFilters = useCallback(
+    (e, filterKey = undefined) => {
+      console.log(filterKey, e);
+      if (filterKey !== undefined) {
+        if (!Object.keys(sensorFilterDefaultValues).includes(filterKey)) {
+          throw new Error("filterKey not part of default values");
+        }
+        setSensorFilters((old) => ({
+          ...old,
+          [filterKey]: sensorFilterDefaultValues[filterKey],
+        }));
+      } else {
+        setSensorFilters({ ...sensorFilterDefaultValues });
+      }
+    },
+    [sensorFilterDefaultValues]
+  );
 
   useEffect(() => {
     if (!extraSenseboxInfoSensorData) return;
@@ -91,11 +111,9 @@ const LiveAnalyticsContainer = () => {
         if (sensorFilters.search === "") {
           searchFilter = true;
         } else {
-          /* searchFilter = `${item.unit} ${item.title}`.includes(
-            sensorFilters.search
-          ); */
           const regex = new RegExp(`${sensorFilters.search}`, "i");
-          searchFilter = !!`${item.unit} ${item.title}`.match(regex);
+          searchFilter =
+            !!`${item.unit} ${item.title} ${item.sensorType}`.match(regex);
         }
         return typeFilter && searchFilter;
       })
@@ -192,17 +210,20 @@ const LiveAnalyticsContainer = () => {
             ]}
           />
           <Group spacing="xs">
-            {sensorFilters.search !== "" &&
+            {sensorFilters.search !== sensorFilterDefaultValues.search &&
               filterSelection(`Search: ${sensorFilters.search}`, () => {
-                handleFilters({ search: "" });
+                //handleFilters({ search: sensorFilterDefaultValues.search });
+                resetFilters(null, "search");
               })}
-            {sensorFilters.type !== null &&
+            {sensorFilters.type !== sensorFilterDefaultValues.type &&
               filterSelection(`Type: ${sensorFilters.type}`, () => {
-                handleFilters({ type: null });
+                //handleFilters({ type: sensorFilterDefaultValues.type });
+                resetFilters(null, "type");
               })}
-            {!sensorFilters.showInactive &&
+            {sensorFilters.showInactive !==
+              sensorFilterDefaultValues.showInactive &&
               filterSelection("Only Show Active", () => {
-                handleFilters({ showInactive: true });
+                resetFilters(null, "showInactive");
               })}
           </Group>
           <Group>
@@ -278,10 +299,14 @@ const LiveAnalyticsContainer = () => {
                     size="xs"
                     withAsterisk
                     value={
-                      sensorFilters.type === null ? "0" : sensorFilters.type
+                      sensorFilters.type === sensorFilterDefaultValues.type
+                        ? "0"
+                        : sensorFilters.type
                     }
                     onChange={(e) => {
-                      handleFilters({ type: e === "0" ? null : e });
+                      handleFilters({
+                        type: e === "0" ? sensorFilterDefaultValues.type : e,
+                      });
                     }}
                   >
                     <Indicator
