@@ -1,9 +1,7 @@
 import React, { useCallback } from "react";
 import {
-  Card,
   Text,
   Group,
-  Chip,
   Center,
   SegmentedControl,
   Indicator,
@@ -13,7 +11,6 @@ import {
   Box,
   Badge,
   Tooltip,
-  Menu,
   Button,
   Space,
   Stack,
@@ -23,7 +20,6 @@ import {
 } from "@mantine/core";
 import "./style.scss";
 import {
-  AccessPoint,
   BoxMultiple,
   Filter as TablerIconsFilter,
   Table,
@@ -133,7 +129,7 @@ const LiveAnalyticsContainer = () => {
   if (!filteredSenseboxInfoSensorData) {
     return (
       <div className="sbd-live-analytics-container sbd-dashboard-container">
-        <NoDataContainer />
+        <NoDataContainer text="To display live analytics for a specific Sensebox, you first need to select a Sensebox. You can do so by searching for a Sensebox in the header, or selecting one from your bookmarks!" />
       </div>
     );
   }
@@ -259,7 +255,7 @@ const LiveAnalyticsContainer = () => {
                   <TextInput
                     placeholder="Search"
                     radius="xs"
-                    variant="filled"
+                    //variant="filled"
                     size="sm"
                     withAsterisk
                     value={sensorFilters.search}

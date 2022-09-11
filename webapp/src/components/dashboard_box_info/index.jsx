@@ -22,6 +22,9 @@ import { useContext } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 import CONSTANTS from "../../utils/constants";
+import { useLocalStorage } from "@mantine/hooks";
+import { useCallback } from "react";
+import { showNotification } from "@mantine/notifications";
 
 const DashboardBoxInfo = () => {
   const senseboxInfoData = useSelector(getSenseboxInfoData);
@@ -37,6 +40,45 @@ const DashboardBoxInfo = () => {
     } ago`;
   }, [senseboxInfoData]);
   const [isLoadingMap, setIsLoadingMap] = useState(true);
+  const [bookmarkedBoxes, setBookmarkedBoxes] = useLocalStorage({
+    key: "bookmarked-senseboxes",
+    defaultValue: [],
+  });
+
+  const isBookmarked = useMemo(
+    () =>
+      senseboxInfoData?.data?._id &&
+      bookmarkedBoxes.filter((x) => x._id === senseboxInfoData.data._id)
+        .length > 0,
+    [bookmarkedBoxes, senseboxInfoData]
+  );
+
+  const handleBookmarkSaveAction = useCallback(
+    (e) => {
+      const old = [...bookmarkedBoxes];
+      if (old.length >= CONSTANTS.MAX_BOOKMARKED_BOXES) {
+        showNotification({
+          id: "max_sensebox_limit_notification",
+          title: "MAX LIMIT",
+          message: `Sensebox bookmark limit: ${CONSTANTS.MAX_BOOKMARKED_BOXES}`,
+          color: "orange",
+        });
+        return;
+      }
+      if (old.filter((x) => x._id === e._id).length > 0) {
+        // remove
+        console.log("remove");
+        const indexOfRemovableElement = old.indexOf(e);
+        old.splice(indexOfRemovableElement, 1);
+        setBookmarkedBoxes(old);
+      } else {
+        // add
+        console.log("add");
+        setBookmarkedBoxes([...old, ...[e]]);
+      }
+    },
+    [setBookmarkedBoxes, bookmarkedBoxes]
+  );
 
   return (
     <div className="sbd-dashboard-content__box-info">
@@ -45,10 +87,7 @@ const DashboardBoxInfo = () => {
         overlayBlur={2}
       />
       {!senseboxInfoData.data && (
-        <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
-          Something terrible happened! You made a mistake and there is no going
-          back, your data was lost forever!
-        </Alert>
+        <Alert icon={<AlertCircle size={16} />} title="No Sensebox Selected" color="orange"/>
       )}
       {senseboxInfoData.data && (
         <>
@@ -115,7 +154,7 @@ const DashboardBoxInfo = () => {
               <Text size="sm">Berlin, Germany</Text>
             </Group>
           </Skeleton>
-          <Divider my="sm" label="Images" labelPosition="center" />
+          {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
           {/* <Skeleton visible={false}>
             <Image
               //className="sbd-home-page-preview-image"
@@ -134,9 +173,25 @@ const DashboardBoxInfo = () => {
               style={{ marginTop: "auto" }}
             />
             <Group spacing="xs">
-              <Tooltip label="Add to Bookmarks">
-                <ActionIcon size="lg">
-                  <Bookmark color="orange" size={26} />
+              <Tooltip
+                label={
+                  isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"
+                }
+              >
+                <ActionIcon
+                  size="lg"
+                  variant={isBookmarked ? "light" : "transparent"}
+                  color={isBookmarked ? "orange" : "gray"}
+                  onClick={(_) => {
+                    handleBookmarkSaveAction({
+                      name: senseboxInfoData.data.name,
+                      _id: senseboxInfoData.data._id,
+                    });
+                  }}
+                >
+                  <Bookmark
+                    size={26}
+                  />
                 </ActionIcon>
               </Tooltip>
               <Tooltip label="View Box on Opensensemap">

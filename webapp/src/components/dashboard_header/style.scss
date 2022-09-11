@@ -1,6 +1,12 @@
 @import "./dimensions";
 @import "../../utils/colors";
 
+.sbd-search-grid {
+    grid-template-columns: auto min-content;
+    display: grid;
+    gap: 8px;
+}
+
 .sbd-dashboard-header {
     height: $dashboard-header-height;
     padding: 0 20px;

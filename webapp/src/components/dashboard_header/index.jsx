@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
-  Avatar,
   Box,
   Button,
   Center,
   Divider,
+  Grid,
   Group,
   Highlight,
+  Indicator,
   Kbd,
   LoadingOverlay,
   Modal,
   Stack,
   Text,
   TextInput,
+  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import { Bookmark, Search } from "tabler-icons-react";
@@ -24,6 +26,10 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import NoDataContainer from "../../containers/no_data";
+import IdenticonAvatar from "../identicon_avatar";
+import { useHotkeys, useLocalStorage } from "@mantine/hooks";
+import { DashboardContext } from "../../pages/dashboard";
+import CONSTANTS from "../../utils/constants";
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -33,11 +39,29 @@ const DashboardHeader = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
   const [searchHighlightContent, setSearchHighlightContent] = useState("");
+  const [bookmarkedBoxes] = useLocalStorage({
+    key: "bookmarked-senseboxes",
+    defaultValue: [],
+  });
+  const dashboardContext = useContext(DashboardContext);
+  useHotkeys([["mod+K", () => setOpened(true)]]);
+  const [searchError, setSearchError] = useState(null);
 
   const handleSearchExecution = useCallback(() => {
+    if (searchContent === "") {
+      setSearchError("cannot be empty");
+      return;
+    }
+    if (searchContent.length < CONSTANTS.MIN_SENSEBOX_SEARCH_CHARACTERS) {
+      setSearchError(
+        `please type in at least ${CONSTANTS.MIN_SENSEBOX_SEARCH_CHARACTERS} characters`
+      );
+      return;
+    }
     dispatch(requestSenseboxesDataFetch({ name: searchContent }));
     setIsLoading(true);
     setSearchHighlightContent(searchContent);
+    setSearchError(null);
   }, [dispatch, searchContent]);
 
   useEffect(() => {
@@ -45,28 +69,24 @@ const DashboardHeader = () => {
     setIsLoading(false);
   }, [senseboxesData]);
 
+  const handleSenseboxSelect = useCallback(
+    (id) => {
+      navigate(`../dashboard/${id}`, { replace: true });
+      setOpened(false);
+    },
+    [navigate]
+  );
+
   return (
     <div className="sbd-dashboard-header">
       <div className="sbd-dashboard-header__content">
         <div className="sbd-dashboard-header__favorites">
-          <Avatar.Group spacing="sm">
-            <Avatar src={null} radius="xl" />
-            <Avatar src={null} radius="xl" />
-            <Avatar src={null} radius="xl" />
-            <Avatar radius="xl">+5</Avatar>
-          </Avatar.Group>
-          {/* <Indicator
-            inline
-            size={16}
-            offset={7}
-            position="bottom-end"
-            color="green"
-            withBorder
-          >
-            <Avatar src={null} radius="xl" />
-          </Indicator> */}
+          <Indicator size={16} position="middle-end" color="green" withBorder>
+            <IdenticonAvatar id={dashboardContext.selectedSenseboxId} />
+          </Indicator>
         </div>
         <TextInput
+          variant="filled"
           onClick={() => {
             setOpened(true);
           }}
@@ -83,23 +103,24 @@ const DashboardHeader = () => {
           styles={{ rightSection: { pointerEvents: "none" } }}
         />
         <Modal
+          size={"lg"}
           opened={opened}
           onClose={() => setOpened(false)}
           title="Search Sensebox"
         >
-          <Group spacing="xs" grow>
+          <div className="sbd-search-grid">
             <TextInput
+              autoFocus={true}
               defaultValue={searchContent}
               placeholder="Find a SenseBox"
               icon={<Search size={16} />}
               onChange={(e) => {
                 setSearchContent(e.target.value);
               }}
+              error={searchError}
             />
-            <div>
-              <Button onClick={handleSearchExecution}>Search</Button>
-            </div>
-          </Group>
+            <Button onClick={handleSearchExecution}>Search</Button>
+          </div>
 
           <Divider
             my="xs"
@@ -115,7 +136,8 @@ const DashboardHeader = () => {
           <div>
             <LoadingOverlay visible={isLoading} overlayBlur={2} />
 
-            {senseboxesData.data === undefined ? (
+            {senseboxesData?.data === undefined ||
+            senseboxesData?.data?.length === 0 ? (
               <Center style={{ height: 200 }}>
                 <NoDataContainer />
               </Center>
@@ -123,14 +145,16 @@ const DashboardHeader = () => {
               senseboxesData.data.map((e, i) => (
                 <UnstyledButton
                   onClick={() => {
-                    navigate(`../dashboard/${e._id}`, { replace: true });
-                    setOpened(false);
+                    /* navigate(`../dashboard/${e._id}`, { replace: true });
+                    setOpened(false); */
+                    handleSenseboxSelect(e._id);
                   }}
                   key={i}
                   className="sbd-dashboard-header-search-result"
                 >
                   <Group>
-                    <Avatar src={null} radius="xl" />
+                    {/* <Avatar src={null} radius="xl" /> */}
+                    <IdenticonAvatar id={e._id} />
                     <Stack
                       spacing="xs"
                       className="sbd-dashboard-header-search-result__info"
@@ -162,10 +186,44 @@ const DashboardHeader = () => {
               </>
             }
           />
-          <Group>
-            <Avatar src={null} radius="xl" />
-            <Avatar src={null} radius="xl" />
-            <Avatar src={null} radius="xl" />
+          <Group position="center">
+            {bookmarkedBoxes.length === 0 && (
+              <Group position="center" grow>
+                <Text size="sm" color="dimmed">
+                  No Bookmarked Boxes yet!
+                </Text>
+              </Group>
+            )}
+            {bookmarkedBoxes.map((e, i) => {
+              return (
+                <Tooltip
+                  key={i}
+                  label={e.name}
+                  color="dark"
+                  position="bottom"
+                  withArrow
+                >
+                  <UnstyledButton
+                    onClick={(_) => {
+                      handleSenseboxSelect(e._id);
+                    }}
+                  >
+                    {e._id === dashboardContext.selectedSenseboxId ? (
+                      <Indicator
+                        size={16}
+                        position="middle-end"
+                        color="green"
+                        withBorder
+                      >
+                        <IdenticonAvatar id={e._id} />
+                      </Indicator>
+                    ) : (
+                      <IdenticonAvatar id={e._id} />
+                    )}
+                  </UnstyledButton>
+                </Tooltip>
+              );
+            })}
           </Group>
         </Modal>
       </div>

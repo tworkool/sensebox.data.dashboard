@@ -83,12 +83,6 @@ function* fetchSenseboxesData(action) {
           senseboxesData: { data: data, isLoading: false },
         })
       );
-      showNotification({
-        id: "fetch_senseboxes_data_notification",
-        title: "FETCH SUCCESS",
-        message: "FETCH SUCCESS",
-        color: "green",
-      });
     } else {
       throw response;
     }
@@ -146,12 +140,6 @@ function* fetchSenseboxInfoData(action) {
           },
         })
       );
-      showNotification({
-        id: "fetch_senseboxinfo_data_notification",
-        title: "FETCH SUCCESS",
-        message: "FETCH SUCCESS",
-        color: "green",
-      });
     } else {
       throw response;
     }
@@ -189,12 +177,6 @@ function* fetchSenseboxDBMiscData(action) {
           senseboxDBMiscData: { data: data },
         })
       );
-      showNotification({
-        id: "fetch_sensebox_db_misc_data_notification",
-        title: "FETCH SUCCESS",
-        message: "FETCH SUCCESS",
-        color: "green",
-      });
       /* completeSagaAction(true, succeedSenseboxDBMiscDataFetch, {
         senseboxDBMiscData: { data: data },
       }); */
