@@ -56,15 +56,6 @@ const DashboardBoxInfo = () => {
   const handleBookmarkSaveAction = useCallback(
     (e) => {
       const old = [...bookmarkedBoxes];
-      if (old.length >= CONSTANTS.MAX_BOOKMARKED_BOXES) {
-        showNotification({
-          id: "max_sensebox_limit_notification",
-          title: "MAX LIMIT",
-          message: `Sensebox bookmark limit: ${CONSTANTS.MAX_BOOKMARKED_BOXES}`,
-          color: "orange",
-        });
-        return;
-      }
       if (old.filter((x) => x._id === e._id).length > 0) {
         // remove
         console.log("remove");
@@ -72,6 +63,15 @@ const DashboardBoxInfo = () => {
         old.splice(indexOfRemovableElement, 1);
         setBookmarkedBoxes(old);
       } else {
+        if (old.length >= CONSTANTS.MAX_BOOKMARKED_BOXES) {
+          showNotification({
+            id: "max_sensebox_limit_notification",
+            title: "MAX LIMIT",
+            message: `Sensebox bookmark limit: ${CONSTANTS.MAX_BOOKMARKED_BOXES}`,
+            color: "orange",
+          });
+          return;
+        }
         // add
         console.log("add");
         setBookmarkedBoxes([...old, ...[e]]);
@@ -87,7 +87,11 @@ const DashboardBoxInfo = () => {
         overlayBlur={2}
       />
       {!senseboxInfoData.data && (
-        <Alert icon={<AlertCircle size={16} />} title="No Sensebox Selected" color="orange"/>
+        <Alert
+          icon={<AlertCircle size={16} />}
+          title="No Sensebox Selected"
+          color="orange"
+        />
       )}
       {senseboxInfoData.data && (
         <>
@@ -189,9 +193,7 @@ const DashboardBoxInfo = () => {
                     });
                   }}
                 >
-                  <Bookmark
-                    size={26}
-                  />
+                  <Bookmark size={26} />
                 </ActionIcon>
               </Tooltip>
               <Tooltip label="View Box on Opensensemap">
