@@ -17,11 +17,13 @@ import {
   Radio,
   Popover,
   TextInput,
+  ActionIcon,
 } from "@mantine/core";
 import "./style.scss";
 import {
   BoxMultiple,
   Filter as TablerIconsFilter,
+  X as IconX,
   Table,
 } from "tabler-icons-react";
 import { useState } from "react";
@@ -33,6 +35,7 @@ import AnalyticsBoxWidget from "../../components/analytics_box_widget";
 import NoDataContainer from "../no_data";
 import { capString } from "../../utils/helpers";
 import CONSTANTS from "../../utils/constants";
+import { useMemo } from "react";
 
 const LiveAnalyticsContainer = () => {
   const [dataView, setdataView] = useState("box-view");
@@ -46,6 +49,28 @@ const LiveAnalyticsContainer = () => {
   });
   const [filteredSenseboxInfoSensorData, setFilteredSenseboxInfoSensorData] =
     useState(undefined);
+
+  const filterSelection = (text, handleOnClick) => (
+    <Badge
+      color="dark"
+      radius="sm"
+      variant="filled"
+      sx={{ paddingRight: 3 }}
+      rightSection={
+        <ActionIcon
+          size="xs"
+          color="blue"
+          radius="xl"
+          variant="transparent"
+          onClick={handleOnClick}
+        >
+          <IconX size={14} color="white" strokeWidth={3} />
+        </ActionIcon>
+      }
+    >
+      {text}
+    </Badge>
+  );
 
   const handleFilters = useCallback((actionPayload) => {
     setSensorFilters((old) => ({ ...old, ...actionPayload }));
@@ -137,60 +162,6 @@ const LiveAnalyticsContainer = () => {
   return (
     <div className="sbd-live-analytics-container sbd-dashboard-container">
       <Stack className="sbd-live-analytics-filters">
-        {/* <Chip.Group position="center" defaultValue={"0"} defaultChecked>
-          {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
-            <Indicator
-              label={
-                Object.keys(senseboxInfoData.extraData.sensorFilters).length
-              }
-              size={16}
-              color="black"
-            >
-              <Chip
-                value={`${0}`}
-                color="dark"
-                size="xs"
-                radius="sm"
-                onClick={(_) => {
-                  handleFilters({ type: null });
-                }}
-              >
-                All
-              </Chip>
-            </Indicator>
-          )}
-          {senseboxInfoData?.extraData?.sensorFilters !== undefined ? (
-            Object.keys(senseboxInfoData.extraData.sensorFilters).map(
-              (key, i) => {
-                const e = senseboxInfoData.extraData.sensorFilters[key];
-                const labelText = e.sensors.reduce(
-                  (previous, current) =>
-                    `${previous}${previous === "" ? "" : "/"}${current.title}`,
-                  ""
-                );
-                return (
-                  <Tooltip label={labelText} key={i}>
-                    <Indicator label={e.totalAmount} size={16} color="black">
-                      <Chip
-                        value={`${i + 1}`}
-                        color="dark"
-                        size="xs"
-                        radius="sm"
-                        onClick={(_) => {
-                          handleFilters({ type: e.classifier });
-                        }}
-                      >
-                        {`${e.classifier} | ${capString(labelText, 12)}`}
-                      </Chip>
-                    </Indicator>
-                  </Tooltip>
-                );
-              }
-            )
-          ) : (
-            <div>NO FILTERS</div>
-          )}
-        </Chip.Group> */}
         <Group position="apart" className="full-width">
           <SegmentedControl
             onChange={(s) => {
@@ -220,6 +191,20 @@ const LiveAnalyticsContainer = () => {
               },
             ]}
           />
+          <Group spacing="xs">
+            {sensorFilters.search !== "" &&
+              filterSelection(`Search: ${sensorFilters.search}`, () => {
+                handleFilters({ search: "" });
+              })}
+            {sensorFilters.type !== null &&
+              filterSelection(`Type: ${sensorFilters.type}`, () => {
+                handleFilters({ type: null });
+              })}
+            {!sensorFilters.showInactive &&
+              filterSelection("Only Show Active", () => {
+                handleFilters({ showInactive: true });
+              })}
+          </Group>
           <Group>
             <Popover
               width={280}
