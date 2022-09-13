@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, select, takeLatest } from "redux-saga/effects";
 import {
   failWeatherDataFetch,
   succeedSenseboxesDataFetch,
@@ -19,6 +19,7 @@ import BACKEND from "./api/backend";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import moment from "moment";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
+import { getSenseboxInfoData } from "../selectors/appState";
 
 function* completeSagaAction(success, action, actionValue) {
   yield put(action({ ...actionValue }));
@@ -103,6 +104,18 @@ function* fetchSenseboxesData(action) {
 
 function* fetchSenseboxInfoData(action) {
   try {
+    if (!action?.payload?.id) {
+      const previousData = yield select(getSenseboxInfoData);
+      console.log(previousData);
+      const lastValidSenseboxID = previousData?.["validBoxId"];
+      console.log(lastValidSenseboxID);
+      if (!lastValidSenseboxID) {
+        throw new Error(
+          "Could not find fallback value for last valid Sensebox ID"
+        );
+      }
+      action.payload.id = lastValidSenseboxID;
+    }
     const response = yield call(BACKEND.fetchSenseboxInfo, action.payload.id);
     if (response.status >= 200 && response.status < 300) {
       const data = yield response.json();

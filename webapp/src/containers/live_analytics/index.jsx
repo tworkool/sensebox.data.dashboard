@@ -19,25 +19,40 @@ import {
   TextInput,
   ActionIcon,
 } from "@mantine/core";
+import { useInterval } from "@mantine/hooks";
 import "./style.scss";
 import {
   BoxMultiple,
   Filter as TablerIconsFilter,
   X as IconX,
   Table,
+  AccessPoint,
 } from "tabler-icons-react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxInfoData } from "../../redux/selectors/appState";
 import moment from "moment";
 import { useEffect } from "react";
 import AnalyticsBoxWidget from "../../components/analytics_box_widget";
 import NoDataContainer from "../no_data";
-import { capString } from "../../utils/helpers";
+import { capString, getMinuteFormattedString } from "../../utils/helpers";
 import CONSTANTS from "../../utils/constants";
+import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
 import { useMemo } from "react";
+import { useContext } from "react";
+import { DashboardContext } from "../../pages/dashboard";
 
 const LiveAnalyticsContainer = () => {
+  const dispatch = useDispatch();
+  const dashboardContext = useContext(DashboardContext);
+  const [seconds, setSeconds] = useState(0);
+  const interval = useInterval(
+    () => setSeconds((s) => s + CONSTANTS.LIVE_ANALYTICS_INTERVAL_STEPS),
+    CONSTANTS.LIVE_ANALYTICS_INTERVAL_STEPS * 1000
+  );
+  const [dispatchInterval, setDispatchInterval] = useState(
+    CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
+  );
   const [dataView, setdataView] = useState("box-view");
   const [extraSenseboxInfoSensorData, setExtraSenseboxInfoSensorData] =
     useState(undefined);
@@ -55,6 +70,37 @@ const LiveAnalyticsContainer = () => {
   });
   const [filteredSenseboxInfoSensorData, setFilteredSenseboxInfoSensorData] =
     useState(undefined);
+
+  const getLiveUpdateTime = useCallback(
+    (secondsAgo) => {
+      if (secondsAgo === null) {
+        return null;
+      } else {
+        return secondsAgo + seconds;
+      }
+    },
+    [seconds]
+  );
+
+  useEffect(() => {
+    const sensors = senseboxInfoData.data?.sensors;
+    if (sensors && sensors.length != 0) {
+      interval.start();
+    } else {
+      interval.stop();
+    }
+    // stop interval timer on dismount
+    return interval.stop;
+  }, [interval, senseboxInfoData]);
+
+  useEffect(() => {
+    // TODO: ADJUST SECONDS THIS WITH BOX PROPERTY: UPDATED_AT
+    if (seconds > dispatchInterval) {
+      console.log("REFETCHING SENSEBOX DATA");
+      setSeconds(0);
+      dispatch(requestSenseboxInfoDataFetch({ id: undefined }));
+    }
+  }, [dispatch, dispatchInterval, seconds]);
 
   const filterSelection = (text, handleOnClick) => (
     <Badge
@@ -84,7 +130,6 @@ const LiveAnalyticsContainer = () => {
 
   const resetFilters = useCallback(
     (e, filterKey = undefined) => {
-      console.log(filterKey, e);
       if (filterKey !== undefined) {
         if (!Object.keys(sensorFilterDefaultValues).includes(filterKey)) {
           throw new Error("filterKey not part of default values");
@@ -125,51 +170,70 @@ const LiveAnalyticsContainer = () => {
     const sensors = senseboxInfoData.data?.sensors;
     if (sensors && sensors.length != 0) {
       // reset filters
+      setSeconds(0);
       resetFilters();
-      setExtraSenseboxInfoSensorData(
-        sensors.reduce((p, i) => {
-          var isDormant = false;
-          if (i.lastMeasurement?.value === undefined) isDormant = true;
+      // TODO: DO THIS WITH BOX PROPERTY: UPDATED_AT
+      var newMinDispatchInterval = CONSTANTS.MAX_LIVE_UPDATE_DISPATCH_INTERVAL;
+      var sensorsUpdateFrequently = false;
+      const newExtraSensorInfo = sensors.reduce((p, i) => {
+        var isDormant = false;
+        if (i.lastMeasurement?.value === undefined) isDormant = true;
 
+        if (
+          i.lastMeasurement?.createdAt === undefined ||
+          moment().diff(moment(i.lastMeasurement.createdAt), "hours") >
+            CONSTANTS.SENSEBOX_SENSOR_INACTIVITY_TIME_HOURS
+        )
+          isDormant = true;
+
+        var lastMeasurementTime = null;
+        var lastMeasurementValue = CONSTANTS.DEFAULT_NULL_FALLBACK_VALUE;
+        if (!isDormant) {
+          lastMeasurementTime = moment().diff(
+            moment(i.lastMeasurement.createdAt),
+            "seconds"
+          );
+          lastMeasurementValue = i.lastMeasurement.value;
           if (
-            i.lastMeasurement?.createdAt === undefined ||
-            moment().diff(moment(i.lastMeasurement.createdAt), "hours") >
-              CONSTANTS.SENSEBOX_SENSOR_INACTIVITY_TIME_HOURS
-          )
-            isDormant = true;
-
-          var lastMeasurementTime = "-";
-          var lastMeasurementValue = "-";
-          if (!isDormant) {
-            const lastMeasurementTimeMinutes = moment().diff(
-              moment(i.lastMeasurement.createdAt),
-              "minutes"
-            );
-            lastMeasurementTime =
-              lastMeasurementTimeMinutes == 0
-                ? "less than 1 minute"
-                : `${lastMeasurementTimeMinutes} minute(s) ago`;
-            lastMeasurementValue = i.lastMeasurement.value;
+            lastMeasurementTime < CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
+          ) {
+            // check if updates should be done more frequently
+            sensorsUpdateFrequently = true;
           }
-          return [
-            ...p,
-            {
-              isDormant,
-              lastMeasurementTime,
-              lastMeasurementValue,
-              title: i.title,
-              unit: i.unit,
-              _id: i._id,
-              sensorType: i.sensorType,
-              icon: i.icon,
-            },
-          ];
-        }, [])
+          if (
+            lastMeasurementTime > CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL &&
+            lastMeasurementTime < newMinDispatchInterval
+          ) {
+            // check if minDispatchTime should be updated
+            newMinDispatchInterval = lastMeasurementTime;
+          }
+        }
+        return [
+          ...p,
+          {
+            isDormant,
+            lastMeasurementTime,
+            lastMeasurementValue,
+            title: i.title,
+            unit: i.unit,
+            _id: i._id,
+            sensorType: i.sensorType,
+            icon: i.icon,
+          },
+        ];
+      }, []);
+      setExtraSenseboxInfoSensorData(newExtraSensorInfo);
+      setDispatchInterval(
+        sensorsUpdateFrequently
+          ? CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
+          : newMinDispatchInterval
       );
+    } else {
+      setExtraSenseboxInfoSensorData(undefined);
     }
   }, [senseboxInfoData, resetFilters]);
 
-  if (!filteredSenseboxInfoSensorData) {
+  if (!extraSenseboxInfoSensorData || !filteredSenseboxInfoSensorData) {
     return (
       <div className="sbd-live-analytics-container sbd-dashboard-container">
         <NoDataContainer text="To display live analytics for a specific Sensebox, you first need to select a Sensebox. You can do so by searching for a Sensebox in the header, or selecting one from your bookmarks!" />
@@ -374,7 +438,11 @@ const LiveAnalyticsContainer = () => {
       {"box-view" === dataView && (
         <div className="sbd-live-analytics-content__box-view">
           {filteredSenseboxInfoSensorData.map((e, i) => (
-            <AnalyticsBoxWidget key={i} sensorData={e} />
+            <AnalyticsBoxWidget
+              key={i}
+              sensorData={e}
+              liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
+            />
           ))}
         </div>
       )}
@@ -413,7 +481,20 @@ const LiveAnalyticsContainer = () => {
                   <td>{e.sensorType}</td>
                   <td>{e.lastMeasurementValue}</td>
                   <td>{e.unit}</td>
-                  <td>{e.lastMeasurementTime}</td>
+                  <td>
+                    <Group spacing="xs">
+                      <Text size="xs" weight={600} color="red">
+                        {getMinuteFormattedString(
+                          getLiveUpdateTime(e.lastMeasurementTime)
+                        )}
+                      </Text>
+                      <AccessPoint
+                        size={18}
+                        strokeWidth={2}
+                        color={"#E20808"}
+                      />
+                    </Group>
+                  </td>
                 </tr>
               ))}
             </tbody>
