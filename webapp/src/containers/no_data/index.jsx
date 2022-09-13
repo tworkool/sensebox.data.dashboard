@@ -14,7 +14,9 @@ const NoDataContainer = (props) => {
               No Results
             </Text>
           </Group>
-          <Text align="center" size="sm" color={"#5c5c5c"}>{props.text}</Text>
+          {props.children}
+          {props.text && <Text align="center" size="sm" color={"#5c5c5c"}>{props.text}</Text>}
+          {props.actionButton}
         </Stack>
       </Center>
     </div>

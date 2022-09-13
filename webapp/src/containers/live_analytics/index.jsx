@@ -18,6 +18,7 @@ import {
   Popover,
   TextInput,
   ActionIcon,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
 import "./style.scss";
@@ -27,24 +28,30 @@ import {
   X as IconX,
   Table,
   AccessPoint,
+  Refresh,
 } from "tabler-icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSenseboxInfoData } from "../../redux/selectors/appState";
+import {
+  getSenseboxInfoData,
+  getSenseboxSensorData,
+} from "../../redux/selectors/appState";
 import moment from "moment";
 import { useEffect } from "react";
 import AnalyticsBoxWidget from "../../components/analytics_box_widget";
 import NoDataContainer from "../no_data";
 import { capString, getMinuteFormattedString } from "../../utils/helpers";
 import CONSTANTS from "../../utils/constants";
-import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
+import {
+  requestSenseboxInfoDataFetch,
+  requestSenseboxSensorDataFetch,
+} from "../../redux/actions/app_state";
 import { useMemo } from "react";
-import { useContext } from "react";
-import { DashboardContext } from "../../pages/dashboard";
+import LiveAnalyticsItem from "../../components/live_analytics_item";
 
 const LiveAnalyticsContainer = () => {
   const dispatch = useDispatch();
-  const dashboardContext = useContext(DashboardContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const interval = useInterval(
     () => setSeconds((s) => s + CONSTANTS.LIVE_ANALYTICS_INTERVAL_STEPS),
@@ -54,9 +61,8 @@ const LiveAnalyticsContainer = () => {
     CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
   );
   const [dataView, setdataView] = useState("box-view");
-  const [extraSenseboxInfoSensorData, setExtraSenseboxInfoSensorData] =
-    useState(undefined);
-  const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const senseboxInfoData = useSelector(getSenseboxSensorData);
+  const senseboxMainInfoData = useSelector(getSenseboxInfoData);
   const sensorFilterDefaultValues = useMemo(
     () => ({
       type: null,
@@ -82,8 +88,14 @@ const LiveAnalyticsContainer = () => {
     [seconds]
   );
 
+  const refetchSensorData = useCallback(() => {
+    console.log("REFETCHING SENSEBOX DATA");
+    setIsLoading(true);
+    dispatch(requestSenseboxSensorDataFetch({ senseboxID: undefined }));
+  }, [dispatch]);
+
   useEffect(() => {
-    const sensors = senseboxInfoData.data?.sensors;
+    const sensors = senseboxInfoData?.data;
     if (sensors && sensors.length != 0) {
       interval.start();
     } else {
@@ -96,11 +108,10 @@ const LiveAnalyticsContainer = () => {
   useEffect(() => {
     // TODO: ADJUST SECONDS THIS WITH BOX PROPERTY: UPDATED_AT
     if (seconds > dispatchInterval) {
-      console.log("REFETCHING SENSEBOX DATA");
       setSeconds(0);
-      dispatch(requestSenseboxInfoDataFetch({ id: undefined }));
+      refetchSensorData();
     }
-  }, [dispatch, dispatchInterval, seconds]);
+  }, [refetchSensorData, dispatchInterval, seconds]);
 
   const filterSelection = (text, handleOnClick) => (
     <Badge
@@ -146,9 +157,13 @@ const LiveAnalyticsContainer = () => {
   );
 
   useEffect(() => {
-    if (!extraSenseboxInfoSensorData) return;
+    resetFilters();
+  }, [senseboxMainInfoData, resetFilters]);
+
+  useEffect(() => {
+    if (!senseboxInfoData?.data) return;
     setFilteredSenseboxInfoSensorData(
-      extraSenseboxInfoSensorData.filter((item) => {
+      senseboxInfoData.data.filter((item) => {
         if (!sensorFilters.showInactive && item.isDormant) return false;
         const typeFilter =
           !sensorFilters.type || sensorFilters.type === item.unit;
@@ -163,80 +178,41 @@ const LiveAnalyticsContainer = () => {
         return typeFilter && searchFilter;
       })
     );
-  }, [sensorFilters, extraSenseboxInfoSensorData]);
+  }, [sensorFilters, senseboxInfoData]);
 
   // evaluate data and enhance datamodel
   useEffect(() => {
-    const sensors = senseboxInfoData.data?.sensors;
-    if (sensors && sensors.length != 0) {
-      // reset filters
-      setSeconds(0);
-      resetFilters();
-      // TODO: DO THIS WITH BOX PROPERTY: UPDATED_AT
-      var newMinDispatchInterval = CONSTANTS.MAX_LIVE_UPDATE_DISPATCH_INTERVAL;
-      var sensorsUpdateFrequently = false;
-      const newExtraSensorInfo = sensors.reduce((p, i) => {
-        var isDormant = false;
-        if (i.lastMeasurement?.value === undefined) isDormant = true;
+    setSeconds(0);
+    setDispatchInterval(
+      senseboxInfoData?.extraData?.dispatchInterval ??
+        CONSTANTS.MAX_LIVE_UPDATE_DISPATCH_INTERVAL
+    );
+    setIsLoading(false);
+  }, [senseboxInfoData]);
 
-        if (
-          i.lastMeasurement?.createdAt === undefined ||
-          moment().diff(moment(i.lastMeasurement.createdAt), "hours") >
-            CONSTANTS.SENSEBOX_SENSOR_INACTIVITY_TIME_HOURS
-        )
-          isDormant = true;
-
-        var lastMeasurementTime = null;
-        var lastMeasurementValue = CONSTANTS.DEFAULT_NULL_FALLBACK_VALUE;
-        if (!isDormant) {
-          lastMeasurementTime = moment().diff(
-            moment(i.lastMeasurement.createdAt),
-            "seconds"
-          );
-          lastMeasurementValue = i.lastMeasurement.value;
-          if (
-            lastMeasurementTime < CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
-          ) {
-            // check if updates should be done more frequently
-            sensorsUpdateFrequently = true;
-          }
-          if (
-            lastMeasurementTime > CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL &&
-            lastMeasurementTime < newMinDispatchInterval
-          ) {
-            // check if minDispatchTime should be updated
-            newMinDispatchInterval = lastMeasurementTime;
-          }
-        }
-        return [
-          ...p,
-          {
-            isDormant,
-            lastMeasurementTime,
-            lastMeasurementValue,
-            title: i.title,
-            unit: i.unit,
-            _id: i._id,
-            sensorType: i.sensorType,
-            icon: i.icon,
-          },
-        ];
-      }, []);
-      setExtraSenseboxInfoSensorData(newExtraSensorInfo);
-      setDispatchInterval(
-        sensorsUpdateFrequently
-          ? CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
-          : newMinDispatchInterval
-      );
-    } else {
-      setExtraSenseboxInfoSensorData(undefined);
-    }
-  }, [senseboxInfoData, resetFilters]);
-
-  if (!extraSenseboxInfoSensorData || !filteredSenseboxInfoSensorData) {
+  if (!senseboxInfoData?.data || !filteredSenseboxInfoSensorData) {
     return (
       <div className="sbd-live-analytics-container sbd-dashboard-container">
-        <NoDataContainer text="To display live analytics for a specific Sensebox, you first need to select a Sensebox. You can do so by searching for a Sensebox in the header, or selecting one from your bookmarks!" />
+        <NoDataContainer>
+          <Text align="center" size="sm" color={"#5c5c5c"}>
+            {
+              "To display live analytics for a specific Sensebox, you first need to select a Sensebox. You can do so by searching for a Sensebox in the header, or selecting one from your bookmarks!"
+            }
+          </Text>
+          {senseboxMainInfoData?.data && (
+            <Button
+              variant="default"
+              size="xs"
+              leftIcon={<Refresh size={14} />}
+              onClick={() => {
+                refetchSensorData();
+              }}
+              loading={isLoading}
+            >
+              Refresh Results
+            </Button>
+          )}
+        </NoDataContainer>
       </div>
     );
   }
@@ -374,7 +350,7 @@ const LiveAnalyticsContainer = () => {
                     }}
                   >
                     <Indicator
-                      label={extraSenseboxInfoSensorData.length}
+                      label={senseboxInfoData.data.length}
                       size={16}
                       color="gray"
                       position="middle-end"
@@ -432,16 +408,18 @@ const LiveAnalyticsContainer = () => {
       <Text
         size="xs"
         color="dimmed"
-      >{`${filteredSenseboxInfoSensorData.length} of ${extraSenseboxInfoSensorData.length} Results`}</Text>
+      >{`${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Results`}</Text>
       <Space h="xs" />
 
       {"box-view" === dataView && (
         <div className="sbd-live-analytics-content__box-view">
           {filteredSenseboxInfoSensorData.map((e, i) => (
-            <AnalyticsBoxWidget
+            <LiveAnalyticsItem
               key={i}
               sensorData={e}
               liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
+              isLoading={isLoading}
+              view="box-view"
             />
           ))}
         </div>
@@ -461,41 +439,13 @@ const LiveAnalyticsContainer = () => {
             </thead>
             <tbody>
               {filteredSenseboxInfoSensorData.map((e, i) => (
-                <tr key={i}>
-                  <td></td>
-                  <td>
-                    {e.title}
-                    {e.isDormant && (
-                      <div>
-                        <Badge
-                          color="red"
-                          size="xs"
-                          radius="sm"
-                          variant="filled"
-                        >
-                          INACTIVE
-                        </Badge>
-                      </div>
-                    )}
-                  </td>
-                  <td>{e.sensorType}</td>
-                  <td>{e.lastMeasurementValue}</td>
-                  <td>{e.unit}</td>
-                  <td>
-                    <Group spacing="xs">
-                      <Text size="xs" weight={600} color="red">
-                        {getMinuteFormattedString(
-                          getLiveUpdateTime(e.lastMeasurementTime)
-                        )}
-                      </Text>
-                      <AccessPoint
-                        size={18}
-                        strokeWidth={2}
-                        color={"#E20808"}
-                      />
-                    </Group>
-                  </td>
-                </tr>
+                <LiveAnalyticsItem
+                  key={i}
+                  sensorData={e}
+                  liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
+                  isLoading={isLoading}
+                  view="table-view"
+                />
               ))}
             </tbody>
           </MantineTable>

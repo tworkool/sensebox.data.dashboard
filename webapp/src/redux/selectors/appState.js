@@ -14,9 +14,14 @@ const getSenseboxDBMiscData = (state) => {
   return state.appState.senseboxDBMiscData;
 };
 
+const getSenseboxSensorData = (state) => {
+  return state.appState.senseboxSensorData;
+};
+
 export {
   getWeatherData,
   getSenseboxesData,
   getSenseboxInfoData,
   getSenseboxDBMiscData,
+  getSenseboxSensorData,
 };

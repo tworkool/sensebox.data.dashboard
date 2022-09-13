@@ -75,6 +75,11 @@ const BACKEND = {
         return _fetch(url, MOCK_DATA.DBMiscData);
     },
 
+    fetchSenseboxSensorData: (senseboxID) => {
+        var url = `https://api.opensensemap.org/boxes/${senseboxID}/sensors`;
+        return _fetch(url);
+    },
+
 };
 
 export default BACKEND;

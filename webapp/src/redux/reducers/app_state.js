@@ -14,6 +14,10 @@ import {
   requestSenseboxDBMiscDataFetch,
   failSenseboxDBMiscDataFetch,
   succeedSenseboxDBMiscDataFetch,
+  
+  requestSenseboxSensorDataFetch,
+  failSenseboxSensorDataFetch,
+  succeedSenseboxSensorDataFetch,
 } from "../actions/app_state";
 import { combineActions, handleActions } from "redux-actions";
 import { actionReducer } from "./utils/reducers";
@@ -22,7 +26,8 @@ const appStateInit = {
   weatherData: {},
   senseboxesData: {isLoading: true, data: undefined},
   senseboxInfoData: {isLoading: true, data: undefined},
-  senseboxDBMiscData: {data: undefined}
+  senseboxDBMiscData: {data: undefined},
+  senseboxSensorData: {}
 };
 
 // combine all actions here
@@ -42,6 +47,10 @@ const appStateAction = combineActions(
   requestSenseboxDBMiscDataFetch,
   failSenseboxDBMiscDataFetch,
   succeedSenseboxDBMiscDataFetch,
+
+  requestSenseboxSensorDataFetch,
+  failSenseboxSensorDataFetch,
+  succeedSenseboxSensorDataFetch,
 );
 
 // create reducer from one combined actiontype

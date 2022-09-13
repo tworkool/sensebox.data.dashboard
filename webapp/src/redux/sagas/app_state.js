@@ -1,4 +1,4 @@
-import { call, put, select, takeLatest } from "redux-saga/effects";
+import { call, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import {
   failWeatherDataFetch,
   succeedSenseboxesDataFetch,
@@ -8,18 +8,24 @@ import {
   failSenseboxInfoDataFetch,
   succeedSenseboxDBMiscDataFetch,
   failSenseboxDBMiscDataFetch,
+  succeedSenseboxSensorDataFetch,
+  failSenseboxSensorDataFetch,
 } from "../actions/app_state";
 import {
   SENSEBOXES_FETCH_REQUESTED,
   SENSEBOX_DB_MISC_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_REQUESTED,
+  SENSEBOX_SENSOR_FETCH_REQUESTED,
   WEATHER_DATA_FETCH_REQUESTED,
 } from "../action_types/app_state";
 import BACKEND from "./api/backend";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import moment from "moment";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
-import { getSenseboxInfoData } from "../selectors/appState";
+import {
+  getSenseboxInfoData,
+  getSenseboxSensorData,
+} from "../selectors/appState";
 
 function* completeSagaAction(success, action, actionValue) {
   yield put(action({ ...actionValue }));
@@ -118,38 +124,26 @@ function* fetchSenseboxInfoData(action) {
     }
     const response = yield call(BACKEND.fetchSenseboxInfo, action.payload.id);
     if (response.status >= 200 && response.status < 300) {
-      const data = yield response.json();
-      const sensorFilters = data.sensors?.reduce((p, i) => {
-        const classifier = i.unit;
-        const sensorInstance = { _id: i._id, title: i.title };
-        if (Object.keys(p).includes(classifier)) {
-          // EDIT filter
-          const newItem = { ...p };
-          newItem[classifier].totalAmount += 1;
-          newItem[classifier].sensors.push(sensorInstance);
-          return newItem;
-        } else {
-          // ADD new filter
-          return {
-            ...p,
-            [classifier]: {
-              classifier,
-              totalAmount: 1,
-              sensors: [sensorInstance],
-            },
-          };
-        }
-      }, {});
+      const rawData = yield response.json();
+      const sensorFilters =
+        QUERY_DATA_MODIFIERS.aggregateFilterOptionsFromSensors(rawData);
+      const sensorData = QUERY_DATA_MODIFIERS.aggregateExtraSensorInfo(
+        rawData.sensors
+      );
 
       yield put(
         succeedSenseboxInfoDataFetch({
           senseboxInfoData: {
-            data: data,
-            extraData: {
-              sensorFilters,
-            },
+            data: rawData,
             isLoading: false,
             validBoxId: action.payload.id,
+          },
+          senseboxSensorData: {
+            data: sensorData.sensors,
+            extraData: {
+              sensorFilters,
+              dispatchInterval: sensorData.dispatchInterval,
+            },
           },
         })
       );
@@ -163,6 +157,7 @@ function* fetchSenseboxInfoData(action) {
           data: undefined,
           isLoading: false,
         },
+        senseboxSensorData: undefined,
       })
     );
     showNotification({
@@ -211,6 +206,61 @@ function* fetchSenseboxDBMiscData(action) {
   }
 }
 
+function* fetchSenseboxSensorData(action) {
+  try {
+    if (!action?.payload?.senseboxID) {
+      const previousSenseboxData = yield select(getSenseboxInfoData);
+      const lastValidSenseboxID = previousSenseboxData?.["validBoxId"];
+      if (!lastValidSenseboxID) {
+        throw new Error(
+          "Could not find fallback value for last valid Sensebox ID"
+        );
+      }
+      action.payload.senseboxID = lastValidSenseboxID;
+    }
+
+    const response = yield call(
+      BACKEND.fetchSenseboxSensorData,
+      action.payload.senseboxID
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+      const rawData = yield response.json();
+      const sensorFilters =
+        QUERY_DATA_MODIFIERS.aggregateFilterOptionsFromSensors(rawData);
+      const sensorData = QUERY_DATA_MODIFIERS.aggregateExtraSensorInfo(
+        rawData.sensors
+      );
+
+      yield put(
+        succeedSenseboxSensorDataFetch({
+          senseboxSensorData: {
+            data: sensorData.sensors,
+            extraData: {
+              sensorFilters,
+              dispatchInterval: sensorData.dispatchInterval,
+            },
+          },
+        })
+      );
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(
+      failSenseboxSensorDataFetch({
+        senseboxSensorData: undefined,
+      })
+    );
+    showNotification({
+      id: "fetch_sensebox_sensor_data_notification",
+      title: "FETCH FAIL",
+      message: "Could not fetch weather data",
+      color: "red",
+    });
+  }
+}
+
 function* watchFetchWeatherData() {
   yield takeLatest(WEATHER_DATA_FETCH_REQUESTED, fetchWeatherData);
 }
@@ -227,9 +277,14 @@ function* watchFetchSenseboxDBMiscData() {
   yield takeLatest(SENSEBOX_DB_MISC_FETCH_REQUESTED, fetchSenseboxDBMiscData);
 }
 
+function* watchFetchSenseboxSensorData() {
+  yield takeLatest(SENSEBOX_SENSOR_FETCH_REQUESTED, fetchSenseboxSensorData);
+}
+
 export {
   watchFetchWeatherData,
   watchFetchSenseboxesData,
   watchFetchSenseboxInfoData,
   watchFetchSenseboxDBMiscData,
+  watchFetchSenseboxSensorData,
 };
