@@ -32,7 +32,7 @@ const _fetchMock = (mockData, status, delay): Promise<MockResponse> => {
     });
 }
 
-const _fetch = (url, mockData: Object | undefined = undefined, status: Object = { text: "MOCK DATA NO ERRORS", code: 200 }, delay = 2000, logging = true) => {
+const _fetch = (url, mockData: any = undefined, status: Object = { text: "MOCK DATA NO ERRORS", code: 200 }, delay = 2000, logging = true) => {
     if (ENVIRONMENT.MOCK_API_DATA === true && mockData !== undefined) {
         if (logging)
             console.log("Fetching Mock Data", mockData);
