@@ -5,7 +5,6 @@ import {
   Badge,
   Divider,
   Group,
-  Image,
   LoadingOverlay,
   Skeleton,
   Space,
@@ -25,6 +24,7 @@ import CONSTANTS from "../../utils/constants";
 import { useLocalStorage } from "@mantine/hooks";
 import { useCallback } from "react";
 import { showNotification } from "@mantine/notifications";
+import ENVIRONMENT from "../../utils/env";
 
 const DashboardBoxInfo = () => {
   const senseboxInfoData = useSelector(getSenseboxInfoData);
@@ -84,7 +84,7 @@ const DashboardBoxInfo = () => {
     <div className="sbd-dashboard-content__box-info">
       <LoadingOverlay
         visible={dashboardContext.isLoadingSenseboxInfoData}
-        overlayBlur={2}
+        overlayBlur={1}
       />
       {!senseboxInfoData.data && (
         <Alert
@@ -115,10 +115,8 @@ const DashboardBoxInfo = () => {
               <Badge color="yellow" size="sm" radius="sm" variant="dot">
                 {diffFromCreateDate}
               </Badge>
-              {moment().diff(
-                moment(senseboxInfoData.data.lastMeasurementAt),
-                "days"
-              ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
+              {moment().diff(moment(senseboxInfoData.data.updatedAt), "days") >
+              CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
                 <Badge color="red" size="sm" radius="sm" variant="filled">
                   INACTIVE
                 </Badge>
@@ -152,12 +150,24 @@ const DashboardBoxInfo = () => {
             </small>
           </Skeleton>
           <Space h="xs" />
-          <Skeleton visible={false}>
+          {/* <Skeleton visible={false}>
             <Group spacing="xs">
               <MapPin size={18} strokeWidth={1.5} color={"black"} />
               <Text size="sm">Berlin, Germany</Text>
+              {fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${senseboxInfoData.data.currentLocation.coordinates[0]},${senseboxInfoData.data.currentLocation.coordinates[1]}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN}`
+              ).then((data) => {
+                data.json().then((parsedData) => {
+                  console.log(parsedData);
+                  return (
+                    <Text size="sm">
+                      {parsedData.features[0].place_name_en}
+                    </Text>
+                  );
+                });
+              })}
             </Group>
-          </Skeleton>
+          </Skeleton> */}
           {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
           {/* <Skeleton visible={false}>
             <Image

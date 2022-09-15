@@ -1,6 +1,6 @@
 import { Badge, Card, Group, Text } from "@mantine/core";
 import React from "react";
-import { AccessPoint, Temperature } from "tabler-icons-react";
+import { AccessPoint } from "tabler-icons-react";
 import { getMinuteFormattedString } from "../../utils/helpers";
 import "./style.scss";
 

@@ -15,8 +15,6 @@ const NoDataContainer = (props) => {
             </Text>
           </Group>
           {props.children}
-          {props.text && <Text align="center" size="sm" color={"#5c5c5c"}>{props.text}</Text>}
-          {props.actionButton}
         </Stack>
       </Center>
     </div>

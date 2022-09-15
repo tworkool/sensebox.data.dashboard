@@ -2,7 +2,6 @@ import {
   Badge,
   Card,
   Group,
-  Indicator,
   LoadingOverlay,
   Text,
 } from "@mantine/core";
@@ -59,7 +58,6 @@ const LiveAnalyticsItem = (props) => {
             <Card.Section withBorder inheritPadding py="xs">
               {activityBadgeElement()}
               <Group spacing="xs">
-                {/*  <Temperature /> */}
                 <Text size="xl" weight={500}>
                   {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
                 </Text>
@@ -95,13 +93,6 @@ const LiveAnalyticsItem = (props) => {
               loaderProps={{ color: "dark", variant: "dots" }}
             />
             {liveUpdateTimeElement()}
-            {/* {isLoading ? (
-              <Indicator color="red" position="middle-end" size={10} processing>
-                {liveUpdateTimeElement()}
-              </Indicator>
-            ) : (
-              liveUpdateTimeElement()
-            )} */}
           </td>
         </tr>
       )}

@@ -7,7 +7,7 @@ import {
   Button,
   Center,
   Divider,
-  Grid,
+  FocusTrap,
   Group,
   Highlight,
   Indicator,
@@ -109,17 +109,19 @@ const DashboardHeader = () => {
           title="Search Sensebox"
         >
           <div className="sbd-search-grid">
-            <TextInput
-              autoFocus={true}
-              defaultValue={searchContent}
-              placeholder="Find a SenseBox"
-              icon={<Search size={16} />}
-              onChange={(e) => {
-                setSearchContent(e.target.value);
-              }}
-              error={searchError}
-            />
-            <Button onClick={handleSearchExecution}>Search</Button>
+            <FocusTrap active>
+              <TextInput
+                data-autoFocus
+                defaultValue={searchContent}
+                placeholder="Find a SenseBox"
+                icon={<Search size={16} />}
+                onChange={(e) => {
+                  setSearchContent(e.target.value);
+                }}
+                error={searchError}
+              />
+              <Button onClick={handleSearchExecution}>Search</Button>
+            </FocusTrap>
           </div>
 
           <Divider
@@ -145,15 +147,12 @@ const DashboardHeader = () => {
               senseboxesData.data.map((e, i) => (
                 <UnstyledButton
                   onClick={() => {
-                    /* navigate(`../dashboard/${e._id}`, { replace: true });
-                    setOpened(false); */
                     handleSenseboxSelect(e._id);
                   }}
                   key={i}
                   className="sbd-dashboard-header-search-result"
                 >
                   <Group>
-                    {/* <Avatar src={null} radius="xl" /> */}
                     <IdenticonAvatar id={e._id} />
                     <Stack
                       spacing="xs"

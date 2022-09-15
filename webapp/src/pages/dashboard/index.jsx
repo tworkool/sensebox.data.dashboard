@@ -30,6 +30,15 @@ const DashboardContextProvider = (props) => {
     useState(false);
 
   useEffect(() => {
+    if (senseboxInfoData?.validBoxId) {
+      setSelectedSenseboxId(senseboxInfoData.validBoxId);
+    } else {
+      setSelectedSenseboxId(undefined);
+    }
+    setIsLoadingSenseboxInfoData(false);
+  }, [senseboxInfoData]);
+
+  useEffect(() => {
     if (!params || Object.keys(params).length === 0) return;
     const param = params?.boxid;
     if (param === null || param === undefined) {
@@ -38,16 +47,7 @@ const DashboardContextProvider = (props) => {
       dispatch(requestSenseboxInfoDataFetch({ id: param }));
       setIsLoadingSenseboxInfoData(true);
     }
-  }, [params, dispatch, setIsLoadingSenseboxInfoData]);
-
-  useEffect(() => {
-    if (senseboxInfoData.validBoxId) {
-      setSelectedSenseboxId(senseboxInfoData.validBoxId);
-    } else {
-      setSelectedSenseboxId(undefined);
-    }
-    setIsLoadingSenseboxInfoData(false);
-  }, [senseboxInfoData, setIsLoadingSenseboxInfoData]);
+  }, [params, dispatch]);
 
   return (
     <DashboardContext.Provider
@@ -128,14 +128,14 @@ const DashboardPage = () => {
               pt="xs"
               className="sbd-mantine-tabs-panel"
             >
-              <DetailedDataContainer />
+              {/* <DetailedDataContainer /> */}
             </Tabs.Panel>
             <Tabs.Panel
               value="data-map"
               pt="xs"
               className="sbd-mantine-tabs-panel"
             >
-              <DataMapContainer />
+              {/* <DataMapContainer /> */}
             </Tabs.Panel>
           </Tabs>
         </div>
