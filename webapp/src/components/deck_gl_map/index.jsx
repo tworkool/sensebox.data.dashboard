@@ -6,7 +6,7 @@ import ENVIRONMENT from "../../utils/env";
 import "./style.scss";
 
 // Set your mapbox access token here
-const MAPBOX_ACCESS_TOKEN = ENVIRONMENT.MAPBOX_TOKEN;
+const MAPBOX_ACCESS_TOKEN = ENVIRONMENT.MAPBOX_PUBLIC_KEY;
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {

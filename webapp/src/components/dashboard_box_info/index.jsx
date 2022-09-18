@@ -155,7 +155,7 @@ const DashboardBoxInfo = () => {
               <MapPin size={18} strokeWidth={1.5} color={"black"} />
               <Text size="sm">Berlin, Germany</Text>
               {fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${senseboxInfoData.data.currentLocation.coordinates[0]},${senseboxInfoData.data.currentLocation.coordinates[1]}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN}`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${senseboxInfoData.data.currentLocation.coordinates[0]},${senseboxInfoData.data.currentLocation.coordinates[1]}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_PUBLIC_KEY}`
               ).then((data) => {
                 data.json().then((parsedData) => {
                   console.log(parsedData);
