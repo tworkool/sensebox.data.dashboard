@@ -18,6 +18,10 @@ import {
   requestSenseboxSensorDataFetch,
   failSenseboxSensorDataFetch,
   succeedSenseboxSensorDataFetch,
+
+  requestGeocodingDataFetch,
+  failGeocodingDataFetch,
+  succeedGeocodingDataFetch,
 } from "../actions/app_state";
 import { combineActions, handleActions } from "redux-actions";
 import { actionReducer } from "./utils/reducers";
@@ -27,7 +31,8 @@ const appStateInit = {
   senseboxesData: {isLoading: true, data: undefined},
   senseboxInfoData: {isLoading: true, data: undefined},
   senseboxDBMiscData: {data: undefined},
-  senseboxSensorData: {}
+  senseboxSensorData: {},
+  geocodingData: {}
 };
 
 // combine all actions here
@@ -51,6 +56,10 @@ const appStateAction = combineActions(
   requestSenseboxSensorDataFetch,
   failSenseboxSensorDataFetch,
   succeedSenseboxSensorDataFetch,
+
+  requestGeocodingDataFetch,
+  failGeocodingDataFetch,
+  succeedGeocodingDataFetch,
 );
 
 // create reducer from one combined actiontype

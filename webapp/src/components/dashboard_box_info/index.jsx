@@ -13,8 +13,11 @@ import {
 } from "@mantine/core";
 import { AlertCircle, Bookmark, MapPin, ScreenShare } from "tabler-icons-react";
 import "./style.scss";
-import { useSelector } from "react-redux";
-import { getSenseboxInfoData } from "../../redux/selectors/appState";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getGeocodingData,
+  getSenseboxInfoData,
+} from "../../redux/selectors/appState";
 import { DashboardContext } from "../../pages/dashboard";
 import moment from "moment";
 import { useContext } from "react";
@@ -24,13 +27,23 @@ import CONSTANTS from "../../utils/constants";
 import { useLocalStorage } from "@mantine/hooks";
 import { useCallback } from "react";
 import { showNotification } from "@mantine/notifications";
-import ENVIRONMENT from "../../utils/env";
+import { useEffect } from "react";
+import { requestGeocodingDataFetch } from "../../redux/actions/app_state";
 
 const DashboardBoxInfo = () => {
+  const dispatch = useDispatch();
   const senseboxInfoData = useSelector(getSenseboxInfoData);
+  const geocodingData = useSelector(getGeocodingData);
   const dashboardContext = useContext(DashboardContext);
+  const [isLoadingMap, setIsLoadingMap] = useState(true);
+  const [isLoadingGeocodingData, setIsLoadingGeocodingData] = useState(false);
+  const [bookmarkedBoxes, setBookmarkedBoxes] = useLocalStorage({
+    key: "bookmarked-senseboxes",
+    defaultValue: [],
+  });
+
   const diffFromCreateDate = useMemo(() => {
-    if (!senseboxInfoData.data) return "";
+    if (!senseboxInfoData?.data?.createdAt) return "";
     const createDate = moment(senseboxInfoData.data.createdAt);
     const yearsFromCreate = moment().diff(createDate, "years");
     return `Created ${
@@ -39,11 +52,69 @@ const DashboardBoxInfo = () => {
         : `${yearsFromCreate} year(s)`
     } ago`;
   }, [senseboxInfoData]);
-  const [isLoadingMap, setIsLoadingMap] = useState(true);
-  const [bookmarkedBoxes, setBookmarkedBoxes] = useLocalStorage({
-    key: "bookmarked-senseboxes",
-    defaultValue: [],
-  });
+
+  useEffect(() => {
+    setIsLoadingGeocodingData(false);
+    console.log("COMPLETE");
+  }, [geocodingData]);
+
+  useEffect(() => {
+    const coords = senseboxInfoData?.data?.currentLocation?.coordinates;
+    if (coords) {
+      setIsLoadingMap(true);
+      setIsLoadingGeocodingData(true);
+      console.log(coords);
+      dispatch(requestGeocodingDataFetch({ lat: coords[0], lon: coords[1] }));
+    }
+  }, [senseboxInfoData, dispatch]);
+
+  const locationMapElement = useCallback(() => {
+    const coords = senseboxInfoData.data.currentLocation.coordinates;
+    return (
+      <Skeleton height={150} visible={isLoadingMap}>
+        <iframe
+          style={{ border: "none" }}
+          onLoad={() => {
+            setIsLoadingMap(false);
+          }}
+          src={`https://maps.google.com/maps?q=${coords[1]},${coords[0]}&hl=en&z=14&output=embed`}
+        ></iframe>
+        <br />
+        <small>
+          <a
+            href={`https://maps.google.com/maps?q=${coords[1]},${coords[0]}&hl=en;z=14&output=embed`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            See map bigger
+          </a>
+        </small>
+      </Skeleton>
+    );
+  }, [isLoadingMap, senseboxInfoData]);
+
+  const locationGeocodingElement = useCallback(() => {
+    const geoCodingLocation = geocodingData?.data?.locationCoarse
+      ? geocodingData.data.locationCoarse
+      : geocodingData?.data?.locationExact;
+    //if (!geoCodingLocation || !geocodingData?.data?.attribution) return null;
+    return (
+      <Tooltip
+        multiline
+        width={300}
+        label={geocodingData?.data?.attribution}
+      >
+        <Skeleton visible={isLoadingGeocodingData}>
+          {!!geoCodingLocation && (
+            <Group spacing="xs">
+              <MapPin size={18} strokeWidth={1.5} color={"black"} />
+              <Text size="sm">{geoCodingLocation}</Text>
+            </Group>
+          )}
+        </Skeleton>
+      </Tooltip>
+    );
+  }, [geocodingData, isLoadingGeocodingData]);
 
   const isBookmarked = useMemo(
     () =>
@@ -130,44 +201,9 @@ const DashboardBoxInfo = () => {
           <Space h="xs" />
           <Text size="xs">{senseboxInfoData.data.description}</Text>
           <Divider my="sm" label="Position" labelPosition="center" />
-          <Skeleton height={150} visible={isLoadingMap}>
-            <iframe
-              style={{ border: "none" }}
-              onLoad={() => {
-                setIsLoadingMap(false);
-              }}
-              src={`https://maps.google.com/maps?q=${senseboxInfoData.data.currentLocation.coordinates[1]},${senseboxInfoData.data.currentLocation.coordinates[0]}&hl=en&z=14&output=embed`}
-            ></iframe>
-            <br />
-            <small>
-              <a
-                href={`https://maps.google.com/maps?q=${senseboxInfoData.data.currentLocation.coordinates[1]},${senseboxInfoData.data.currentLocation.coordinates[0]}&hl=en;z=14&output=embed`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                See map bigger
-              </a>
-            </small>
-          </Skeleton>
+          {locationMapElement()}
           <Space h="xs" />
-          {/* <Skeleton visible={false}>
-            <Group spacing="xs">
-              <MapPin size={18} strokeWidth={1.5} color={"black"} />
-              <Text size="sm">Berlin, Germany</Text>
-              {fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${senseboxInfoData.data.currentLocation.coordinates[0]},${senseboxInfoData.data.currentLocation.coordinates[1]}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_PUBLIC_KEY}`
-              ).then((data) => {
-                data.json().then((parsedData) => {
-                  console.log(parsedData);
-                  return (
-                    <Text size="sm">
-                      {parsedData.features[0].place_name_en}
-                    </Text>
-                  );
-                });
-              })}
-            </Group>
-          </Skeleton> */}
+          {locationGeocodingElement()}
           {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
           {/* <Skeleton visible={false}>
             <Image

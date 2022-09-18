@@ -80,6 +80,11 @@ const BACKEND = {
         return _fetch(url);
     },
 
+    fetchGeocodingData: (lat, lon) => {
+        // reverse geocoding API
+        var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lat},${lon}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_PUBLIC_KEY}`;
+        return _fetch(url, MOCK_DATA.geocoding1);
+    },
 };
 
 export default BACKEND;

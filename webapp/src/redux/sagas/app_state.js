@@ -10,8 +10,11 @@ import {
   failSenseboxDBMiscDataFetch,
   succeedSenseboxSensorDataFetch,
   failSenseboxSensorDataFetch,
+  succeedGeocodingDataFetch,
+  failGeocodingDataFetch,
 } from "../actions/app_state";
 import {
+    GEOCODING_FETCH_REQUESTED,
   SENSEBOXES_FETCH_REQUESTED,
   SENSEBOX_DB_MISC_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_REQUESTED,
@@ -261,6 +264,43 @@ function* fetchSenseboxSensorData(action) {
   }
 }
 
+function* fetchGeocodingData(action) {
+  try {
+    const response = yield call(
+      BACKEND.fetchGeocodingData,
+      action.payload.lat,
+      action.payload.lon
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+      const rawData = yield response.json();
+      const data = QUERY_DATA_MODIFIERS.aggregateGeocodingLocationData(rawData);
+
+      yield put(
+        succeedGeocodingDataFetch({
+          geocodingData: {
+            data: data,
+          },
+        })
+      );
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(
+      failGeocodingDataFetch({
+        geocodingData: undefined,
+      })
+    );
+    showNotification({
+      id: "fetch_geocoding_data_notification",
+      title: "FETCH FAIL",
+      message: "Could not fetch weather data",
+      color: "red",
+    });
+  }
+}
+
 function* watchFetchWeatherData() {
   yield takeLatest(WEATHER_DATA_FETCH_REQUESTED, fetchWeatherData);
 }
@@ -281,10 +321,15 @@ function* watchFetchSenseboxSensorData() {
   yield takeLatest(SENSEBOX_SENSOR_FETCH_REQUESTED, fetchSenseboxSensorData);
 }
 
+function* watchFetchGeocodingData() {
+  yield takeLatest(GEOCODING_FETCH_REQUESTED, fetchGeocodingData);
+}
+
 export {
   watchFetchWeatherData,
   watchFetchSenseboxesData,
   watchFetchSenseboxInfoData,
   watchFetchSenseboxDBMiscData,
   watchFetchSenseboxSensorData,
+  watchFetchGeocodingData,
 };

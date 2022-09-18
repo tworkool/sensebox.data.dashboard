@@ -18,10 +18,15 @@ const getSenseboxSensorData = (state) => {
   return state.appState.senseboxSensorData;
 };
 
+const getGeocodingData = (state) => {
+  return state.appState.geocodingData;
+};
+
 export {
   getWeatherData,
   getSenseboxesData,
   getSenseboxInfoData,
   getSenseboxDBMiscData,
   getSenseboxSensorData,
+  getGeocodingData,
 };

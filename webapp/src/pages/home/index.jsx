@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Anchor,
@@ -7,6 +7,7 @@ import {
   Container,
   Group,
   Image,
+  LoadingOverlay,
   Stack,
   Text,
   Title,
@@ -26,9 +27,15 @@ import { getSenseboxDBMiscData } from "../../redux/selectors/appState";
 const HomePage = () => {
   const dispatch = useDispatch();
   const senseboxDBMiscData = useSelector(getSenseboxDBMiscData);
+  const [isLoadingMiscData, setIsLoadingMiscData] = useState(false);
+
+  useEffect(() => {
+    setIsLoadingMiscData(false);
+  }, [senseboxDBMiscData]);
 
   useEffect(() => {
     dispatch(requestSenseboxDBMiscDataFetch());
+    setIsLoadingMiscData(true);
   }, [dispatch]);
 
   return (
@@ -62,7 +69,8 @@ const HomePage = () => {
                   congue mauris rhoncus. Non consectetur a erat nam at lectus
                   urna.
                 </Text>
-                {senseboxDBMiscData?.data && (
+
+                {senseboxDBMiscData?.data ? (
                   <Group>
                     <div>
                       <Text size="xl" weight={500}>
@@ -83,6 +91,10 @@ const HomePage = () => {
                       <Text size="sm">... within the Last Hour</Text>
                     </div>
                   </Group>
+                ) : (
+                  <div style={{ height: 52 }}>
+                    <LoadingOverlay visible={isLoadingMiscData} />
+                  </div>
                 )}
               </Stack>
               <Image

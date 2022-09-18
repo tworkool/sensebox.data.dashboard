@@ -18,6 +18,10 @@ import {
   SENSEBOX_SENSOR_FETCH_REQUESTED,
   SENSEBOX_SENSOR_FETCH_FAILED,
   SENSEBOX_SENSOR_FETCH_SUCCEEDED,
+
+  GEOCODING_FETCH_REQUESTED,
+  GEOCODING_FETCH_FAILED,
+  GEOCODING_FETCH_SUCCEEDED,
 } from "../action_types/app_state";
 import { createAction } from "redux-actions";
 
@@ -41,6 +45,10 @@ const requestSenseboxSensorDataFetch = createAction(SENSEBOX_SENSOR_FETCH_REQUES
 const failSenseboxSensorDataFetch = createAction(SENSEBOX_SENSOR_FETCH_FAILED);
 const succeedSenseboxSensorDataFetch = createAction(SENSEBOX_SENSOR_FETCH_SUCCEEDED);
 
+const requestGeocodingDataFetch = createAction(GEOCODING_FETCH_REQUESTED);
+const failGeocodingDataFetch = createAction(GEOCODING_FETCH_FAILED);
+const succeedGeocodingDataFetch = createAction(GEOCODING_FETCH_SUCCEEDED);
+
 export {
   requestWeatherDataFetch,
   failWeatherDataFetch,
@@ -61,4 +69,8 @@ export {
   requestSenseboxSensorDataFetch,
   failSenseboxSensorDataFetch,
   succeedSenseboxSensorDataFetch,
+
+  requestGeocodingDataFetch,
+  failGeocodingDataFetch,
+  succeedGeocodingDataFetch,
 };

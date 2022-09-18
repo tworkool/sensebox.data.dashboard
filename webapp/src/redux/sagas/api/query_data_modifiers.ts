@@ -6,6 +6,19 @@ const QUERY_DATA_MODIFIERS = {
 
     limitArrayFromStart: (data, limit = 4) => { return data.slice(0, limit) },
 
+    aggregateGeocodingLocationData: (data) => {
+        if (!data?.features || data.features.length == 0)
+            throw new Error("Could not fetch location by reverse geocoding, because features are incomplete");
+        const selectedFeature = data.features[0];
+        const placeFilter = selectedFeature.context.filter(e => e.id.includes("place"));
+        const countryFilter = selectedFeature.context.filter(e => e.id.includes("country"));
+        return {
+            locationExact: selectedFeature["place_name_en"],
+            locationCoarse: (placeFilter.length == 0 || countryFilter.length == 0) ? undefined : `${placeFilter[0].text}, ${countryFilter[0].text}`,
+            attribution: data["attribution"]
+        }
+    },
+
     aggregateFilterOptionsFromSensors: (data) => data.sensors?.reduce((p, i) => {
         const classifier = i.unit;
         const sensorInstance = { _id: i._id, title: i.title };
