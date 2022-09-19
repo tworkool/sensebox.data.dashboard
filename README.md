@@ -1,18 +1,24 @@
-# Webapp Base Setup
-with the following features:
+# Sensebox Data Dashboard
+The Sensebox Data Dashboard is a analytics dashboard for data collected from Senseboxes around the world (for more info on Senseboxes [follow this link](https://sensebox.de/en/))
+The motivation behind this project is mainly to create a better approach to visualising data collected from Senseboxes. The [Opensensemap](https://opensensemap.org/) is a great native approach for doing so, but in my opinion it could be improved from many perspectives.
+If you would like to use a published version of this dashboard, please visit his link: SOON TO BE ADDED
+#### Motivation
+One prominent feature which will be implemented in the future, is a Map visualising different sensor data from multiple Senseboxes. The main focus is the development of a user-driven dashboard for managing the overview of data.
+
+#### Contribution
+The dashboard is currently still in an early version. Many features and improvements will be added over time, so please be patient. **If you find issues or want to contribute, please open a discussion or PR**.
+
+#### Development
+Stack:
+* React v16
+* Redux + Redux-Saga
+* SCSS
+
+Frameworks etc.:
 * Design System: Mantine
-* Language: React v6
 * Bundler: Parcel v2
-* Stylesheets: SASS
-* CI/CD: GitHub Actions & GitHub Pages
-* State Management: Option with and without Redux
-  * With Redux: `with-redux` branch
-  * Without Redux (pure React): `master` branch
 
-Additional Features:
-* Babel
-* ESLint
+To reduce API loads, a very simple implementation for mock API calls is included.
+In order to use Mapbox for displaying maps, adjust the environment variables. I usually use a different config for prod (.env.production) and dev (.env.development). The .env-template file is a template for how your env file could look like.
 
-I'm trying to keep all packages up-to-date and make changes according to newest findings :) feel free to use this as a template for your next project. The file structure is my preference but I think it is one of the best!
-
-Have fun!
+In order to run the project, run the command ```npm run start``` which will use parcel to start the local dev server.
