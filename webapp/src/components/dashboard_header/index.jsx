@@ -34,8 +34,9 @@ import CONSTANTS from "../../utils/constants";
 const DashboardHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const dashboardContext = useContext(DashboardContext);
   const senseboxesData = useSelector(getSenseboxesData);
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(!dashboardContext.selectedSenseboxId); // if empty dashboard, automatically open search window for senseboxes
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
   const [searchHighlightContent, setSearchHighlightContent] = useState("");
@@ -43,7 +44,6 @@ const DashboardHeader = () => {
     key: "bookmarked-senseboxes",
     defaultValue: [],
   });
-  const dashboardContext = useContext(DashboardContext);
   useHotkeys([["mod+K", () => setOpened(true)]]);
   const [searchError, setSearchError] = useState(null);
 
@@ -111,7 +111,6 @@ const DashboardHeader = () => {
           <div className="sbd-search-grid">
             <FocusTrap active>
               <TextInput
-                data-autoFocus
                 defaultValue={searchContent}
                 placeholder="Find a SenseBox"
                 icon={<Search size={16} />}
