@@ -1,10 +1,4 @@
-import {
-  Badge,
-  Card,
-  Group,
-  LoadingOverlay,
-  Text,
-} from "@mantine/core";
+import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
 import React from "react";
 import { useCallback } from "react";
 import { AccessPoint } from "tabler-icons-react";
@@ -76,7 +70,6 @@ const LiveAnalyticsItem = (props) => {
       )}
       {"table-view" === view && (
         <tr>
-          <td></td>
           <td>
             {sensorData.title}
             {activityBadgeElement()}

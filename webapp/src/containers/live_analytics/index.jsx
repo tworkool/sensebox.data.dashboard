@@ -428,12 +428,11 @@ const LiveAnalyticsContainer = () => {
               <MantineTable striped verticalSpacing="sm">
                 <thead>
                   <tr>
-                    <th></th> {/* ICON */}
                     <th>Name</th>
                     <th>Type</th>
                     <th>Measurement</th>
                     <th>Unit</th>
-                    <th></th> {/* Last Measurement at */}
+                    <th>Last Update</th> {/* Last Measurement at */}
                   </tr>
                 </thead>
                 <tbody>

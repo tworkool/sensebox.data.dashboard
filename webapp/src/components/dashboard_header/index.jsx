@@ -36,7 +36,7 @@ const DashboardHeader = () => {
   const dispatch = useDispatch();
   const dashboardContext = useContext(DashboardContext);
   const senseboxesData = useSelector(getSenseboxesData);
-  const [opened, setOpened] = useState(!dashboardContext.selectedSenseboxId); // if empty dashboard, automatically open search window for senseboxes
+  const [opened, setOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
   const [searchHighlightContent, setSearchHighlightContent] = useState("");

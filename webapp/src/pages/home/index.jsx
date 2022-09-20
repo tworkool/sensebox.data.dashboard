@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { requestSenseboxDBMiscDataFetch } from "../../redux/actions/app_state";
 import { getSenseboxDBMiscData } from "../../redux/selectors/appState";
+import { version } from "../../../package.json";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const HomePage = () => {
 
   return (
     <div className="sbd-home-page">
-      <div className="sbd-home-page-copyright">{`© Oliver Tworkowski ${new Date().getFullYear()}`}</div>
+      <div className="sbd-home-page-copyright">{`Sensebox Data Dashboard version ${version} | © Oliver Tworkowski ${new Date().getFullYear()}`}</div>
       <div className="sbd-page-shape-divider__rest"></div>
       <div className="sbd-page-shape-divider__shape" />
       <Stack
@@ -55,19 +56,17 @@ const HomePage = () => {
               <Title order={5}>
                 {"To the unofficial data dashboard for "}
                 <Anchor href="https://sensebox.de/" target="_blank">
-                  SenseBox
+                  Sensebox
                 </Anchor>
               </Title>
             </Stack>
             <Group grow>
               <Stack spacing="xl" justify="space-around">
                 <Text>
-                  pharetra pharetra massa massa ultricies mi. Sagittis vitae et
-                  leo duis. Viverra vitae congue eu consequat. Non quam lacus
-                  suspendisse faucibus interdum posuere lorem ipsum. Diam sit
-                  amet nisl suscipit adipiscing bibendum est. Arcu cursus vitae
-                  congue mauris rhoncus. Non consectetur a erat nam at lectus
-                  urna.
+                  With this dashboard you can view the most important sensor
+                  data for any Sensebox, presented in a usability friendly way.
+                  This project is in its earliest version, so many features are
+                  not yet accessible. I hope you find this demo pleasant.
                 </Text>
 
                 {senseboxDBMiscData?.data ? (
@@ -125,25 +124,22 @@ const HomePage = () => {
             <Stack align="center" spacing="lg">
               <AccessPoint size={48} />
               <Text align="center">
-                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
-                turpis egestas maecenas pharetra convallis. Scelerisque eu
-                ultrices vitae auctor eu augue ut
+                Live updates for sensor data to keep track of latest
+                measurements
               </Text>
             </Stack>
             <Stack align="center" spacing="lg">
               <DeviceDesktopAnalytics size={48} />
               <Text align="center">
-                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
-                turpis egestas maecenas pharetra convallis. Scelerisque eu
-                ultrices vitae auctor eu augue ut
+                Detailed analytics with graphs and comparisons and whatnot (soon
+                available)
               </Text>
             </Stack>
             <Stack align="center" spacing="lg">
               <MapSearch size={48} />
               <Text align="center">
-                eget nulla facilisi etiam dignissim diam. Et malesuada fames ac
-                turpis egestas maecenas pharetra convallis. Scelerisque eu
-                ultrices vitae auctor eu augue ut
+                Aggregated sensor data from many Senseboxes, displayed on an
+                interactive map (soon available)
               </Text>
             </Stack>
           </Group>
