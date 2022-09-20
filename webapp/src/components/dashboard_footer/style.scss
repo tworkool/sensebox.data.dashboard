@@ -1,0 +1,20 @@
+@import "./dimensions";
+@import "../../utils/colors";
+
+.sbd-dashboard-page-footer {
+    height: $dashboard-footer-height;
+    background-color: white;
+    border-top: 1px solid $gray-dark;
+    padding: 0 20px;
+    z-index: 5;
+
+    &__content {
+        max-width: 2000px;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+    }
+}

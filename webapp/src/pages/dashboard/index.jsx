@@ -18,6 +18,7 @@ import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxInfoData } from "../../redux/selectors/appState";
 import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
+import DashboardFooter from "../../components/dashboard_footer";
 
 const DashboardContext = createContext();
 
@@ -140,24 +141,7 @@ const DashboardPage = () => {
           </Tabs>
         </div>
       </div>
-      <div className="sbd-dashboard-page-footer">
-        <div className="sbd-dashboard-page-footer__content">
-          <div>Sensebox Data Dashboard</div>
-          <div>
-            <ActionIcon
-              color="dark"
-              variant="filled"
-              size="sm"
-              component="a"
-              href="https://github.com/tworkool/sensebox.data.dashboard"
-              target="_blank"
-            >
-              <BrandGithub />
-            </ActionIcon>
-          </div>
-          <div>{`© Oliver Tworkowski 2022 - ${new Date().getFullYear()}`}</div>
-        </div>
-      </div>
+      <DashboardFooter />
     </div>
   );
 };
