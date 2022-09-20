@@ -55,7 +55,6 @@ const DashboardBoxInfo = () => {
 
   useEffect(() => {
     setIsLoadingGeocodingData(false);
-    console.log("COMPLETE");
   }, [geocodingData]);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ const DashboardBoxInfo = () => {
     if (coords) {
       setIsLoadingMap(true);
       setIsLoadingGeocodingData(true);
-      console.log(coords);
       dispatch(requestGeocodingDataFetch({ lat: coords[0], lon: coords[1] }));
     }
   }, [senseboxInfoData, dispatch]);
@@ -129,7 +127,6 @@ const DashboardBoxInfo = () => {
       const old = [...bookmarkedBoxes];
       if (old.filter((x) => x._id === e._id).length > 0) {
         // remove
-        console.log("remove");
         const indexOfRemovableElement = old.indexOf(e);
         old.splice(indexOfRemovableElement, 1);
         setBookmarkedBoxes(old);
@@ -144,7 +141,6 @@ const DashboardBoxInfo = () => {
           return;
         }
         // add
-        console.log("add");
         setBookmarkedBoxes([...old, ...[e]]);
       }
     },

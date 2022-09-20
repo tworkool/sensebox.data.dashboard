@@ -115,9 +115,7 @@ function* fetchSenseboxInfoData(action) {
   try {
     if (!action?.payload?.id) {
       const previousData = yield select(getSenseboxInfoData);
-      console.log(previousData);
       const lastValidSenseboxID = previousData?.["validBoxId"];
-      console.log(lastValidSenseboxID);
       if (!lastValidSenseboxID) {
         throw new Error(
           "Could not find fallback value for last valid Sensebox ID"

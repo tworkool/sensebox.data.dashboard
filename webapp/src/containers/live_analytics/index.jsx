@@ -85,7 +85,6 @@ const LiveAnalyticsContainer = () => {
   );
 
   const refetchSensorData = useCallback(() => {
-    console.log("REFETCHING SENSEBOX DATA");
     setIsLoading(true);
     dispatch(requestSenseboxSensorDataFetch({ senseboxID: undefined }));
   }, [dispatch]);
