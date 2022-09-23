@@ -1,7 +1,54 @@
 @import "../../utils/colors";
 
+$border-radius: 15px;
+$border-thickness: 1%;
+
+.sbd-analytics-box-widget-wrapper {
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    border-radius: $border-radius;
+}
+
+.sbd-analytics-box-widget-loader {
+    position: absolute;
+    display: block;
+    top: -50%;
+    left: -50%;
+    z-index: -9;
+    height: 200%;
+    width: 200%;
+    transform: rotate(-45deg);
+    overflow: hidden;
+    background: linear-gradient(to right, #fff 20%, #fff 40%, #ecd08c 50%, #ecd08c 55%, #fff 70%, #fff 100%);
+    background-size: 200% auto;
+
+    animation: shine 3s linear infinite;
+    &--visible {
+        display: block;
+    }
+}
+
 .sbd-analytics-box-widget {
+    position: absolute;
+    top: $border-thickness;
+    left: $border-thickness;
+    display: block;
+    height: calc(100% - 2 * $border-thickness);
+    width: calc(100% - 2 * $border-thickness);
+    margin: auto;
+    align-self: center;
+    background: #fff;
+    z-index: 1;
+    border-radius: 15px;
+
     &--inactive {
         color: $gray-a3;
+    }
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
     }
 }

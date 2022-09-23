@@ -1,4 +1,4 @@
-import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
+import { Badge, Card, Divider, Group, LoadingOverlay, Text } from "@mantine/core";
 import React from "react";
 import { useCallback } from "react";
 import { AccessPoint } from "tabler-icons-react";
@@ -32,40 +32,38 @@ const LiveAnalyticsItem = (props) => {
   return (
     <>
       {"box-view" === view && (
-        <div>
-          <LoadingOverlay
-            visible={isLoading}
-            transitionDuration={1000}
-            overlayOpacity={0.2}
-            overlayBlur={0.5}
-            loaderProps={{ color: "dark", variant: "dots" }}
-          />
-
-          <Card
-            shadow="xs"
-            radius="lg"
-            p="lg"
+        <div className="sbd-analytics-box-widget-wrapper">
+          <div className="sbd-analytics-box-widget-loader" />
+          <div
             className={`sbd-analytics-box-widget ${
               sensorData.isDormant ? "sbd-analytics-box-widget--inactive" : ""
             }`}
           >
-            <Card.Section withBorder inheritPadding py="xs">
-              {activityBadgeElement()}
-              <Group spacing="xs">
-                <Text size="xl" weight={500}>
-                  {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
-                </Text>
-              </Group>
-              <Text size="md">{sensorData.title}</Text>
-            </Card.Section>
-
-            <Card.Section inheritPadding py="xs">
-              {liveUpdateTimeElement()}
-              <Text size="sm" color="dimmed">
-                {sensorData.sensorType}
+            {sensorData.isDormant && (
+              <Badge color="red" size="xs" radius="sm" variant="filled">
+                INACTIVE
+              </Badge>
+            )}
+            <Group spacing="xs">
+              {/*  <Temperature /> */}
+              <Text size="xl" weight={500}>
+                {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
               </Text>
-            </Card.Section>
-          </Card>
+            </Group>
+            <Text size="md">{sensorData.title}</Text>
+            <Divider />
+            {!sensorData.isDormant && (
+              <Group spacing="xs">
+                <Text size="xs" weight={600} color="red">
+                  {getMinuteFormattedString(liveTime)}
+                </Text>
+                <AccessPoint size={18} strokeWidth={2} color={"#E20808"} />
+              </Group>
+            )}
+            <Text size="sm" color="dimmed">
+              {sensorData.sensorType}
+            </Text>
+          </div>
         </div>
       )}
       {"table-view" === view && (

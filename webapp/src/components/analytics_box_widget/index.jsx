@@ -1,4 +1,4 @@
-import { Badge, Card, Group, Text } from "@mantine/core";
+import { Badge, Card, Divider, Group, Text } from "@mantine/core";
 import React from "react";
 import { AccessPoint } from "tabler-icons-react";
 import { getMinuteFormattedString } from "../../utils/helpers";
@@ -7,15 +7,13 @@ import "./style.scss";
 const AnalyticsBoxWidget = (props) => {
   const { sensorData, liveTime } = props;
   return (
-    <Card
-      shadow="xs"
-      radius="lg"
-      p="lg"
-      className={`sbd-analytics-box-widget ${
-        sensorData.isDormant ? "sbd-analytics-box-widget--inactive" : ""
-      }`}
-    >
-      <Card.Section withBorder inheritPadding py="xs">
+    <div className="sbd-analytics-box-widget-wrapper">
+      <div className="sbd-analytics-box-widget-loader" />
+      <div
+        className={`sbd-analytics-box-widget ${
+          sensorData.isDormant ? "sbd-analytics-box-widget--inactive" : ""
+        }`}
+      >
         {sensorData.isDormant && (
           <Badge color="red" size="xs" radius="sm" variant="filled">
             INACTIVE
@@ -28,9 +26,7 @@ const AnalyticsBoxWidget = (props) => {
           </Text>
         </Group>
         <Text size="md">{sensorData.title}</Text>
-      </Card.Section>
-
-      <Card.Section inheritPadding py="xs">
+        <Divider />
         {!sensorData.isDormant && (
           <Group spacing="xs">
             <Text size="xs" weight={600} color="red">
@@ -42,8 +38,8 @@ const AnalyticsBoxWidget = (props) => {
         <Text size="sm" color="dimmed">
           {sensorData.sensorType}
         </Text>
-      </Card.Section>
-    </Card>
+      </div>
+    </div>
   );
 };
 
