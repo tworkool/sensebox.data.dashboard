@@ -133,9 +133,9 @@ const DashboardBoxInfo = () => {
       } else {
         if (old.length >= CONSTANTS.MAX_BOOKMARKED_BOXES) {
           showNotification({
-            id: "max_sensebox_limit_notification",
-            title: "MAX LIMIT",
-            message: `Sensebox bookmark limit: ${CONSTANTS.MAX_BOOKMARKED_BOXES}`,
+            id: "max_sensebox_bookmark_limit_notification",
+            title: "Max limit for bookmarks reached",
+            message: "You cannot add more Senseboxes to your bookmarks because you have reached the limit.",
             color: "orange",
           });
           return;

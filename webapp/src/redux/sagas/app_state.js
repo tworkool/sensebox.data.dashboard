@@ -1,9 +1,7 @@
-import { call, put, select, takeEvery, takeLatest } from "redux-saga/effects";
+import { call, put, select, takeLatest } from "redux-saga/effects";
 import {
-  failWeatherDataFetch,
   succeedSenseboxesDataFetch,
   failSenseboxesDataFetch,
-  succeedWeatherDataFetch,
   succeedSenseboxInfoDataFetch,
   failSenseboxInfoDataFetch,
   succeedSenseboxDBMiscDataFetch,
@@ -14,23 +12,21 @@ import {
   failGeocodingDataFetch,
 } from "../actions/app_state";
 import {
-    GEOCODING_FETCH_REQUESTED,
+  GEOCODING_FETCH_REQUESTED,
   SENSEBOXES_FETCH_REQUESTED,
   SENSEBOX_DB_MISC_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_REQUESTED,
   SENSEBOX_SENSOR_FETCH_REQUESTED,
-  WEATHER_DATA_FETCH_REQUESTED,
 } from "../action_types/app_state";
 import BACKEND from "./api/backend";
-import { showNotification, updateNotification } from "@mantine/notifications";
-import moment from "moment";
+import { showNotification } from "@mantine/notifications";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
 import {
   getSenseboxInfoData,
-  getSenseboxSensorData,
 } from "../selectors/appState";
 
-function* completeSagaAction(success, action, actionValue) {
+// TODO: implement generic resolution generator function for sagas
+/* function* completeSagaAction(success, action, actionValue) {
   yield put(action({ ...actionValue }));
 
   showNotification({
@@ -39,9 +35,10 @@ function* completeSagaAction(success, action, actionValue) {
     message: success ? "FETCH SUCCESS" : "FETCH ERROR",
     color: success ? "green" : "red",
   });
-}
+} */
 
-function* fetchWeatherData(action) {
+// TODO: is this needed?
+/* function* fetchWeatherData(action) {
   showNotification({
     id: "fetch_weather_data_notification",
     title: "Loading Data",
@@ -76,6 +73,15 @@ function* fetchWeatherData(action) {
       color: "red",
     });
   }
+} */
+
+function buildSagaFailNotificationConfig(id_part, message) {
+  return {
+    id: `fetch_${id_part}_notification${Date.now()}`,
+    title: "Fetch failed!",
+    message: message,
+    color: "red",
+  };
 }
 
 function* fetchSenseboxesData(action) {
@@ -102,12 +108,11 @@ function* fetchSenseboxesData(action) {
         senseboxesData: { data: undefined, isLoading: false },
       })
     );
-    showNotification({
-      id: "fetch_senseboxes_data_notification",
-      title: "FETCH FAIL",
-      message: "Could not fetch weather data",
-      color: "red",
-    });
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "senseboxes_data",
+      "Could not fetch Senseboxes"
+    );
+    showNotification(notificationConfig);
   }
 }
 
@@ -161,12 +166,12 @@ function* fetchSenseboxInfoData(action) {
         senseboxSensorData: undefined,
       })
     );
-    showNotification({
-      id: "fetch_senseboxinfo_data_notification",
-      title: "FETCH FAIL",
-      message: "Could not fetch weather data",
-      color: "red",
-    });
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "senseboxinfo_data",
+      "Could not fetch info for Sensebox"
+    );
+    showNotification(notificationConfig);
   }
 }
 
@@ -186,9 +191,6 @@ function* fetchSenseboxDBMiscData(action) {
           senseboxDBMiscData: { data: data },
         })
       );
-      /* completeSagaAction(true, succeedSenseboxDBMiscDataFetch, {
-        senseboxDBMiscData: { data: data },
-      }); */
     } else {
       throw response;
     }
@@ -198,12 +200,12 @@ function* fetchSenseboxDBMiscData(action) {
         senseboxDBMiscData: { data: undefined },
       })
     );
-    showNotification({
-      id: "fetch_sensebox_db_misc_data_notification",
-      title: "FETCH FAIL",
-      message: "Could not fetch weather data",
-      color: "red",
-    });
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "sensebox_db_misc_data",
+      "Could not fetch general Sensebox data overview"
+    );
+    showNotification(notificationConfig);
   }
 }
 
@@ -253,12 +255,14 @@ function* fetchSenseboxSensorData(action) {
         senseboxSensorData: undefined,
       })
     );
-    showNotification({
-      id: "fetch_sensebox_sensor_data_notification",
-      title: "FETCH FAIL",
-      message: "Could not fetch weather data",
-      color: "red",
-    });
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "sensebox_sensor_data",
+      `Could not fetch sensor data for Sensebox (ID: ${
+        action.payload.senseboxID ?? "NO_ID"
+      })`
+    );
+    showNotification(notificationConfig);
   }
 }
 
@@ -290,18 +294,18 @@ function* fetchGeocodingData(action) {
         geocodingData: undefined,
       })
     );
-    showNotification({
-      id: "fetch_geocoding_data_notification",
-      title: "FETCH FAIL",
-      message: "Could not fetch weather data",
-      color: "red",
-    });
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "geocoding_data",
+      "Could not fetch detailed geocoding location"
+    );
+    showNotification(notificationConfig);
   }
 }
 
-function* watchFetchWeatherData() {
+/* function* watchFetchWeatherData() {
   yield takeLatest(WEATHER_DATA_FETCH_REQUESTED, fetchWeatherData);
-}
+} */
 
 function* watchFetchSenseboxesData() {
   yield takeLatest(SENSEBOXES_FETCH_REQUESTED, fetchSenseboxesData);
@@ -324,7 +328,6 @@ function* watchFetchGeocodingData() {
 }
 
 export {
-  watchFetchWeatherData,
   watchFetchSenseboxesData,
   watchFetchSenseboxInfoData,
   watchFetchSenseboxDBMiscData,
