@@ -7,6 +7,9 @@ const CONSTANTS = {
     DEFAULT_NULL_FALLBACK_VALUE: "-",
     MIN_LIVE_UPDATE_DISPATCH_INTERVAL: 60, //s
     MAX_LIVE_UPDATE_DISPATCH_INTERVAL: 360, //s - 6 minutes
+    ROUTING:{
+        SENSEBOX_ID: "boxid"
+    }
 };
 
 export default CONSTANTS;

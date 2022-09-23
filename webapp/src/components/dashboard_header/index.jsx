@@ -22,7 +22,7 @@ import {
 } from "@mantine/core";
 import { Bookmark, Search } from "tabler-icons-react";
 import "./style.scss";
-import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import NoDataContainer from "../../containers/no_data";
@@ -32,7 +32,7 @@ import { DashboardContext } from "../../pages/dashboard";
 import CONSTANTS from "../../utils/constants";
 
 const DashboardHeader = () => {
-  const navigate = useNavigate();
+  const [, setSearch] = useSearchParams();
   const dispatch = useDispatch();
   const dashboardContext = useContext(DashboardContext);
   const senseboxesData = useSelector(getSenseboxesData);
@@ -71,10 +71,10 @@ const DashboardHeader = () => {
 
   const handleSenseboxSelect = useCallback(
     (id) => {
-      navigate(`../dashboard/${id}`, { replace: true });
+      setSearch({ [CONSTANTS.ROUTING.SENSEBOX_ID]: id });
       setOpened(false);
     },
-    [navigate]
+    [setSearch]
   );
 
   return (

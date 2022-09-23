@@ -1,29 +1,27 @@
-import { ActionIcon, Alert, Tabs } from "@mantine/core";
+import { Alert, Tabs } from "@mantine/core";
 import React, { createContext, useEffect, useState } from "react";
 import { useMemo } from "react";
 import {
   AccessPoint,
   AlertCircle,
-  BrandGithub,
   DeviceDesktopAnalytics,
   MapSearch,
 } from "tabler-icons-react";
 import DashboardBoxInfo from "../../components/dashboard_box_info";
 import DashboardHeader from "../../components/dashboard_header";
-import DetailedDataContainer from "../../containers/detailed_data";
 import LiveAnalyticsContainer from "../../containers/live_analytics";
-import DataMapContainer from "../../containers/data_map";
 import "./style.scss";
-import { useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxInfoData } from "../../redux/selectors/appState";
 import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
 import DashboardFooter from "../../components/dashboard_footer";
+import CONSTANTS from "../../utils/constants";
 
 const DashboardContext = createContext();
 
 const DashboardContextProvider = (props) => {
-  const params = useParams();
+  const [search] = useSearchParams();
   const dispatch = useDispatch();
   const senseboxInfoData = useSelector(getSenseboxInfoData);
   const [selectedSenseboxId, setSelectedSenseboxId] = useState();
@@ -40,15 +38,14 @@ const DashboardContextProvider = (props) => {
   }, [senseboxInfoData]);
 
   useEffect(() => {
-    if (!params || Object.keys(params).length === 0) return;
-    const param = params?.boxid;
-    if (param === null || param === undefined) {
+    const param = search.get(CONSTANTS.ROUTING.SENSEBOX_ID);
+    if (!param) {
       setSelectedSenseboxId(undefined);
     } else {
       dispatch(requestSenseboxInfoDataFetch({ id: param }));
       setIsLoadingSenseboxInfoData(true);
     }
-  }, [params, dispatch]);
+  }, [search, dispatch]);
 
   return (
     <DashboardContext.Provider
