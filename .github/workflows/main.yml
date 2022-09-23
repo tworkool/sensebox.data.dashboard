@@ -24,12 +24,10 @@ jobs:
 
       - name: Create environment variables
         env:
-          MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN: ${{secrets.MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN}}
-          MAPBOX_MAP_TOKEN: ${{secrets.MAPBOX_MAP_TOKEN}}
+          MAPBOX_PUBLIC_KEY: ${{secrets.MAPBOX_PUBLIC_KEY}}
         run: |
           touch .env
-          echo MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN=${{secrets.MAPBOX_REVERSE_GEOCODING_API_ACCESS_TOKEN}} >> .env
-          echo MAPBOX_MAP_TOKEN=${{secrets.MAPBOX_MAP_TOKEN}} >> .env
+          echo MAPBOX_PUBLIC_KEY=${{secrets.MAPBOX_PUBLIC_KEY}} >> .env
 
       - name: Install dependencies
         run: npm install
