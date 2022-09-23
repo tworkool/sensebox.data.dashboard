@@ -5,9 +5,6 @@ import { Map } from "react-map-gl";
 import ENVIRONMENT from "../../utils/env";
 import "./style.scss";
 
-// Set your mapbox access token here
-const MAPBOX_ACCESS_TOKEN = ENVIRONMENT.MAPBOX_PUBLIC_KEY;
-
 // Viewport settings
 const INITIAL_VIEW_STATE = {
   longitude: -122.41669,
@@ -35,11 +32,11 @@ const DeckGLMap = () => {
       controller={true}
       layers={layers}
     >
-      <Map
-        mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
+      {/*       <Map
+        mapboxAccessToken={ENVIRONMENT.MAPBOX_PUBLIC_KEY}
         style={{ width: 600, height: 400 }}
         mapStyle="mapbox://styles/tworkool/cl79px1g3001g14nut07xac6k"
-      />
+      /> */}
     </DeckGL>
   );
 };
