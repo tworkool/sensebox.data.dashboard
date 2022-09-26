@@ -9,7 +9,20 @@ import "./style.scss";
 
 const root = document.getElementById("root");
 ReactDOM.render(
-  <MantineProvider>
+  <MantineProvider
+    withGlobalStyles
+    withNormalizeCSS
+    withCSSVariables
+    theme={{
+      breakpoints: {
+        xs: 320,
+        sm: 375,
+        md: 767,
+        lg: 1023,
+        xl: 1440,
+      },
+    }}
+  >
     <NotificationsProvider>
       <ReduxStoreProvider store={store}>
         <App />

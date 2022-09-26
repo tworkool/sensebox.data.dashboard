@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import { requestSenseboxDBMiscDataFetch } from "../../redux/actions/app_state";
 import { getSenseboxDBMiscData } from "../../redux/selectors/appState";
 import { version } from "../../../package.json";
+import CONSTANTS from "../../utils/constants";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -60,8 +61,8 @@ const HomePage = () => {
                 </Anchor>
               </Title>
             </Stack>
-            <Group grow>
-              <Stack spacing="xl" justify="space-around">
+            <div className="sbd-home-info">
+              <div className="sbd-home-info__stack">
                 <Text>
                   With this dashboard you can view the most important sensor
                   data for any Sensebox, presented in a usability friendly way.
@@ -70,7 +71,7 @@ const HomePage = () => {
                 </Text>
 
                 {senseboxDBMiscData?.data ? (
-                  <Group>
+                  <div className="sbd-home-info__stack__data">
                     <div>
                       <Text size="xl" weight={500}>
                         {senseboxDBMiscData.data.registeredBoxes}
@@ -89,38 +90,39 @@ const HomePage = () => {
                       </Text>
                       <Text size="sm">... within the Last Hour</Text>
                     </div>
-                  </Group>
+                  </div>
                 ) : (
                   <div style={{ height: 52 }}>
                     <LoadingOverlay visible={isLoadingMiscData} />
                   </div>
                 )}
-              </Stack>
+              </div>
               <Image
                 className="sbd-home-page-preview-image"
                 fit="contain"
-                width={500}
                 radius="md"
                 src={DashboardPreviewImage}
                 alt="Dashboard Preview"
                 withPlaceholder
               />
-            </Group>
+            </div>
           </Stack>
         </Container>
-        <Center>
-          <Button
-            color="dark"
-            radius="xl"
-            size="xl"
-            component={Link}
-            to="/dashboard"
-          >
-            Go to Dashboard
-          </Button>
-        </Center>
-        <Container size={1200} className="sbd-home-page__feature-container">
-          <Group position="center" grow>
+        <div className="sbd-dashboard-btn-container">
+          <Center>
+            <Button
+              color="dark"
+              radius="xl"
+              size="xl"
+              component={Link}
+              to={`/dashboard?${CONSTANTS.ROUTING.SENSEBOX_ID}=61bc908c67e5ad001b462766`}
+            >
+              Go to Dashboard
+            </Button>
+          </Center>
+        </div>
+        <Container size={1200} className="sbd-home-feature-container">
+          <div className="sbd-home-feature-container__group">
             <Stack align="center" spacing="lg">
               <AccessPoint size={48} />
               <Text align="center">
@@ -142,7 +144,7 @@ const HomePage = () => {
                 interactive map (soon available)
               </Text>
             </Stack>
-          </Group>
+          </div>
         </Container>
       </Stack>
     </div>
