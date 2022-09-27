@@ -189,7 +189,9 @@ const LiveAnalyticsContainer = () => {
     <div className="sbd-live-analytics-container sbd-dashboard-container">
       <LoadingOverlay
         visible={dashboardContext.isLoadingSenseboxInfoData}
-        overlayBlur={1}
+        overlayBlur={0.5}
+        overlayOpacity={0.5}
+        className="sbd-live-analytics-container__loader"
         //loaderProps={{ size: "sm" }}
       />
       {!senseboxInfoData?.data || !filteredSenseboxInfoSensorData ? (

@@ -1,4 +1,5 @@
 @import "../../utils/colors";
+@import "../../utils/mixins";
 @import "../../components/dashboard_header/dimensions";
 @import "../../components/dashboard_footer/dimensions";
 @import "../../components/dashboard_box_info/dimensions";
@@ -44,19 +45,12 @@ $content-analytics-sections-height: 40px;
     background-color: rgb(176, 127, 255);
     display: flex;
 
-    &__box-info {
-        width: $dashboard-box-info-width;
-        height: 100%;
-        background-color: white;
-        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-        z-index: 2;
-        padding: 10px 8px 10px 20px;
-        display: flex;
-        flex-direction: column;
-    }
-
     &__analytics {
         width: calc(100% - $dashboard-box-info-width);
+        @include responsive(desktop-down) {
+            width: calc(100% - $dashboard-box-info-width-mobile--collapsed);
+            margin-left: $dashboard-box-info-width-mobile--collapsed;
+        }
         height: 100%;
         background-color: #f7f7f7;
         overflow: auto;

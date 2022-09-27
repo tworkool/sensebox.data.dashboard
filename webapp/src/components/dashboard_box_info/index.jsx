@@ -1,8 +1,15 @@
-import React from "react";
+import React, {
+  useContext,
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import {
   ActionIcon,
   Alert,
   Badge,
+  Button,
   Divider,
   Group,
   LoadingOverlay,
@@ -11,7 +18,14 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { AlertCircle, Bookmark, MapPin, ScreenShare } from "tabler-icons-react";
+import {
+  AlertCircle,
+  Bookmark,
+  MapPin,
+  ScreenShare,
+  Box as SenseboxIcon,
+  BoxOff,
+} from "tabler-icons-react";
 import "./style.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,14 +34,9 @@ import {
 } from "../../redux/selectors/appState";
 import { DashboardContext } from "../../pages/dashboard";
 import moment from "moment";
-import { useContext } from "react";
-import { useMemo } from "react";
-import { useState } from "react";
 import CONSTANTS from "../../utils/constants";
-import { useLocalStorage } from "@mantine/hooks";
-import { useCallback } from "react";
+import { useLocalStorage, useClickOutside } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { useEffect } from "react";
 import { requestGeocodingDataFetch } from "../../redux/actions/app_state";
 
 const DashboardBoxInfo = () => {
@@ -41,6 +50,11 @@ const DashboardBoxInfo = () => {
     key: "bookmarked-senseboxes",
     defaultValue: [],
   });
+  const [isExpanded, setIsExpanded] = useState(true);
+  const ref = useClickOutside(() => setIsExpanded(false), null, [
+    document.getElementsByClassName("sbd-dashboard-header")[0],
+    document.getElementsByClassName("sbd-dashboard-footer")[0],
+  ]);
 
   const diffFromCreateDate = useMemo(() => {
     if (!senseboxInfoData?.data?.createdAt) return "";
@@ -71,7 +85,7 @@ const DashboardBoxInfo = () => {
     return (
       <Skeleton height={150} visible={isLoadingMap}>
         <iframe
-          style={{ border: "none" }}
+          style={{ border: "none", width: "100%" }}
           onLoad={() => {
             setIsLoadingMap(false);
           }}
@@ -97,12 +111,8 @@ const DashboardBoxInfo = () => {
       : geocodingData?.data?.locationExact;
     //if (!geoCodingLocation || !geocodingData?.data?.attribution) return null;
     return (
-      <Tooltip
-        multiline
-        width={300}
-        label={geocodingData?.data?.attribution}
-      >
-        <Skeleton visible={isLoadingGeocodingData}>
+      <Tooltip multiline width={300} label={geocodingData?.data?.attribution}>
+        <Skeleton visible={isLoadingGeocodingData} width="min(100%, 200px)">
           {!!geoCodingLocation && (
             <Group spacing="xs">
               <MapPin size={18} strokeWidth={1.5} color={"black"} />
@@ -135,7 +145,8 @@ const DashboardBoxInfo = () => {
           showNotification({
             id: "max_sensebox_bookmark_limit_notification",
             title: "Max limit for bookmarks reached",
-            message: "You cannot add more Senseboxes to your bookmarks because you have reached the limit.",
+            message:
+              "You cannot add more Senseboxes to your bookmarks because you have reached the limit.",
             color: "orange",
           });
           return;
@@ -148,60 +159,103 @@ const DashboardBoxInfo = () => {
   );
 
   return (
-    <div className="sbd-dashboard-content__box-info">
-      <LoadingOverlay
-        visible={dashboardContext.isLoadingSenseboxInfoData}
-        overlayBlur={1}
-      />
-      {!senseboxInfoData.data && (
-        <Alert
-          icon={<AlertCircle size={16} />}
-          title="No Sensebox Selected"
-          color="orange"
-        />
+    <div
+      className={`sbd-dashboard-box-info ${
+        isExpanded
+          ? "sbd-dashboard-box-info--expanded"
+          : "sbd-dashboard-box-info--collapsed"
+      }`}
+      ref={ref}
+    >
+      {!isExpanded && (
+        <ActionIcon
+          size="lg"
+          variant="subtle"
+          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--expand"
+          onClick={(_) => {
+            setIsExpanded(true);
+          }}
+        >
+          <SenseboxIcon size={28} strokeWidth={2} />
+        </ActionIcon>
       )}
-      {senseboxInfoData.data && (
-        <>
-          <div>
-            <Text size="lg" weight={500}>
-              {senseboxInfoData.data.name}
-            </Text>
-            <Text size="xs" color="dimmed">
-              {senseboxInfoData.data._id}
-            </Text>
+      <div className="sbd-dashboard-box-info__content">
+        {isExpanded && (
+          <>
+            <LoadingOverlay
+              visible={dashboardContext.isLoadingSenseboxInfoData}
+              overlayBlur={0}
+            />
+          </>
+        )}
+        {!senseboxInfoData.data && (
+          <Alert
+            icon={<AlertCircle size={16} />}
+            title="No Sensebox Selected"
+            color="orange"
+          >
+            Usually information about the selected Sensebox is displayed here.
+            But it seems, you have not selected a Sensebox yet. You can do so by
+            using the search field in the top right corner.
+          </Alert>
+        )}
+        {senseboxInfoData.data && (
+          <div className="sbd-dashboard-box-info__data-container">
+            <Button
+              variant="light"
+              color="pink"
+              radius="xs"
+              compact
+              className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
+              rightIcon={<BoxOff size={16} />}
+              onClick={(_) => {
+                setIsExpanded(false);
+              }}
+            >
+              hide box info
+            </Button>
+            <div>
+              <Text size="lg" weight={500}>
+                {senseboxInfoData.data.name}
+              </Text>
+              <Text size="xs" color="dimmed">
+                {senseboxInfoData.data._id}
+              </Text>
+              <Space h="xs" />
+              <Group spacing="xs">
+                {senseboxInfoData?.data?.exposure !== "unknown" && (
+                  <Badge color="green" size="sm" radius="sm" variant="dot">
+                    {senseboxInfoData.data.exposure}
+                  </Badge>
+                )}
+                <Badge color="grape" size="sm" radius="sm" variant="dot">
+                  {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
+                </Badge>
+                <Badge color="yellow" size="sm" radius="sm" variant="dot">
+                  {diffFromCreateDate}
+                </Badge>
+                {moment().diff(
+                  moment(senseboxInfoData.data.updatedAt),
+                  "days"
+                ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
+                  <Badge color="red" size="sm" radius="sm" variant="filled">
+                    INACTIVE
+                  </Badge>
+                ) : (
+                  <Badge color="gray" size="sm" radius="sm" variant="filled">
+                    ACTIVE
+                  </Badge>
+                )}
+              </Group>
+            </div>
             <Space h="xs" />
-            <Group spacing="xs">
-              {senseboxInfoData?.data?.exposure !== "unknown" && (
-                <Badge color="green" size="sm" radius="sm" variant="dot">
-                  {senseboxInfoData.data.exposure}
-                </Badge>
-              )}
-              <Badge color="grape" size="sm" radius="sm" variant="dot">
-                {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
-              </Badge>
-              <Badge color="yellow" size="sm" radius="sm" variant="dot">
-                {diffFromCreateDate}
-              </Badge>
-              {moment().diff(moment(senseboxInfoData.data.updatedAt), "days") >
-              CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
-                <Badge color="red" size="sm" radius="sm" variant="filled">
-                  INACTIVE
-                </Badge>
-              ) : (
-                <Badge color="gray" size="sm" radius="sm" variant="filled">
-                  ACTIVE
-                </Badge>
-              )}
-            </Group>
-          </div>
-          <Space h="xs" />
-          <Text size="xs">{senseboxInfoData.data.description}</Text>
-          <Divider my="sm" label="Position" labelPosition="center" />
-          {locationMapElement()}
-          <Space h="xs" />
-          {locationGeocodingElement()}
-          {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
-          {/* <Skeleton visible={false}>
+            <Text size="xs">{senseboxInfoData.data.description}</Text>
+            <Divider my="sm" label="Position" labelPosition="center" />
+            {locationMapElement()}
+            <Space h="xs" />
+            {locationGeocodingElement()}
+            {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
+            {/* <Skeleton visible={false}>
             <Image
               //className="sbd-home-page-preview-image"
               fit="contain"
@@ -211,47 +265,48 @@ const DashboardBoxInfo = () => {
               withPlaceholder
             />
           </Skeleton> */}
-          <div style={{ marginTop: "auto" }}>
-            <Divider
-              my="sm"
-              label="Actions"
-              labelPosition="center"
-              style={{ marginTop: "auto" }}
-            />
-            <Group spacing="xs">
-              <Tooltip
-                label={
-                  isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"
-                }
-              >
-                <ActionIcon
-                  size="lg"
-                  variant={isBookmarked ? "light" : "transparent"}
-                  color={isBookmarked ? "orange" : "gray"}
-                  onClick={(_) => {
-                    handleBookmarkSaveAction({
-                      name: senseboxInfoData.data.name,
-                      _id: senseboxInfoData.data._id,
-                    });
-                  }}
+            <div style={{ marginTop: "auto" }}>
+              <Divider
+                my="sm"
+                label="Actions"
+                labelPosition="center"
+                style={{ marginTop: "auto" }}
+              />
+              <Group spacing="xs">
+                <Tooltip
+                  label={
+                    isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"
+                  }
                 >
-                  <Bookmark size={26} />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label="View Box on Opensensemap">
-                <ActionIcon
-                  size="lg"
-                  component="a"
-                  href={`https://opensensemap.org/explore/${dashboardContext.selectedSenseboxId}`}
-                  target="_blank"
-                >
-                  <ScreenShare size={26} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
+                  <ActionIcon
+                    size="lg"
+                    variant={isBookmarked ? "light" : "transparent"}
+                    color={isBookmarked ? "orange" : "gray"}
+                    onClick={(_) => {
+                      handleBookmarkSaveAction({
+                        name: senseboxInfoData.data.name,
+                        _id: senseboxInfoData.data._id,
+                      });
+                    }}
+                  >
+                    <Bookmark size={26} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label="View Box on Opensensemap">
+                  <ActionIcon
+                    size="lg"
+                    component="a"
+                    href={`https://opensensemap.org/explore/${dashboardContext.selectedSenseboxId}`}
+                    target="_blank"
+                  >
+                    <ScreenShare size={26} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 @import "./dimensions";
 @import "../../utils/colors";
+@import "../../utils/mixins";
 
 .sbd-search-grid {
     grid-template-columns: auto min-content;
@@ -10,6 +11,9 @@
 .sbd-dashboard-header {
     height: $dashboard-header-height;
     padding: 0 20px;
+    @include responsive(desktop-down) {
+        padding: 0 8px;
+    }
     background-color: white;
     border-bottom: 1px solid $gray-dark;
     z-index: 5;

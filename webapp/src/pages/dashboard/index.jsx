@@ -57,23 +57,6 @@ const DashboardContextProvider = (props) => {
 };
 
 const DashboardPage = () => {
-  const isMobileDevice = useMemo(() => window.screen.width < 768, []);
-  if (isMobileDevice)
-    return (
-      <div className="sbd-dashboard-not-supported">
-        <Alert
-          icon={<AlertCircle size={16} />}
-          radius="xs"
-          title="Oops!"
-          color="orange"
-        >
-          {
-            "This page does currently not support mobile devices :( But this feature is being worked on and will be supported in the future!"
-          }
-        </Alert>
-      </div>
-    );
-
   return (
     <div className="sbd-dashboard-main">
       <DashboardHeader />

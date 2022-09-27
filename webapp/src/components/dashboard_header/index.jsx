@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
+  ActionIcon,
   Box,
   Button,
   Center,
@@ -86,6 +87,7 @@ const DashboardHeader = () => {
           </Indicator>
         </div>
         <TextInput
+          className="sbd-hide--phone"
           variant="filled"
           onClick={() => {
             setOpened(true);
@@ -102,17 +104,28 @@ const DashboardHeader = () => {
           }
           styles={{ rightSection: { pointerEvents: "none" } }}
         />
+        <Button
+          leftIcon={<Search size={18} />}
+          variant="light"
+          color="gray"
+          onClick={() => {
+            setOpened(true);
+          }}
+          className="sbd-hide--tablet-and-desktop"
+        >
+          Find Sensebox
+        </Button>
         <Modal
           size={"lg"}
           opened={opened}
           onClose={() => setOpened(false)}
-          title="Search Sensebox"
+          title="Find a Sensebox"
         >
           <div className="sbd-search-grid">
             <FocusTrap active>
               <TextInput
                 defaultValue={searchContent}
-                placeholder="Find a SenseBox"
+                placeholder="Search by name"
                 icon={<Search size={16} />}
                 onChange={(e) => {
                   setSearchContent(e.target.value);
@@ -140,7 +153,9 @@ const DashboardHeader = () => {
             {senseboxesData?.data === undefined ||
             senseboxesData?.data?.length === 0 ? (
               <Center style={{ height: 200 }}>
-                <NoDataContainer />
+                <NoDataContainer>
+                  Search for a Sensebox by its name in the field above
+                </NoDataContainer>
               </Center>
             ) : (
               senseboxesData.data.map((e, i) => (

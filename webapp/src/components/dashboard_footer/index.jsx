@@ -6,11 +6,11 @@ import "./style.scss";
 
 const DashboardFooter = () => {
   return (
-    <div className="sbd-dashboard-page-footer">
-      <div className="sbd-dashboard-page-footer__content">
+    <div className="sbd-dashboard-footer">
+      <div className="sbd-dashboard-footer__content">
         <Group>
           <Text>Sensebox Data Dashboard</Text>
-          <Text size="xs" color="dimmed">{`version ${version}`}</Text>
+          <Text size="xs" color="dimmed">{`v${version}`}</Text>
           <ActionIcon
             color="dark"
             variant="subtle"

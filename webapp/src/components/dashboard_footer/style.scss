@@ -1,11 +1,15 @@
 @import "./dimensions";
 @import "../../utils/colors";
+@import "../../utils/mixins";
 
-.sbd-dashboard-page-footer {
+.sbd-dashboard-footer {
     height: $dashboard-footer-height;
     background-color: white;
     border-top: 1px solid $gray-dark;
     padding: 0 20px;
+    @include responsive(desktop-down) {
+        padding: 0 8px;
+    }
     z-index: 5;
 
     &__content {

@@ -81,7 +81,7 @@ const LiveAnalyticsItem = (props) => {
             <LoadingOverlay
               visible={isLoading}
               transitionDuration={1000}
-              overlayOpacity={0.2}
+              overlayOpacity={1}
               overlayBlur={2}
               loaderProps={{ color: "dark", variant: "dots" }}
             />
