@@ -4,10 +4,14 @@
 
 .sbd-dashboard-footer {
     height: $dashboard-footer-height;
+    @include responsive(phone) {
+        padding: 0 12px;
+        height: $dashboard-footer-height-phone;
+    }
     background-color: white;
     border-top: 1px solid $gray-dark;
     padding: 0 20px;
-    @include responsive(desktop-down) {
+    @include responsive(tablet) {
         padding: 0 8px;
     }
     z-index: 5;
@@ -20,5 +24,26 @@
         justify-content: space-between;
         align-items: center;
         font-size: 0.75rem;
+
+        &__version {
+            @include responsive(phone) {
+                padding: 2px 4px;
+                border-radius: var(--mantine-radius-sm);
+                background-color: var(--mantine-color-gray-2);
+                font-size: 10px;
+            }
+        }
+
+        &__title {
+            @include responsive(phone) {
+                display: none;
+            }
+        }
+
+        &__copyright {
+            @include responsive(phone) {
+                font-size: 12px;
+            }
+        }
     }
 }

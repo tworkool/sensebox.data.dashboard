@@ -12,6 +12,7 @@ import {
   Button,
   Divider,
   Group,
+  Image,
   LoadingOverlay,
   Skeleton,
   Space,
@@ -50,11 +51,13 @@ const DashboardBoxInfo = () => {
     key: "bookmarked-senseboxes",
     defaultValue: [],
   });
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const ref = useClickOutside(() => setIsExpanded(false), null, [
     document.getElementsByClassName("sbd-dashboard-header")[0],
     document.getElementsByClassName("sbd-dashboard-footer")[0],
+    document.getElementsByClassName("sbd-dashboard-box-info")[0],
   ]);
+  /* const ref = useClickOutside(() => setIsExpanded(false)); */
 
   const diffFromCreateDate = useMemo(() => {
     if (!senseboxInfoData?.data?.createdAt) return "";
@@ -179,133 +182,146 @@ const DashboardBoxInfo = () => {
           <SenseboxIcon size={28} strokeWidth={2} />
         </ActionIcon>
       )}
-      <div className="sbd-dashboard-box-info__content">
-        {isExpanded && (
-          <>
+      <div className="sbd-dashboard-box-info__scroll-container">
+        <div className="sbd-dashboard-box-info__content">
+          {isExpanded && (
             <LoadingOverlay
               visible={dashboardContext.isLoadingSenseboxInfoData}
               overlayBlur={0}
             />
-          </>
-        )}
-        {!senseboxInfoData.data && (
-          <Alert
-            icon={<AlertCircle size={16} />}
-            title="No Sensebox Selected"
-            color="orange"
-          >
-            Usually information about the selected Sensebox is displayed here.
-            But it seems, you have not selected a Sensebox yet. You can do so by
-            using the search field in the top right corner.
-          </Alert>
-        )}
-        {senseboxInfoData.data && (
+          )}
+
           <div className="sbd-dashboard-box-info__data-container">
-            <Button
-              variant="light"
-              color="pink"
-              radius="xs"
-              compact
-              className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
-              rightIcon={<BoxOff size={16} />}
-              onClick={(_) => {
-                setIsExpanded(false);
-              }}
-            >
-              hide box info
-            </Button>
-            <div>
-              <Text size="lg" weight={500}>
-                {senseboxInfoData.data.name}
-              </Text>
-              <Text size="xs" color="dimmed">
-                {senseboxInfoData.data._id}
-              </Text>
-              <Space h="xs" />
-              <Group spacing="xs">
-                {senseboxInfoData?.data?.exposure !== "unknown" && (
-                  <Badge color="green" size="sm" radius="sm" variant="dot">
-                    {senseboxInfoData.data.exposure}
-                  </Badge>
-                )}
-                <Badge color="grape" size="sm" radius="sm" variant="dot">
-                  {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
-                </Badge>
-                <Badge color="yellow" size="sm" radius="sm" variant="dot">
-                  {diffFromCreateDate}
-                </Badge>
-                {moment().diff(
-                  moment(senseboxInfoData.data.updatedAt),
-                  "days"
-                ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
-                  <Badge color="red" size="sm" radius="sm" variant="filled">
-                    INACTIVE
-                  </Badge>
-                ) : (
-                  <Badge color="gray" size="sm" radius="sm" variant="filled">
-                    ACTIVE
-                  </Badge>
-                )}
-              </Group>
-            </div>
-            <Space h="xs" />
-            <Text size="xs">{senseboxInfoData.data.description}</Text>
-            <Divider my="sm" label="Position" labelPosition="center" />
-            {locationMapElement()}
-            <Space h="xs" />
-            {locationGeocodingElement()}
-            {/* <Divider my="sm" label="Images" labelPosition="center" /> */}
-            {/* <Skeleton visible={false}>
-            <Image
-              //className="sbd-home-page-preview-image"
-              fit="contain"
-              radius="md"
-              src={`https://opensensemap.org/userimages/${senseboxInfoData.data.image}`}
-              alt="Dashboard Preview"
-              withPlaceholder
-            />
-          </Skeleton> */}
-            <div style={{ marginTop: "auto" }}>
-              <Divider
-                my="sm"
-                label="Actions"
-                labelPosition="center"
-                style={{ marginTop: "auto" }}
-              />
-              <Group spacing="xs">
-                <Tooltip
-                  label={
-                    isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"
-                  }
+            {!senseboxInfoData?.data && (
+              <Alert
+                icon={<AlertCircle size={16} />}
+                title="No Sensebox Selected"
+                color="orange"
+              >
+                Usually information about the selected Sensebox is displayed
+                here. But it seems, you have not selected a Sensebox yet. You
+                can do so by using the search field in the top right corner.
+              </Alert>
+            )}
+            {senseboxInfoData?.data && (
+              <>
+                <Button
+                  variant="light"
+                  color="pink"
+                  radius="xs"
+                  compact
+                  className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
+                  rightIcon={<BoxOff size={16} />}
+                  onClick={(_) => {
+                    setIsExpanded(false);
+                  }}
                 >
-                  <ActionIcon
-                    size="lg"
-                    variant={isBookmarked ? "light" : "transparent"}
-                    color={isBookmarked ? "orange" : "gray"}
-                    onClick={(_) => {
-                      handleBookmarkSaveAction({
-                        name: senseboxInfoData.data.name,
-                        _id: senseboxInfoData.data._id,
-                      });
-                    }}
-                  >
-                    <Bookmark size={26} />
-                  </ActionIcon>
-                </Tooltip>
-                <Tooltip label="View Box on Opensensemap">
-                  <ActionIcon
-                    size="lg"
-                    component="a"
-                    href={`https://opensensemap.org/explore/${dashboardContext.selectedSenseboxId}`}
-                    target="_blank"
-                  >
-                    <ScreenShare size={26} />
-                  </ActionIcon>
-                </Tooltip>
-              </Group>
-            </div>
+                  hide box info
+                </Button>
+                <div>
+                  <Text size="lg" weight={500}>
+                    {senseboxInfoData.data.name}
+                  </Text>
+                  <Text size="xs" color="dimmed">
+                    {senseboxInfoData.data._id}
+                  </Text>
+                  <Space h="xs" />
+                  <Group spacing="xs">
+                    {senseboxInfoData?.data?.exposure !== "unknown" && (
+                      <Badge color="green" size="sm" radius="sm" variant="dot">
+                        {senseboxInfoData.data.exposure}
+                      </Badge>
+                    )}
+                    <Badge color="grape" size="sm" radius="sm" variant="dot">
+                      {`${senseboxInfoData.data.sensors.length} Sensor(s)`}
+                    </Badge>
+                    <Badge color="yellow" size="sm" radius="sm" variant="dot">
+                      {diffFromCreateDate}
+                    </Badge>
+                    {moment().diff(
+                      moment(senseboxInfoData.data.updatedAt),
+                      "days"
+                    ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
+                      <Badge color="red" size="sm" radius="sm" variant="filled">
+                        INACTIVE
+                      </Badge>
+                    ) : (
+                      <Badge
+                        color="gray"
+                        size="sm"
+                        radius="sm"
+                        variant="filled"
+                      >
+                        ACTIVE
+                      </Badge>
+                    )}
+                  </Group>
+                </div>
+                <Space h="xs" />
+                <Text size="xs">{senseboxInfoData.data.description}</Text>
+                <Divider my="sm" label="Position" labelPosition="center" />
+                {locationMapElement()}
+                <Space h="xs" />
+                {locationGeocodingElement()}
+                {senseboxInfoData?.data?.image && (
+                  <>
+                    <Divider my="sm" label="Images" labelPosition="center" />
+                    <Image
+                      className="sbd-dashboard-box-info__image"
+                      fit="cover"
+                      height={250}
+                      radius="sm"
+                      src={`https://opensensemap.org/userimages/${senseboxInfoData.data.image}`}
+                      alt="Sensebox user image"
+                      withPlaceholder
+                    />
+                  </>
+                )}
+                <div style={{ marginTop: "auto" }}>
+                  <Divider
+                    my="sm"
+                    label="Actions"
+                    labelPosition="center"
+                    style={{ marginTop: "auto" }}
+                  />
+                  <Group spacing="xs">
+                    <Tooltip
+                      label={
+                        isBookmarked
+                          ? "Remove from Bookmarks"
+                          : "Add to Bookmarks"
+                      }
+                    >
+                      <ActionIcon
+                        size="lg"
+                        variant={isBookmarked ? "light" : "transparent"}
+                        color={isBookmarked ? "orange" : "gray"}
+                        onClick={(_) => {
+                          handleBookmarkSaveAction({
+                            name: senseboxInfoData.data.name,
+                            _id: senseboxInfoData.data._id,
+                          });
+                        }}
+                      >
+                        <Bookmark size={26} />
+                      </ActionIcon>
+                    </Tooltip>
+                    <Tooltip label="View Box on Opensensemap">
+                      <ActionIcon
+                        size="lg"
+                        component="a"
+                        href={`https://opensensemap.org/explore/${dashboardContext.selectedSenseboxId}`}
+                        target="_blank"
+                      >
+                        <ScreenShare size={26} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
+                </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

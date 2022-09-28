@@ -3,6 +3,9 @@
 @import "../../utils/mixins";
 
 $animation-duration: 0.5s;
+$content-margin-desktop-left: 20px;
+$content-margin-desktop-right: 12px;
+$content-margin-mobile: 12px;
 
 .sbd-dashboard-box-info {
     width: $dashboard-box-info-width;
@@ -31,7 +34,7 @@ $animation-duration: 0.5s;
             width: $dashboard-box-info-width-mobile--collapsed;
             padding: 0;
 
-            & .sbd-dashboard-box-info__data-container {
+            & .sbd-dashboard-box-info__scroll-container {
                 opacity: 0;
                 pointer-events: none;
             }
@@ -45,13 +48,13 @@ $animation-duration: 0.5s;
     }
 
     &__data-container {
-        opacity: 1;
+        /* opacity: 1;
         transition: opacity $animation-duration;
-        min-width: calc($dashboard-box-info-width - 28px);
+        min-width: calc($dashboard-box-info-width - $content-margin-desktop-left - $content-margin-desktop-right);
 
         @include responsive(phone) {
-            min-width: calc(100vw - 20px - 28px);
-        }
+            min-width: calc(100% - $content-margin-mobile * 2);
+        } */
     }
 
     &__icon {
@@ -73,10 +76,35 @@ $animation-duration: 0.5s;
     }
 
     &__content {
-        margin: 10px 8px 10px 20px;
+        margin: 10px $content-margin-desktop-right 10px $content-margin-desktop-left;
 
         @include responsive(desktop-down) {
-            margin: 10px 8px;
+            margin: 10px $content-margin-mobile;
+        }
+    }
+
+    &__image {
+        @include responsive(desktop) {
+            transition: opacity 0.5s;
+            opacity: 0.5;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__scroll-container{
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+
+        opacity: 1;
+        transition: opacity $animation-duration;
+        
+        min-width: $dashboard-box-info-width;
+        @include responsive(phone) {
+            min-width: 60vw;
         }
     }
 }

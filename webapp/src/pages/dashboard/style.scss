@@ -42,6 +42,9 @@ $content-analytics-sections-height: 40px;
 
 .sbd-dashboard-content {
     height: calc(100vh - $dashboard-header-height - $dashboard-footer-height);
+    @include responsive(phone) {
+        height: calc(100vh - $dashboard-header-height - $dashboard-footer-height-phone);
+    }
     background-color: rgb(176, 127, 255);
     display: flex;
 
