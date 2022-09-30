@@ -20,7 +20,7 @@ import {
   ActionIcon,
   LoadingOverlay,
 } from "@mantine/core";
-import { useInterval } from "@mantine/hooks";
+import { useInterval, useWindowEvent } from "@mantine/hooks";
 import "./style.scss";
 import {
   BoxMultiple,
@@ -48,6 +48,7 @@ const LiveAnalyticsContainer = () => {
   const dashboardContext = useContext(DashboardContext);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLiveUpdateEnabled, setIsLiveUpdateEnabled] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const interval = useInterval(
     () => setSeconds((s) => s + CONSTANTS.LIVE_ANALYTICS_INTERVAL_STEPS),
@@ -89,6 +90,9 @@ const LiveAnalyticsContainer = () => {
     dispatch(requestSenseboxSensorDataFetch({ senseboxID: undefined }));
   }, [dispatch]);
 
+  /**
+   * on component mount and on each senseboxinfodata fetch -> manage interval state
+   */
   useEffect(() => {
     const sensors = senseboxInfoData?.data;
     if (sensors && sensors.length != 0) {
@@ -96,17 +100,28 @@ const LiveAnalyticsContainer = () => {
     } else {
       interval.stop();
     }
-    // stop interval timer on dismount
     return interval.stop;
-  }, [interval, senseboxInfoData]);
+  }, [senseboxInfoData, interval]);
+
+  /**
+   * stop/start live updates/refetches in case of window focus or blur
+   */
+  useWindowEvent("focus", () => {
+    setIsLiveUpdateEnabled(true);
+    console.log("FOCUS");
+  });
+  useWindowEvent("blur", () => {
+    setIsLiveUpdateEnabled(false);
+    console.log("BLUR");
+  });
 
   useEffect(() => {
     // TODO: ADJUST SECONDS THIS WITH BOX PROPERTY: UPDATED_AT
-    if (seconds > dispatchInterval) {
+    if (isLiveUpdateEnabled && seconds > dispatchInterval) {
       setSeconds(0);
       refetchSensorData();
     }
-  }, [refetchSensorData, dispatchInterval, seconds]);
+  }, [refetchSensorData, isLiveUpdateEnabled, dispatchInterval, seconds]);
 
   const filterSelection = (text, handleOnClick) => (
     <Badge
@@ -434,7 +449,7 @@ const LiveAnalyticsContainer = () => {
                     <th>Type</th>
                     <th>Measurement</th>
                     <th>Unit</th>
-                    <th>Last Update</th> {/* Last Measurement at */}
+                    <th>Last Update</th>
                   </tr>
                 </thead>
                 <tbody>
