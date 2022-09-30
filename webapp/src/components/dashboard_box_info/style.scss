@@ -105,6 +105,7 @@ $content-margin-mobile: 12px;
         min-width: $dashboard-box-info-width;
         @include responsive(phone) {
             min-width: 60vw;
+            padding-bottom: 40px;
         }
     }
 }

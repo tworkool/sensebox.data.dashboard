@@ -2,6 +2,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    padding-bottom: 20px;
+}
+
+.sbd-live-analytics-content__table-view {
+    padding-bottom: 20px;
 }
 
 .sbd-live-analytics-filters {
@@ -11,6 +16,6 @@
     justify-content: flex-start;
 }
 
-.sbd-live-analytics-container__loader{
+.sbd-live-analytics-container__loader {
     z-index: 1 !important;
 }
