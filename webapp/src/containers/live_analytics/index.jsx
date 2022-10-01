@@ -479,6 +479,7 @@ const LiveAnalyticsContainer = () => {
           <Text
             size="xs"
             color="dimmed"
+            className="sbd-live-analytics-content__table-view__results"
           >{`${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Results`}</Text>
           <Space h="xs" />
 
