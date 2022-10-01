@@ -1,12 +1,22 @@
+@import "../../utils/colors";
+
 .sbd-live-analytics-content__box-view {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 20px;
     padding-bottom: 20px;
 }
 
 .sbd-live-analytics-content__table-view {
     padding-bottom: 20px;
+    overflow: auto;
+
+    /* &__results {
+        background-color: $analytics-bg-color !important;
+        position: sticky;
+        top: 0;
+        z-index: 4;
+    } */
 }
 
 .sbd-live-analytics-filters {
