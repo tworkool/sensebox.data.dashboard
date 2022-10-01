@@ -28,6 +28,7 @@ import {
   X as IconX,
   Table,
   Refresh,
+  FileSettings,
 } from "tabler-icons-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,7 +49,8 @@ const LiveAnalyticsContainer = () => {
   const dashboardContext = useContext(DashboardContext);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isLiveUpdateEnabled, setIsLiveUpdateEnabled] = useState(false);
+  const [isLiveUpdateEnabled, setIsLiveUpdateEnabled] = useState(true);
+  const [isWindowFocused, setIsWindowFocused] = useState(true);
   const [seconds, setSeconds] = useState(0);
   const interval = useInterval(
     () => setSeconds((s) => s + CONSTANTS.LIVE_ANALYTICS_INTERVAL_STEPS),
@@ -107,21 +109,25 @@ const LiveAnalyticsContainer = () => {
    * stop/start live updates/refetches in case of window focus or blur
    */
   useWindowEvent("focus", () => {
-    setIsLiveUpdateEnabled(true);
-    console.log("FOCUS");
+    setIsWindowFocused(true);
   });
   useWindowEvent("blur", () => {
-    setIsLiveUpdateEnabled(false);
-    console.log("BLUR");
+    setIsWindowFocused(false);
   });
 
   useEffect(() => {
     // TODO: ADJUST SECONDS THIS WITH BOX PROPERTY: UPDATED_AT
-    if (isLiveUpdateEnabled && seconds > dispatchInterval) {
+    if (isLiveUpdateEnabled && isWindowFocused && seconds > dispatchInterval) {
       setSeconds(0);
       refetchSensorData();
     }
-  }, [refetchSensorData, isLiveUpdateEnabled, dispatchInterval, seconds]);
+  }, [
+    refetchSensorData,
+    isLiveUpdateEnabled,
+    isWindowFocused,
+    dispatchInterval,
+    seconds,
+  ]);
 
   const filterSelection = (text, handleOnClick) => (
     <Badge
@@ -234,34 +240,6 @@ const LiveAnalyticsContainer = () => {
         <>
           <Stack className="sbd-live-analytics-filters">
             <Group position="apart" className="full-width">
-              <SegmentedControl
-                onChange={(s) => {
-                  setdataView(s);
-                }}
-                defaultValue={dataView}
-                size="xs"
-                //color="dark"
-                data={[
-                  {
-                    value: "box-view",
-                    label: (
-                      <Center>
-                        <BoxMultiple size={16} />
-                        <Box ml={10}>Widget View</Box>
-                      </Center>
-                    ),
-                  },
-                  {
-                    value: "table-view",
-                    label: (
-                      <Center>
-                        <Table size={16} />
-                        <Box ml={10}>Table View</Box>
-                      </Center>
-                    ),
-                  },
-                ]}
-              />
               <Group spacing="xs">
                 {sensorFilters.search !== sensorFilterDefaultValues.search &&
                   filterSelection(`Search: ${sensorFilters.search}`, () => {
@@ -280,6 +258,83 @@ const LiveAnalyticsContainer = () => {
                   })}
               </Group>
               <Group>
+                <Popover
+                  width={280}
+                  //closeOnItemClick={false}
+                  position="bottom-end"
+                  offset={4}
+                  withArrow
+                  shadow="lg"
+                >
+                  <Popover.Target>
+                    <Indicator
+                      label="!"
+                      size={16}
+                      color="red"
+                      position="middle-end"
+                      disabled={isLiveUpdateEnabled}
+                    >
+                      <Button
+                        //variant="default"
+                        variant="subtle"
+                        color="dark"
+                        size="xs"
+                        leftIcon={<FileSettings size={18} />}
+                      >
+                        Views &amp; Settings
+                      </Button>
+                    </Indicator>
+                  </Popover.Target>
+
+                  <Popover.Dropdown>
+                    <Stack spacing="xs">
+                      <SegmentedControl
+                        onChange={(s) => {
+                          setdataView(s);
+                        }}
+                        defaultValue={dataView}
+                        size="xs"
+                        //color="dark"
+                        data={[
+                          {
+                            value: "box-view",
+                            label: (
+                              <Center>
+                                <BoxMultiple size={16} />
+                                <Box ml={10}>Widget View</Box>
+                              </Center>
+                            ),
+                          },
+                          {
+                            value: "table-view",
+                            label: (
+                              <Center>
+                                <Table size={16} />
+                                <Box ml={10}>Table View</Box>
+                              </Center>
+                            ),
+                          },
+                        ]}
+                      />
+                      <Indicator
+                        label="!"
+                        size={16}
+                        color="red"
+                        position="middle-end"
+                        disabled={isLiveUpdateEnabled}
+                      >
+                        <Checkbox
+                          label="Stop Live Updates"
+                          size="xs"
+                          checked={!isLiveUpdateEnabled}
+                          onChange={() => {
+                            setIsLiveUpdateEnabled((old) => !old);
+                          }}
+                        />
+                      </Indicator>
+                    </Stack>
+                  </Popover.Dropdown>
+                </Popover>
                 <Popover
                   width={280}
                   //closeOnItemClick={false}
