@@ -1,5 +1,6 @@
 import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
 import React from "react";
+import { useMemo } from "react";
 import { useCallback } from "react";
 import { AccessPoint } from "tabler-icons-react";
 import { getMinuteFormattedString } from "../../utils/helpers";
@@ -19,14 +20,25 @@ const LiveAnalyticsItem = (props) => {
     ) : null;
   }, [sensorData, liveTime]);
 
-  const activityBadgeElement = useCallback(() => {
-    return sensorData.isDormant ? (
+  const badgeElements = useMemo(() => {
+    const activityBadge = sensorData.isDormant ? (
       <div>
         <Badge color="red" size="xs" radius="sm" variant="filled">
           INACTIVE
         </Badge>
       </div>
     ) : null;
+
+    const typeBadge = (
+      <Badge color="gray" size="xs" radius="sm" variant="filled">
+        {sensorData.sensorType}
+      </Badge>
+    );
+
+    return {
+      activityBadge,
+      typeBadge,
+    };
   }, [sensorData]);
 
   return (
@@ -50,13 +62,16 @@ const LiveAnalyticsItem = (props) => {
             }`}
           >
             <Card.Section withBorder inheritPadding py="xs">
-              {activityBadgeElement()}
+              {badgeElements.activityBadge}
               <Group spacing="xs">
                 <Text size="xl" weight={500}>
                   {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
                 </Text>
               </Group>
-              <Text size="md">{sensorData.title}</Text>
+              <Group spacing="xs">
+                <Text size="md">{sensorData.title}</Text>
+                {badgeElements.typeBadge}
+              </Group>
             </Card.Section>
 
             <Card.Section inheritPadding py="xs">
@@ -72,11 +87,10 @@ const LiveAnalyticsItem = (props) => {
         <tr>
           <td>
             {sensorData.title}
-            {activityBadgeElement()}
+            {badgeElements.activityBadge}
           </td>
-          <td>{sensorData.sensorType}</td>
-          <td>{sensorData.lastMeasurementValue}</td>
-          <td>{sensorData.unit}</td>
+          <td>{badgeElements.typeBadge}</td>
+          <td>{`${sensorData.lastMeasurementValue} ${sensorData.unit}`}</td>
           <td>
             <LoadingOverlay
               visible={isLoading}

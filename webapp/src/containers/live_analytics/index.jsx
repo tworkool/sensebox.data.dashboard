@@ -503,7 +503,6 @@ const LiveAnalyticsContainer = () => {
                     <th>Name</th>
                     <th>Type</th>
                     <th>Measurement</th>
-                    <th>Unit</th>
                     <th>Last Update</th>
                   </tr>
                 </thead>
