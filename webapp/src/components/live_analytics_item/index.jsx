@@ -1,4 +1,11 @@
-import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
+import {
+  Badge,
+  Card,
+  Group,
+  LoadingOverlay,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import React from "react";
 import { useMemo } from "react";
 import { useCallback } from "react";
@@ -30,9 +37,11 @@ const LiveAnalyticsItem = (props) => {
     ) : null;
 
     const typeBadge = (
-      <Badge color="gray" size="xs" radius="sm" variant="filled">
-        {sensorData.sensorType}
-      </Badge>
+      <Tooltip label={sensorData.sensorType}>
+        <Badge color="gray" size="xs" radius="sm" variant="outline">
+          {sensorData.sensorType}
+        </Badge>
+      </Tooltip>
     );
 
     return {

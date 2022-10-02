@@ -273,6 +273,7 @@ const LiveAnalyticsContainer = () => {
                       color="red"
                       position="middle-end"
                       disabled={isLiveUpdateEnabled}
+                      style={{zIndex: 3}}
                     >
                       <Button
                         //variant="default"
