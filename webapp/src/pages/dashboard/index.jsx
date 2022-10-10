@@ -70,7 +70,7 @@ const DashboardPage = () => {
             className="sbd-mantine-tabs-root"
           >
             <Tabs.List
-              position="center"
+              position="right"
               className="sbd-dashboard-content__analytics__tab-header"
             >
               <Tabs.Tab

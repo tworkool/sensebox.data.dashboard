@@ -46,19 +46,26 @@ $content-analytics-sections-height: 40px;
         height: calc(100vh - $dashboard-header-height - $dashboard-footer-height-phone);
     }
     background-color: rgb(176, 127, 255);
-    display: flex;
+    position: relative;
 
     &__analytics {
-        width: calc(100% - $dashboard-box-info-width);
+        padding-left: $dashboard-box-info-width;
         @include responsive(desktop-down) {
-            width: calc(100% - $dashboard-box-info-width-mobile--collapsed);
-            margin-left: $dashboard-box-info-width-mobile--collapsed;
+            padding-left: $dashboard-box-info-width-mobile--collapsed;
+            //margin-left: $dashboard-box-info-width-mobile--collapsed;
         }
         height: 100%;
         background-color: $analytics-bg-color;
-        overflow: auto;
+        position: absolute;
+        inset: 0;
 
         &__tab-header {
+            padding-right: 20px;
+            @include responsive(desktop-down) {
+                padding-right: 8px;
+            }
+            width: calc(100% + $dashboard-box-info-border-radius);
+            transform: translateX(-$dashboard-box-info-border-radius);
             position: sticky;
             top: 0;
             background: white;
