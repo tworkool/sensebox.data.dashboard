@@ -56,9 +56,12 @@ $content-analytics-sections-height: 40px;
         }
         height: 100%;
         background-color: $analytics-bg-color;
-        overflow: auto;
 
         &__tab-header {
+            padding-right: 20px;
+            @include responsive(desktop-down) {
+                padding-right: 8px;
+            }
             position: sticky;
             top: 0;
             background: white;

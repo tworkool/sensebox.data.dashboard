@@ -13,29 +13,31 @@ html {
 }
 
 /* CUSTOM SCROLLBAR START*/
-/* Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--mantine-color-dark-2) var(--mantine-color-gray-2);
-}
-
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-    background: var(--mantine-color-gray-2);
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: var(--mantine-color-dark-2);
-    &:hover {
-        background-color: var(--mantine-color-dark-3);
+@include responsive(desktop) {
+    /* Firefox */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--mantine-color-dark-2) var(--mantine-color-gray-2);
     }
-    //border-radius: var(--mantine-radius-xs);
-    //border: 1px double var(--mantine-color-gray-3);
+
+    /* Chrome, Edge, and Safari */
+    *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: var(--mantine-color-gray-2);
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: var(--mantine-color-dark-2);
+        &:hover {
+            background-color: var(--mantine-color-dark-3);
+        }
+        //border-radius: var(--mantine-radius-xs);
+        //border: 1px double var(--mantine-color-gray-3);
+    }
 }
 /* CUSTOM SCROLLBAR END*/
 
@@ -45,6 +47,8 @@ body {
     margin: 0;
     width: 100vw;
     height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
 code {

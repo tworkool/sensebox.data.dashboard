@@ -87,6 +87,14 @@ const LiveAnalyticsContainer = () => {
     [seconds]
   );
 
+  const areFiltersActive = useMemo(
+    () =>
+      sensorFilters.search !== sensorFilterDefaultValues.search ||
+      sensorFilters.type !== sensorFilterDefaultValues.type ||
+      sensorFilters.showInactive !== sensorFilterDefaultValues.showInactive,
+    [sensorFilters, sensorFilterDefaultValues]
+  );
+
   const refetchSensorData = useCallback(() => {
     setIsLoading(true);
     dispatch(requestSenseboxSensorDataFetch({ senseboxID: undefined }));
@@ -132,7 +140,7 @@ const LiveAnalyticsContainer = () => {
   const filterSelection = (text, handleOnClick) => (
     <Badge
       color="dark"
-      radius="sm"
+      /* radius="sm" */
       variant="filled"
       sx={{ paddingRight: 3 }}
       rightSection={
@@ -240,28 +248,11 @@ const LiveAnalyticsContainer = () => {
         <>
           <Stack className="sbd-live-analytics-filters">
             <Group position="apart" className="full-width">
-              <Group spacing="xs">
-                {sensorFilters.search !== sensorFilterDefaultValues.search &&
-                  filterSelection(`Search: ${sensorFilters.search}`, () => {
-                    //handleFilters({ search: sensorFilterDefaultValues.search });
-                    resetFilters(null, "search");
-                  })}
-                {sensorFilters.type !== sensorFilterDefaultValues.type &&
-                  filterSelection(`Type: ${sensorFilters.type}`, () => {
-                    //handleFilters({ type: sensorFilterDefaultValues.type });
-                    resetFilters(null, "type");
-                  })}
-                {sensorFilters.showInactive !==
-                  sensorFilterDefaultValues.showInactive &&
-                  filterSelection("Only Show Active", () => {
-                    resetFilters(null, "showInactive");
-                  })}
-              </Group>
               <Group>
                 <Popover
                   width={280}
                   //closeOnItemClick={false}
-                  position="bottom-end"
+                  position="bottom-start"
                   offset={4}
                   withArrow
                   shadow="lg"
@@ -273,12 +264,11 @@ const LiveAnalyticsContainer = () => {
                       color="red"
                       position="middle-end"
                       disabled={isLiveUpdateEnabled}
-                      style={{zIndex: 3}}
+                      style={{ zIndex: 3 }}
+                      withBorder
                     >
                       <Button
-                        //variant="default"
-                        variant="subtle"
-                        color="dark"
+                        color="dark.3"
                         size="xs"
                         leftIcon={<FileSettings size={18} />}
                       >
@@ -295,7 +285,6 @@ const LiveAnalyticsContainer = () => {
                         }}
                         defaultValue={dataView}
                         size="xs"
-                        //color="dark"
                         data={[
                           {
                             value: "box-view",
@@ -338,17 +327,14 @@ const LiveAnalyticsContainer = () => {
                 </Popover>
                 <Popover
                   width={280}
-                  //closeOnItemClick={false}
-                  position="bottom-end"
+                  position="bottom-start"
                   offset={4}
                   withArrow
                   shadow="lg"
                 >
                   <Popover.Target>
                     <Button
-                      //variant="default"
-                      variant="subtle"
-                      color="dark"
+                      color="dark.3"
                       size="xs"
                       leftIcon={<TablerIconsFilter size={18} />}
                     >
@@ -357,15 +343,6 @@ const LiveAnalyticsContainer = () => {
                   </Popover.Target>
 
                   <Popover.Dropdown>
-                    {/* <Divider
-                  my="xs"
-                  labelPosition="center"
-                  label={
-                    <>
-                      <Box ml={5}>General</Box>
-                    </>
-                  }
-                /> */}
                     <Stack spacing="xs">
                       <TextInput
                         placeholder="Search"
@@ -465,14 +442,33 @@ const LiveAnalyticsContainer = () => {
                     )}
                   </Popover.Dropdown>
                 </Popover>
-                <Button
-                  variant="outline"
-                  color="dark"
-                  size="xs"
-                  onClick={resetFilters}
-                >
-                  Clear Filters
-                </Button>
+                {areFiltersActive && (
+                  <Button
+                    variant="outline"
+                    color="dark"
+                    size="xs"
+                    onClick={resetFilters}
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </Group>
+              <Group spacing="xs">
+                {sensorFilters.search !== sensorFilterDefaultValues.search &&
+                  filterSelection(`Search: ${sensorFilters.search}`, () => {
+                    //handleFilters({ search: sensorFilterDefaultValues.search });
+                    resetFilters(null, "search");
+                  })}
+                {sensorFilters.type !== sensorFilterDefaultValues.type &&
+                  filterSelection(`Type: ${sensorFilters.type}`, () => {
+                    //handleFilters({ type: sensorFilterDefaultValues.type });
+                    resetFilters(null, "type");
+                  })}
+                {sensorFilters.showInactive !==
+                  sensorFilterDefaultValues.showInactive &&
+                  filterSelection("Only Show Active", () => {
+                    resetFilters(null, "showInactive");
+                  })}
               </Group>
             </Group>
           </Stack>
