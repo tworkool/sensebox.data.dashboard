@@ -2,7 +2,7 @@
 
 .sbd-live-analytics-value-indicator {
     position: relative;
-    height: 11px;
+    height: 12px;
     //width: 150px;
     margin: 5px 0;
 
@@ -12,7 +12,7 @@
         width: 100%;
         inset: 0;
         border-radius: 2px;
-        //border: 1px solid #2e2e2e;
+        border: 1px solid #2e2e2e;
     }
 
     &__indicator {

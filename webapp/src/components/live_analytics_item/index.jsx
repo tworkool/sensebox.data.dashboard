@@ -38,11 +38,9 @@ const LiveAnalyticsItem = (props) => {
     ) : null;
 
     const typeBadge = (
-      <Tooltip label={sensorData.sensorType}>
-        <Badge color="gray" size="xs" radius="sm" variant="outline">
-          {sensorData.sensorType}
-        </Badge>
-      </Tooltip>
+      <Badge color="gray" size="xs" radius="sm" variant="outline">
+        {sensorData.sensorType}
+      </Badge>
     );
 
     return {
@@ -79,14 +77,25 @@ const LiveAnalyticsItem = (props) => {
               </Group>
               {!sensorData.isDormant && (
                 <>
-                  {sensorData.title === "PM10" && (
+                  {sensorData.title === "PM10" &&
+                    sensorData.sensorType === "SDS 011" && (
+                      <LiveAnalyticsValueIndicator
+                        unmappedValue={{
+                          PM10: sensorData.lastMeasurementValue,
+                        }}
+                      />
+                    )}
+                  {sensorData.title === "PM2.5" &&
+                    sensorData.sensorType === "SDS 011" && (
+                      <LiveAnalyticsValueIndicator
+                        unmappedValue={{
+                          PM25: sensorData.lastMeasurementValue,
+                        }}
+                      />
+                    )}
+                  {sensorData.sensorType === "TSL45315" && (
                     <LiveAnalyticsValueIndicator
-                      unmappedValue={{ PM10: sensorData.lastMeasurementValue }}
-                    />
-                  )}
-                  {sensorData.title === "PM2.5" && (
-                    <LiveAnalyticsValueIndicator
-                      unmappedValue={{ PM25: sensorData.lastMeasurementValue }}
+                      unmappedValue={{ LIGHT: sensorData.lastMeasurementValue }}
                     />
                   )}
                 </>
