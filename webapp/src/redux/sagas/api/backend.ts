@@ -62,7 +62,7 @@ const BACKEND = {
 
     fetchSenseboxInfo: (id: string) => {
         var url = `https://api.opensensemap.org/boxes/${id}`;
-        return _fetch(url, MOCK_DATA.senseboxInfoDataInactiveActiveSensors);
+        return _fetch(url, MOCK_DATA.senseboxInfoData);
     },
 
     fetchSenseboxes: () => {

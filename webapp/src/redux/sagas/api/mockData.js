@@ -1,9 +1,12 @@
+const ISO_NOW_STRING = new Date().toISOString();
+console.log(ISO_NOW_STRING);
+
 const MOCK_DATA = {
   DBMiscData: ["318", "118M", "393"],
   senseboxInfoData: {
     _id: "5bf8373386f11b001aae627e",
     createdAt: "2022-03-30T11:25:43.610Z",
-    updatedAt: "2022-09-03T23:29:44.818Z",
+    updatedAt: ISO_NOW_STRING,
     name: "Tworkool",
     currentLocation: {
       type: "Point",
@@ -20,7 +23,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6285",
         lastMeasurement: {
           value: "21.88",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -31,7 +34,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6284",
         lastMeasurement: {
           value: "59.02",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -42,7 +45,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6283",
         lastMeasurement: {
           value: "1014.29",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -53,7 +56,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6282",
         lastMeasurement: {
           value: "8.00",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -64,7 +67,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6281",
         lastMeasurement: {
           value: "0.00",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -75,7 +78,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6280",
         lastMeasurement: {
           value: "11.40",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -86,12 +89,34 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae627f",
         lastMeasurement: {
           value: "10.80",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
+        },
+      },
+      {
+        title: "Beleuchtungsstärke",
+        unit: "lx",
+        sensorType: "TSL45315",
+        icon: "osem-brightness",
+        _id: "5bf8373386f11b001aae6282",
+        lastMeasurement: {
+          value: "40000.00",
+          createdAt: ISO_NOW_STRING,
+        },
+      },
+      {
+        title: "UV-Intensität",
+        unit: "μW/cm²",
+        sensorType: "VEML6070",
+        icon: "osem-brightness",
+        _id: "5bf8373386f11b001aae6281",
+        lastMeasurement: {
+          value: "0.00",
+          createdAt: ISO_NOW_STRING,
         },
       },
     ],
     model: "homeV2WifiFeinstaub",
-    lastMeasurementAt: "2022-09-03T23:29:44.813Z",
+    lastMeasurementAt: ISO_NOW_STRING,
     description:
       "Software for displaying Sensebox data linked below. (It's an amateur project, also it is unofficial)",
     image: "5bf8373386f11b001aae627e_q3si5q.jpg",
@@ -111,7 +136,7 @@ const MOCK_DATA = {
   senseboxInfoDataInactiveActiveSensors: {
     _id: "5c0e923e919bf8001abda1dc",
     createdAt: "2022-03-30T11:25:43.620Z",
-    updatedAt: "2022-09-07T21:35:40.849Z",
+    updatedAt: "2022-03-30T11:25:43.620Z",
     name: "HTW Berlin Informatik AG  - senseBox 01 - WLAN",
     currentLocation: {
       timestamp: "2018-12-10T16:20:14.769Z",
@@ -128,7 +153,7 @@ const MOCK_DATA = {
         _id: "5c0e923e919bf8001abda1e3",
         lastMeasurement: {
           value: "27.39",
-          createdAt: "2022-09-07T21:35:40.844Z",
+          createdAt: "2022-03-30T11:25:43.620Z",
         },
       },
       {
