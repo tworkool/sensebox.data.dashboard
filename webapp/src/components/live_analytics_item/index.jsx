@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { useCallback } from "react";
 import { AccessPoint } from "tabler-icons-react";
 import { getMinuteFormattedString } from "../../utils/helpers";
+import LiveAnalyticsValueIndicator from "../live_analytics_value_indicator";
 import "./style.scss";
 
 const LiveAnalyticsItem = (props) => {
@@ -71,12 +72,25 @@ const LiveAnalyticsItem = (props) => {
             }`}
           >
             <Card.Section withBorder inheritPadding py="xs">
-              {badgeElements.activityBadge}
               <Group spacing="xs">
                 <Text size="xl" weight={500}>
                   {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
                 </Text>
               </Group>
+              {!sensorData.isDormant && (
+                <>
+                  {sensorData.title === "PM10" && (
+                    <LiveAnalyticsValueIndicator
+                      unmappedValue={{ PM10: sensorData.lastMeasurementValue }}
+                    />
+                  )}
+                  {sensorData.title === "PM2.5" && (
+                    <LiveAnalyticsValueIndicator
+                      unmappedValue={{ PM25: sensorData.lastMeasurementValue }}
+                    />
+                  )}
+                </>
+              )}
               <Group spacing="xs">
                 <Text size="md">{sensorData.title}</Text>
                 {badgeElements.typeBadge}
@@ -85,9 +99,7 @@ const LiveAnalyticsItem = (props) => {
 
             <Card.Section inheritPadding py="xs">
               {liveUpdateTimeElement()}
-              <Text size="sm" color="dimmed">
-                {sensorData.sensorType}
-              </Text>
+              {badgeElements.activityBadge}
             </Card.Section>
           </Card>
         </div>

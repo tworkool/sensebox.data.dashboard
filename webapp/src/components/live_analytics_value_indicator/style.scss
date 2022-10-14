@@ -1,0 +1,26 @@
+@import "../../utils/colors";
+
+.sbd-live-analytics-value-indicator {
+    position: relative;
+    height: 11px;
+    //width: 150px;
+    margin: 5px 0;
+
+    &__bar {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        inset: 0;
+        border-radius: 2px;
+        //border: 1px solid #2e2e2e;
+    }
+
+    &__indicator {
+        position: absolute;
+        height: calc(100% + 6px);
+        width: 2px;
+        background-color: rgb(0, 0, 0);
+        bottom: 0;
+        left: 0;
+    }
+}
