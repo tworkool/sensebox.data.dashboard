@@ -7,6 +7,9 @@ const getAirQualityTable = () => {
     name: "AQI",
     link: "",
     label: "EPA Air Quality Index (AQI) for last measured value",
+    viewProperties: {
+      gradientStopsMode: "hard",
+    },
     rows: [
       {
         PM10: 54,
@@ -271,9 +274,18 @@ const LiveAnalyticsValueIndicator = (props) => {
       e._percentage = Math.floor((e.index / max) * 100);
     });
 
+    var previousValidColor = undefined;
     var colors = sections.reduce((p, c) => {
       if (!c.color) return p;
-      var currentColor = ` ${c.color} ${c._percentage}%,`;
+      var currentColor = "";
+      // hard stops?
+      const gradientStopsMode =
+        valueInfo.table?.viewProperties?.gradientStopsMode;
+      if (previousValidColor !== undefined && gradientStopsMode === "hard") {
+        currentColor += ` ${previousValidColor} ${c._percentage}%,`;
+      }
+      currentColor += ` ${c.color} ${c._percentage}%,`;
+      previousValidColor = c.color;
       return p + currentColor;
     }, "linear-gradient(90deg,");
     colors = colors.slice(0, -1);
