@@ -498,6 +498,7 @@ const LiveAnalyticsContainer = () => {
               <MantineTable striped verticalSpacing="sm">
                 <thead>
                   <tr>
+                    <th>Icon</th>
                     <th>Name</th>
                     <th>Type</th>
                     <th>Measurement</th>

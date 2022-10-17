@@ -1,11 +1,4 @@
-import {
-  Badge,
-  Card,
-  Group,
-  LoadingOverlay,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
 import React from "react";
 import { useMemo } from "react";
 import { useCallback } from "react";
@@ -71,6 +64,9 @@ const LiveAnalyticsItem = (props) => {
           >
             <Card.Section withBorder inheritPadding py="xs">
               <Group spacing="xs">
+                {sensorData.icon && sensorData.icon !== "" && (
+                  <span className={`osem-icon ${sensorData.icon}`} />
+                )}
                 <Text size="xl" weight={500}>
                   {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
                 </Text>
@@ -115,6 +111,11 @@ const LiveAnalyticsItem = (props) => {
       )}
       {"table-view" === view && (
         <tr>
+          <td>
+            {sensorData.icon && sensorData.icon !== "" && (
+              <span className={`osem-icon ${sensorData.icon}`} />
+            )}
+          </td>
           <td>
             {sensorData.title}
             {badgeElements.activityBadge}
