@@ -44,6 +44,7 @@ import { requestSenseboxSensorDataFetch } from "../../redux/actions/app_state";
 import { useMemo } from "react";
 import LiveAnalyticsItem from "../../components/live_analytics_item";
 import { DashboardContext } from "../../pages/dashboard";
+import SunApiWidget from "../../components/sun_api_widget";
 
 const LiveAnalyticsContainer = () => {
   const dashboardContext = useContext(DashboardContext);
@@ -481,17 +482,20 @@ const LiveAnalyticsContainer = () => {
           <Space h="xs" />
 
           {"box-view" === dataView && (
-            <div className="sbd-live-analytics-content__box-view">
-              {filteredSenseboxInfoSensorData.map((e, i) => (
-                <LiveAnalyticsItem
-                  key={i}
-                  sensorData={e}
-                  liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
-                  isLoading={isLoading}
-                  view="box-view"
-                />
-              ))}
-            </div>
+            <>
+              <div className="sbd-live-analytics-content__box-view">
+                {filteredSenseboxInfoSensorData.map((e, i) => (
+                  <LiveAnalyticsItem
+                    key={i}
+                    sensorData={e}
+                    liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
+                    isLoading={isLoading}
+                    view="box-view"
+                  />
+                ))}
+              </div>
+              <SunApiWidget />
+            </>
           )}
           {"table-view" === dataView && (
             <div className="sbd-live-analytics-content__table-view">

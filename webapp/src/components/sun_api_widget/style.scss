@@ -1,0 +1,7 @@
+@import "../../utils/colors";
+
+.sbd-sun-api-widget__data-grid {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 14px;
+}
