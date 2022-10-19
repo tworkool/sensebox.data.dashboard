@@ -22,6 +22,10 @@ import {
   GEOCODING_FETCH_REQUESTED,
   GEOCODING_FETCH_FAILED,
   GEOCODING_FETCH_SUCCEEDED,
+
+  SUN_API_FETCH_REQUESTED,
+  SUN_API_FETCH_FAILED,
+  SUN_API_FETCH_SUCCEEDED,
 } from "../action_types/app_state";
 import { createAction } from "redux-actions";
 
@@ -49,6 +53,10 @@ const requestGeocodingDataFetch = createAction(GEOCODING_FETCH_REQUESTED);
 const failGeocodingDataFetch = createAction(GEOCODING_FETCH_FAILED);
 const succeedGeocodingDataFetch = createAction(GEOCODING_FETCH_SUCCEEDED);
 
+const requestSunApiDataFetch = createAction(SUN_API_FETCH_REQUESTED);
+const failSunApiDataFetch = createAction(SUN_API_FETCH_FAILED);
+const succeedSunApiDataFetch = createAction(SUN_API_FETCH_SUCCEEDED);
+
 export {
   requestWeatherDataFetch,
   failWeatherDataFetch,
@@ -73,4 +81,8 @@ export {
   requestGeocodingDataFetch,
   failGeocodingDataFetch,
   succeedGeocodingDataFetch,
+
+  requestSunApiDataFetch,
+  failSunApiDataFetch, 
+  succeedSunApiDataFetch,
 };

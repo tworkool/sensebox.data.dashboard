@@ -1,8 +1,22 @@
 const ISO_NOW_STRING = new Date().toISOString();
-console.log(ISO_NOW_STRING);
 
 const MOCK_DATA = {
   DBMiscData: ["318", "118M", "393"],
+  sunApiData: {
+    results: {
+      sunrise: "2022-10-17T06:25:39+00:00",
+      sunset: "2022-10-17T17:40:24+00:00",
+      solar_noon: "2022-10-17T12:03:01+00:00",
+      day_length: 40485,
+      civil_twilight_begin: "2022-10-17T06:00:53+00:00",
+      civil_twilight_end: "2022-10-17T18:05:09+00:00",
+      nautical_twilight_begin: "2022-10-17T05:30:50+00:00",
+      nautical_twilight_end: "2022-10-17T18:35:13+00:00",
+      astronomical_twilight_begin: "2022-10-17T05:00:53+00:00",
+      astronomical_twilight_end: "2022-10-17T19:05:10+00:00",
+    },
+    status: "OK",
+  },
   senseboxInfoData: {
     _id: "5bf8373386f11b001aae627e",
     createdAt: "2022-03-30T11:25:43.610Z",

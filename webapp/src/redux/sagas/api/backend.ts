@@ -85,6 +85,12 @@ const BACKEND = {
         var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lat},${lon}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_PUBLIC_KEY}`;
         return _fetch(url, MOCK_DATA.geocoding1);
     },
+
+    fetchSunApiData: (lat, lon) => {
+        // Sunset/Sunrise API
+        var url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`;
+        return _fetch(url);
+    },
 };
 
 export default BACKEND;

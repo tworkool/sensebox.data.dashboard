@@ -98,6 +98,21 @@ const QUERY_DATA_MODIFIERS = {
                 : newMinDispatchInterval,
             sensors: newExtraSensorInfo
         }
+    },
+
+    aggregateSunApiData: (data) => {
+        return {
+            "sunrise": moment(data["sunrise"]).local(),
+            "sunset": moment(data["sunset"]).local(),
+            "solar_noon": moment(data["solar_noon"]).local(),
+            "day_length": data["day_length"],
+            "civil_twilight_begin": moment(data["civil_twilight_begin"]).local(),
+            "civil_twilight_end": moment(data["civil_twilight_end"]).local(),
+            "nautical_twilight_begin": moment(data["nautical_twilight_begin"]).local(),
+            "nautical_twilight_end": moment(data["nautical_twilight_end"]).local(),
+            "astronomical_twilight_begin": moment(data["astronomical_twilight_begin"]).local(),
+            "astronomical_twilight_end": moment(data["astronomical_twilight_end"]).local(),
+        }
     }
 };
 
