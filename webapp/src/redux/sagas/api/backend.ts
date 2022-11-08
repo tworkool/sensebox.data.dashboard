@@ -32,7 +32,7 @@ const _fetchMock = (mockData, status, delay): Promise<MockResponse> => {
     });
 }
 
-const _fetch = (url, mockData: any = undefined, status: Object = { text: "MOCK DATA NO ERRORS", code: 200 }, delay = 2000, logging = ENVIRONMENT.CONSOLE_LOGS) => {
+const _fetch = (url, mockData: any = undefined, delay = 2000, status: Object = { text: "MOCK DATA NO ERRORS", code: 200 }, logging = ENVIRONMENT.CONSOLE_LOGS) => {
     if (ENVIRONMENT.MOCK_API_DATA === true && mockData !== undefined) {
         if (logging)
             console.log("Fetching Mock Data", mockData);
@@ -62,7 +62,7 @@ const BACKEND = {
 
     fetchSenseboxInfo: (id: string) => {
         var url = `https://api.opensensemap.org/boxes/${id}`;
-        return _fetch(url, MOCK_DATA.senseboxInfoDataInactiveActiveSensors);
+        return _fetch(url, MOCK_DATA.senseboxInfoData);
     },
 
     fetchSenseboxes: () => {
@@ -83,7 +83,13 @@ const BACKEND = {
     fetchGeocodingData: (lat, lon) => {
         // reverse geocoding API
         var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lat},${lon}.json?limit=1&language=en&access_token=${ENVIRONMENT.MAPBOX_PUBLIC_KEY}`;
-        return _fetch(url, MOCK_DATA.geocoding1);
+        return _fetch(url, MOCK_DATA.geocoding1, 5000);
+    },
+
+    fetchSunApiData: (lat, lon) => {
+        // Sunset/Sunrise API
+        var url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`;
+        return _fetch(url, MOCK_DATA.sunApiData(17));
     },
 };
 

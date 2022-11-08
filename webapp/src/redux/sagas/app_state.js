@@ -10,6 +10,8 @@ import {
   failSenseboxSensorDataFetch,
   succeedGeocodingDataFetch,
   failGeocodingDataFetch,
+  succeedSunApiDataFetch,
+  failSunApiDataFetch,
 } from "../actions/app_state";
 import {
   GEOCODING_FETCH_REQUESTED,
@@ -21,9 +23,7 @@ import {
 import BACKEND from "./api/backend";
 import { showNotification } from "@mantine/notifications";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
-import {
-  getSenseboxInfoData,
-} from "../selectors/appState";
+import { getSenseboxInfoData } from "../selectors/appState";
 
 // TODO: implement generic resolution generator function for sagas
 /* function* completeSagaAction(success, action, actionValue) {
@@ -153,6 +153,13 @@ function* fetchSenseboxInfoData(action) {
           },
         })
       );
+
+      const coordinates = rawData?.currentLocation?.coordinates;
+      if (coordinates) {
+        const [lon, lat] = coordinates;
+        // fetch Sun API data
+        yield fetchSunApiData({ payload: { lat, lon } });
+      }
     } else {
       throw response;
     }
@@ -298,6 +305,46 @@ function* fetchGeocodingData(action) {
     const notificationConfig = buildSagaFailNotificationConfig(
       "geocoding_data",
       "Could not fetch detailed geocoding location"
+    );
+    showNotification(notificationConfig);
+  }
+}
+
+function* fetchSunApiData(action) {
+  // TODO: ATTRIBUTION!
+  // TODO: MESZ TIMEZONE AUSGLEICH
+  try {
+    const response = yield call(
+      BACKEND.fetchSunApiData,
+      action.payload.lat,
+      action.payload.lon
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+      const rawData = yield response.json();
+
+      if (!rawData?.results) throw new Error("Invalid Sun API Results");
+
+      yield put(
+        succeedSunApiDataFetch({
+          sunApiData: {
+            data: rawData.results,
+          },
+        })
+      );
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(
+      failSunApiDataFetch({
+        sunApiData: { data: undefined },
+      })
+    );
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "sunApiData_data",
+      "Could not fetch sunset/sunrise widget information"
     );
     showNotification(notificationConfig);
   }

@@ -1,16 +1,10 @@
-import {
-  Badge,
-  Card,
-  Group,
-  LoadingOverlay,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { Badge, Card, Group, LoadingOverlay, Text } from "@mantine/core";
 import React from "react";
 import { useMemo } from "react";
 import { useCallback } from "react";
 import { AccessPoint } from "tabler-icons-react";
 import { getMinuteFormattedString } from "../../utils/helpers";
+import LiveAnalyticsValueIndicator from "../live_analytics_value_indicator";
 import "./style.scss";
 
 const LiveAnalyticsItem = (props) => {
@@ -37,11 +31,9 @@ const LiveAnalyticsItem = (props) => {
     ) : null;
 
     const typeBadge = (
-      <Tooltip label={sensorData.sensorType}>
-        <Badge color="gray" size="xs" radius="sm" variant="outline">
-          {sensorData.sensorType}
-        </Badge>
-      </Tooltip>
+      <Badge color="gray" size="xs" radius="sm" variant="outline">
+        {sensorData.sensorType}
+      </Badge>
     );
 
     return {
@@ -71,12 +63,39 @@ const LiveAnalyticsItem = (props) => {
             }`}
           >
             <Card.Section withBorder inheritPadding py="xs">
-              {badgeElements.activityBadge}
               <Group spacing="xs">
+                {sensorData.icon && sensorData.icon !== "" && (
+                  <span className={`osem-icon ${sensorData.icon}`} />
+                )}
                 <Text size="xl" weight={500}>
                   {`${sensorData.lastMeasurementValue} ${sensorData.unit}`}
                 </Text>
               </Group>
+              {!sensorData.isDormant && (
+                <>
+                  {sensorData.title === "PM10" &&
+                    sensorData.sensorType === "SDS 011" && (
+                      <LiveAnalyticsValueIndicator
+                        unmappedValue={{
+                          PM10: sensorData.lastMeasurementValue,
+                        }}
+                      />
+                    )}
+                  {sensorData.title === "PM2.5" &&
+                    sensorData.sensorType === "SDS 011" && (
+                      <LiveAnalyticsValueIndicator
+                        unmappedValue={{
+                          PM25: sensorData.lastMeasurementValue,
+                        }}
+                      />
+                    )}
+                  {sensorData.sensorType === "TSL45315" && (
+                    <LiveAnalyticsValueIndicator
+                      unmappedValue={{ LIGHT: sensorData.lastMeasurementValue }}
+                    />
+                  )}
+                </>
+              )}
               <Group spacing="xs">
                 <Text size="md">{sensorData.title}</Text>
                 {badgeElements.typeBadge}
@@ -85,15 +104,18 @@ const LiveAnalyticsItem = (props) => {
 
             <Card.Section inheritPadding py="xs">
               {liveUpdateTimeElement()}
-              <Text size="sm" color="dimmed">
-                {sensorData.sensorType}
-              </Text>
+              {badgeElements.activityBadge}
             </Card.Section>
           </Card>
         </div>
       )}
       {"table-view" === view && (
         <tr>
+          <td>
+            {sensorData.icon && sensorData.icon !== "" && (
+              <span className={`osem-icon ${sensorData.icon}`} />
+            )}
+          </td>
           <td>
             {sensorData.title}
             {badgeElements.activityBadge}

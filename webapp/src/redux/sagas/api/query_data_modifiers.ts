@@ -15,7 +15,8 @@ const QUERY_DATA_MODIFIERS = {
         return {
             locationExact: selectedFeature["place_name_en"],
             locationCoarse: (placeFilter.length == 0 || countryFilter.length == 0) ? undefined : `${placeFilter[0].text}, ${countryFilter[0].text}`,
-            attribution: data["attribution"]
+            attribution: data["attribution"],
+            coordinates: data?.query
         }
     },
 
@@ -97,6 +98,21 @@ const QUERY_DATA_MODIFIERS = {
                 ? CONSTANTS.MIN_LIVE_UPDATE_DISPATCH_INTERVAL
                 : newMinDispatchInterval,
             sensors: newExtraSensorInfo
+        }
+    },
+
+    aggregateSunApiData: (data) => {
+        return {
+            "sunrise": moment(data["sunrise"]).local(),
+            "sunset": moment(data["sunset"]).local(),
+            "solar_noon": moment(data["solar_noon"]).local(),
+            "day_length": data["day_length"],
+            "civil_twilight_begin": moment(data["civil_twilight_begin"]).local(),
+            "civil_twilight_end": moment(data["civil_twilight_end"]).local(),
+            "nautical_twilight_begin": moment(data["nautical_twilight_begin"]).local(),
+            "nautical_twilight_end": moment(data["nautical_twilight_end"]).local(),
+            "astronomical_twilight_begin": moment(data["astronomical_twilight_begin"]).local(),
+            "astronomical_twilight_end": moment(data["astronomical_twilight_end"]).local(),
         }
     }
 };

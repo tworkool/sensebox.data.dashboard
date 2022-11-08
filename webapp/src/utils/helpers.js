@@ -18,4 +18,28 @@ const getMinuteFormattedString = (secondsAgo) => {
   }
 };
 
-export { isFloat, capString, getMinuteFormattedString };
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+
+function getFormattedHoursStringFromSeconds(t) {
+  const secondsToHours = t / 3600;
+  const hoursComponent = Math.trunc(secondsToHours);
+  const minutesComponent = Math.trunc((secondsToHours - hoursComponent) * 60);
+  return `${hoursComponent}h ${minutesComponent}min`;
+}
+
+export {
+  isFloat,
+  capString,
+  getMinuteFormattedString,
+  hexToRgb,
+  getFormattedHoursStringFromSeconds,
+};

@@ -1,9 +1,28 @@
+const ISO_NOW_STRING = new Date().toISOString();
+
 const MOCK_DATA = {
   DBMiscData: ["318", "118M", "393"],
+  sunApiData: (day) => {
+    return {
+      results: {
+        sunrise: `2022-10-${day}T06:25:39+00:00`,
+        sunset: `2022-10-${day}T17:40:24+00:00`,
+        solar_noon: `2022-10-${day}T12:03:01+00:00`,
+        day_length: 40485,
+        civil_twilight_begin: `2022-10-${day}T06:00:53+00:00`,
+        civil_twilight_end: `2022-10-${day}T18:05:09+00:00`,
+        nautical_twilight_begin: `2022-10-${day}T05:30:50+00:00`,
+        nautical_twilight_end: `2022-10-${day}T18:35:13+00:00`,
+        astronomical_twilight_begin: `2022-10-${day}T05:00:53+00:00`,
+        astronomical_twilight_end: `2022-10-${day}T19:05:10+00:00`,
+      },
+      status: "OK",
+    };
+  },
   senseboxInfoData: {
     _id: "5bf8373386f11b001aae627e",
     createdAt: "2022-03-30T11:25:43.610Z",
-    updatedAt: "2022-09-03T23:29:44.818Z",
+    updatedAt: ISO_NOW_STRING,
     name: "Tworkool",
     currentLocation: {
       type: "Point",
@@ -20,7 +39,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6285",
         lastMeasurement: {
           value: "21.88",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -31,7 +50,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6284",
         lastMeasurement: {
           value: "59.02",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -42,7 +61,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6283",
         lastMeasurement: {
           value: "1014.29",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -53,7 +72,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6282",
         lastMeasurement: {
           value: "8.00",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -64,7 +83,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6281",
         lastMeasurement: {
           value: "0.00",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -75,7 +94,7 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae6280",
         lastMeasurement: {
           value: "11.40",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
         },
       },
       {
@@ -86,12 +105,34 @@ const MOCK_DATA = {
         _id: "5bf8373386f11b001aae627f",
         lastMeasurement: {
           value: "10.80",
-          createdAt: "2022-09-03T23:29:44.813Z",
+          createdAt: ISO_NOW_STRING,
+        },
+      },
+      {
+        title: "Beleuchtungsstärke",
+        unit: "lx",
+        sensorType: "TSL45315",
+        icon: "osem-brightness",
+        _id: "5bf8373386f11b001aae6282",
+        lastMeasurement: {
+          value: "40000.00",
+          createdAt: ISO_NOW_STRING,
+        },
+      },
+      {
+        title: "UV-Intensität",
+        unit: "μW/cm²",
+        sensorType: "VEML6070",
+        icon: "osem-brightness",
+        _id: "5bf8373386f11b001aae6281",
+        lastMeasurement: {
+          value: "0.00",
+          createdAt: ISO_NOW_STRING,
         },
       },
     ],
     model: "homeV2WifiFeinstaub",
-    lastMeasurementAt: "2022-09-03T23:29:44.813Z",
+    lastMeasurementAt: ISO_NOW_STRING,
     description:
       "Software for displaying Sensebox data linked below. (It's an amateur project, also it is unofficial)",
     image: "5bf8373386f11b001aae627e_q3si5q.jpg",
@@ -111,7 +152,7 @@ const MOCK_DATA = {
   senseboxInfoDataInactiveActiveSensors: {
     _id: "5c0e923e919bf8001abda1dc",
     createdAt: "2022-03-30T11:25:43.620Z",
-    updatedAt: "2022-09-07T21:35:40.849Z",
+    updatedAt: "2022-03-30T11:25:43.620Z",
     name: "HTW Berlin Informatik AG  - senseBox 01 - WLAN",
     currentLocation: {
       timestamp: "2018-12-10T16:20:14.769Z",
@@ -128,7 +169,7 @@ const MOCK_DATA = {
         _id: "5c0e923e919bf8001abda1e3",
         lastMeasurement: {
           value: "27.39",
-          createdAt: "2022-09-07T21:35:40.844Z",
+          createdAt: "2022-03-30T11:25:43.620Z",
         },
       },
       {

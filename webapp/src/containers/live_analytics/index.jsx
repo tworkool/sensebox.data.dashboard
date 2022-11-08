@@ -44,6 +44,7 @@ import { requestSenseboxSensorDataFetch } from "../../redux/actions/app_state";
 import { useMemo } from "react";
 import LiveAnalyticsItem from "../../components/live_analytics_item";
 import { DashboardContext } from "../../pages/dashboard";
+import SunApiWidget from "../../components/sun_api_widget";
 
 const LiveAnalyticsContainer = () => {
   const dashboardContext = useContext(DashboardContext);
@@ -477,27 +478,34 @@ const LiveAnalyticsContainer = () => {
             size="xs"
             color="dimmed"
             className="sbd-live-analytics-content__table-view__results"
-          >{`${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Results`}</Text>
+          >{`Showing ${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Sensors`}</Text>
           <Space h="xs" />
 
           {"box-view" === dataView && (
-            <div className="sbd-live-analytics-content__box-view">
-              {filteredSenseboxInfoSensorData.map((e, i) => (
-                <LiveAnalyticsItem
-                  key={i}
-                  sensorData={e}
-                  liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
-                  isLoading={isLoading}
-                  view="box-view"
-                />
-              ))}
-            </div>
+            <>
+              <div className="sbd-live-analytics-content__sensor-widgets">
+                {filteredSenseboxInfoSensorData.map((e, i) => (
+                  <LiveAnalyticsItem
+                    key={i}
+                    sensorData={e}
+                    liveTime={getLiveUpdateTime(e.lastMeasurementTime)}
+                    isLoading={isLoading}
+                    view="box-view"
+                  />
+                ))}
+              </div>
+              <Divider my="md" label="Other Widgets" labelPosition="center" />
+              <div className="sbd-live-analytics-content__extra-widgets">
+                <SunApiWidget />
+              </div>
+            </>
           )}
           {"table-view" === dataView && (
             <div className="sbd-live-analytics-content__table-view">
               <MantineTable striped verticalSpacing="sm">
                 <thead>
                   <tr>
+                    <th>Icon</th>
                     <th>Name</th>
                     <th>Type</th>
                     <th>Measurement</th>

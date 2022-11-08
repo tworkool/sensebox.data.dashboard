@@ -6,6 +6,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import store from "./redux/store";
 import "./style.scss";
+import "./utils/osemicons.scss";
 
 const root = document.getElementById("root");
 ReactDOM.render(

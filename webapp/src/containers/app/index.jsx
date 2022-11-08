@@ -6,7 +6,6 @@ import "./style.scss";
 const App = () => {
   return (
     <div className="wsb-app-container">
-      
       <Router>
         <PageManager />
       </Router>
