@@ -15,7 +15,8 @@ const QUERY_DATA_MODIFIERS = {
         return {
             locationExact: selectedFeature["place_name_en"],
             locationCoarse: (placeFilter.length == 0 || countryFilter.length == 0) ? undefined : `${placeFilter[0].text}, ${countryFilter[0].text}`,
-            attribution: data["attribution"]
+            attribution: data["attribution"],
+            coordinates: data?.query
         }
     },
 

@@ -1,7 +1,67 @@
 @import "../../utils/colors";
+@import "../../utils/mixins";
 
-.sbd-sun-api-widget__data-grid {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    gap: 14px;
+.sbd-sun-api-widget {
+    max-width: 600px;
+    @include responsive(desktop-down) {
+        max-width: 100%;
+    }
+}
+
+.sbd-sun-api-widget__data-content {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+
+    &--hidden {
+        display: none;
+    }
+
+    @include responsive(desktop-down) {
+        border-top: 1px dashed rgb(218, 218, 218);
+        margin-top: 10px;
+    }
+
+    &__grid {
+        display: grid;
+        margin: 10px auto;
+        max-width: 800px;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+
+        @include responsive(desktop-down) {
+            width: 100%;
+            justify-items: center;
+            gap: 8px;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+        }
+
+        @include responsive(phone-l) {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    &__graph {
+        width: 300px;
+        aspect-ratio: 1/1;
+
+        @include responsive(phone-l) {
+            width: 100%;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &__info-field {
+        display: flex;
+        flex-direction: column;
+
+        @include responsive(desktop-down) {
+            align-items: center;
+        }
+    }
 }

@@ -478,12 +478,12 @@ const LiveAnalyticsContainer = () => {
             size="xs"
             color="dimmed"
             className="sbd-live-analytics-content__table-view__results"
-          >{`${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Results`}</Text>
+          >{`Showing ${filteredSenseboxInfoSensorData.length} of ${senseboxInfoData.data.length} Sensors`}</Text>
           <Space h="xs" />
 
           {"box-view" === dataView && (
             <>
-              <div className="sbd-live-analytics-content__box-view">
+              <div className="sbd-live-analytics-content__sensor-widgets">
                 {filteredSenseboxInfoSensorData.map((e, i) => (
                   <LiveAnalyticsItem
                     key={i}
@@ -494,7 +494,10 @@ const LiveAnalyticsContainer = () => {
                   />
                 ))}
               </div>
-              <SunApiWidget />
+              <Divider my="md" label="Other Widgets" labelPosition="center" />
+              <div className="sbd-live-analytics-content__extra-widgets">
+                <SunApiWidget />
+              </div>
             </>
           )}
           {"table-view" === dataView && (

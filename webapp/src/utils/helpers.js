@@ -29,4 +29,17 @@ function hexToRgb(hex) {
     : null;
 }
 
-export { isFloat, capString, getMinuteFormattedString, hexToRgb };
+function getFormattedHoursStringFromSeconds(t) {
+  const secondsToHours = t / 3600;
+  const hoursComponent = Math.trunc(secondsToHours);
+  const minutesComponent = Math.trunc((secondsToHours - hoursComponent) * 60);
+  return `${hoursComponent}h ${minutesComponent}min`;
+}
+
+export {
+  isFloat,
+  capString,
+  getMinuteFormattedString,
+  hexToRgb,
+  getFormattedHoursStringFromSeconds,
+};
