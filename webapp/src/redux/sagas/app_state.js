@@ -24,6 +24,7 @@ import BACKEND from "./api/backend";
 import { showNotification } from "@mantine/notifications";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
 import { getSenseboxInfoData } from "../selectors/appState";
+import { getLocalTime } from "../../utils/helpers";
 
 // TODO: implement generic resolution generator function for sagas
 /* function* completeSagaAction(success, action, actionValue) {
@@ -157,7 +158,7 @@ function* fetchSenseboxInfoData(action) {
       const coordinates = rawData?.currentLocation?.coordinates;
       if (coordinates) {
         const [lon, lat] = coordinates;
-        // fetch Sun API data
+        // fetch Sun API data with correct timezone
         yield fetchSunApiData({ payload: { lat, lon } });
       }
     } else {
@@ -314,10 +315,22 @@ function* fetchSunApiData(action) {
   // TODO: ATTRIBUTION!
   // TODO: MESZ TIMEZONE AUSGLEICH
   try {
+    const boxData = yield select(getSenseboxInfoData);
+    const currentLocation = boxData?.data?.currentLocation;
+    const coordinates = currentLocation?.coordinates;
+
+    if (!action.payload?.lat || !action.payload?.lon) {
+      action.payload.lat = coordinates[1];
+      action.payload.lon = coordinates[0];
+    }
+
+    let localDate = getLocalTime(new Date(), coordinates);
+
     const response = yield call(
       BACKEND.fetchSunApiData,
       action.payload.lat,
-      action.payload.lon
+      action.payload.lon,
+      localDate
     );
 
     if (response.status >= 200 && response.status < 300) {
@@ -328,7 +341,7 @@ function* fetchSunApiData(action) {
       yield put(
         succeedSunApiDataFetch({
           sunApiData: {
-            data: rawData.results,
+            data: { ...rawData.results, utcOffset: localDate.utcOffset() },
           },
         })
       );
