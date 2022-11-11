@@ -1,4 +1,6 @@
 import CONSTANTS from "./constants";
+import ts from "@mapbox/timespace";
+import moment from "moment";
 
 const isFloat = (n) => Number(n) === n && n % 1 !== 0;
 
@@ -36,10 +38,23 @@ function getFormattedHoursStringFromSeconds(t) {
   return `${hoursComponent}h ${minutesComponent}min`;
 }
 
+function getFormattedHoursStringFromDates(d1, d2) {
+  var duration = moment.duration(d1.diff(d2));
+  var seconds = parseInt(duration.asSeconds());
+  return getFormattedHoursStringFromSeconds(seconds);
+}
+
+function getLocalTime(date, location) {
+  console.log(date, location);
+  return ts.getFuzzyLocalTimeFromPoint(date, location);
+}
+
 export {
   isFloat,
   capString,
   getMinuteFormattedString,
   hexToRgb,
   getFormattedHoursStringFromSeconds,
+  getFormattedHoursStringFromDates,
+  getLocalTime,
 };
