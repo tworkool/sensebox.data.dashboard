@@ -1,4 +1,11 @@
-import { Card, Group, LoadingOverlay, Text, Tooltip } from "@mantine/core";
+import {
+  Card,
+  Group,
+  LoadingOverlay,
+  Skeleton,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import React from "react";
 import { useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
@@ -16,17 +23,17 @@ import {
 } from "../../redux/selectors/appState";
 import moment from "moment";
 import "./style.scss";
-import { getFormattedHoursStringFromSeconds } from "../../utils/helpers";
+import {
+  getFormattedHoursStringFromSeconds,
+} from "../../utils/helpers";
 
 const SunApiWidget = (props) => {
   const sunApiData = useSelector(getSunApiData);
   const geocodingData = useSelector(getGeocodingData);
   const [aggregatedSunApiData, setAggregatedSunApiData] = useState();
-  /* const [liveTime, setLiveTime] = useState(
-    moment("17.10.2022 17:05:03", "DD.MM.YYYY HH:mm:ss")
-  ); */
   const [sunApiDataActiveDate, setSunApiDataActiveDate] = useState();
-  const [liveTime, setLiveTime] = useState(moment().local());
+  const [liveTime, setLiveTime] = useState(moment());
+  const [localLiveTime, setLocalLiveTime] = useState(null);
 
   useEffect(() => {
     setInterval(() => {
@@ -39,6 +46,11 @@ const SunApiWidget = (props) => {
       });
     }, 1000); // 1000ms*60*10 = 60s * 10 = 1min * 10 = 10min */
   }, []);
+
+  useEffect(() => {
+    if (!aggregatedSunApiData?.utcOffset) return;
+    setLocalLiveTime(moment(liveTime).utcOffset(aggregatedSunApiData.utcOffset));
+  }, [aggregatedSunApiData, liveTime]);
 
   // live data refetch
   /*   useEffect(() => {
@@ -84,12 +96,15 @@ const SunApiWidget = (props) => {
         label={geocodingData?.data?.attribution}
         disabled={!geocodingData?.data?.attribution}
       >
-        <Group spacing="xs">
-          <MapPin size={22} strokeWidth={1.5} color={"black"} />
+        <div>
+          <Group spacing="xs">
+            <MapPin size={22} strokeWidth={1.5} color={"black"} />
+            <Text weight={500}>Location</Text>
+          </Group>
           <Text>
             {geoCodingLocation ? geoCodingLocation : "At SenseBox Location"}
           </Text>
-        </Group>
+        </div>
       </Tooltip>
     );
   }, [geocodingData]);
@@ -140,13 +155,19 @@ const SunApiWidget = (props) => {
           overlayBlur={2}
           loaderProps={{ color: "dark", variant: "dots" }}
         />
-        <Group position="apart" spacing="xs">
+        <Group>
           {locationGeocodingElement()}
-          <Group spacing="xs">
-            <Clock size={22} strokeWidth={1.5} color={"black"} />
-            <Text weight={500}>Local Time</Text>
-            <Text>{liveTime.format("HH:mm")}</Text>
-          </Group>
+          <div>
+            <Group spacing="xs">
+              <Clock size={22} strokeWidth={1.5} color={"black"} />
+              <Text weight={500}>Local Time</Text>
+            </Group>
+            <Skeleton visible={!localLiveTime}>
+              <Text>
+                {localLiveTime && localLiveTime.format("HH:mm [(]MMMM Do[)]")}
+              </Text>
+            </Skeleton>
+          </div>
         </Group>
         <div
           className={`sbd-sun-api-widget__data-content ${
@@ -157,39 +178,55 @@ const SunApiWidget = (props) => {
         >
           {aggregatedSunApiData && (
             <div className="sbd-sun-api-widget__data-content__grid">
-              {widgetDataGridSectionElement(
-                "Sunrise",
-                <Sunrise size={18} strokeWidth={2} color={"black"} />,
-                aggregatedSunApiData.sunrise.format("HH:mm"),
-                aggregatedSunApiData.sunrise.fromNow()
-              )}
-              {widgetDataGridSectionElement(
-                "Sunset",
-                <Sunset size={18} strokeWidth={2} color={"black"} />,
-                aggregatedSunApiData.sunset.format("HH:mm"),
-                aggregatedSunApiData.sunset.fromNow()
-              )}
-              {widgetDataGridSectionElement(
-                "Twilight Start (Morning)",
-                null,
-                aggregatedSunApiData.astronomical_twilight_begin.format(
-                  "HH:mm"
-                ),
-                aggregatedSunApiData.astronomical_twilight_begin.fromNow()
-              )}
-              {widgetDataGridSectionElement(
-                "Twilight End (Evening)",
-                null,
-                aggregatedSunApiData.astronomical_twilight_end.format("HH:mm"),
-                aggregatedSunApiData.astronomical_twilight_end.fromNow()
-              )}
-              {widgetDataGridSectionElement(
-                "Day Length",
-                null,
-                getFormattedHoursStringFromSeconds(
-                  aggregatedSunApiData.day_length
-                )
-              )}
+              <Skeleton visible={!localLiveTime}>
+                {widgetDataGridSectionElement(
+                  "Sunrise",
+                  <Sunrise size={18} strokeWidth={2} color={"black"} />,
+                  aggregatedSunApiData.sunrise.format("HH:mm"),
+                  aggregatedSunApiData.sunrise.from(localLiveTime)
+                )}
+              </Skeleton>
+              <Skeleton visible={!localLiveTime}>
+                {widgetDataGridSectionElement(
+                  "Sunset",
+                  <Sunset size={18} strokeWidth={2} color={"black"} />,
+                  aggregatedSunApiData.sunset.format("HH:mm"),
+                  aggregatedSunApiData.sunset.from(localLiveTime)
+                )}
+              </Skeleton>
+              <Skeleton visible={!localLiveTime}>
+                {widgetDataGridSectionElement(
+                  "Twilight Start (Morning)",
+                  null,
+                  aggregatedSunApiData.astronomical_twilight_begin.format(
+                    "HH:mm"
+                  ),
+                  aggregatedSunApiData.astronomical_twilight_begin.from(
+                    localLiveTime
+                  )
+                )}
+              </Skeleton>
+              <Skeleton visible={!localLiveTime}>
+                {widgetDataGridSectionElement(
+                  "Twilight End (Evening)",
+                  null,
+                  aggregatedSunApiData.astronomical_twilight_end.format(
+                    "HH:mm"
+                  ),
+                  aggregatedSunApiData.astronomical_twilight_end.from(
+                    localLiveTime
+                  )
+                )}
+              </Skeleton>
+              <Skeleton visible={!localLiveTime}>
+                {widgetDataGridSectionElement(
+                  "Day Length",
+                  null,
+                  getFormattedHoursStringFromSeconds(
+                    aggregatedSunApiData.day_length
+                  )
+                )}
+              </Skeleton>
             </div>
           )}
         </div>
@@ -197,7 +234,7 @@ const SunApiWidget = (props) => {
       <Card.Section inheritPadding py="xs">
         <Group spacing="xs">
           <Text size="xs" weight={600} color="red">
-            {`Today (${liveTime.format("MMMM Do YYYY")})`}
+            Live
           </Text>
           <AccessPoint size={18} strokeWidth={2} color={"#E20808"} />
         </Group>
