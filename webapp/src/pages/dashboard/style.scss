@@ -1,5 +1,6 @@
 @import "../../utils/colors";
 @import "../../utils/mixins";
+@import "../../utils/mixins_background";
 @import "../../components/dashboard_header/dimensions";
 @import "../../components/dashboard_footer/dimensions";
 @import "../../components/dashboard_box_info/dimensions";
@@ -55,7 +56,8 @@ $content-analytics-sections-height: 40px;
             //margin-left: $dashboard-box-info-width-mobile--collapsed;
         }
         height: 100%;
-        background-color: $analytics-bg-color;
+        //background-color: $analytics-bg-color;
+        @include background(diag);
         position: absolute;
         inset: 0;
 
