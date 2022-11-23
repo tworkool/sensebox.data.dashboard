@@ -102,17 +102,19 @@ const QUERY_DATA_MODIFIERS = {
     },
 
     aggregateSunApiData: (data) => {
+        const utcOffset = data["utcOffset"];
         return {
-            "sunrise": moment(data["sunrise"]).local(),
-            "sunset": moment(data["sunset"]).local(),
-            "solar_noon": moment(data["solar_noon"]).local(),
+            "utcOffset": data["utcOffset"],
+            "sunrise": moment(data["sunrise"]).utcOffset(utcOffset),
+            "sunset": moment(data["sunset"]).utcOffset(utcOffset),
+            "solar_noon": moment(data["solar_noon"]).utcOffset(utcOffset),
             "day_length": data["day_length"],
-            "civil_twilight_begin": moment(data["civil_twilight_begin"]).local(),
-            "civil_twilight_end": moment(data["civil_twilight_end"]).local(),
-            "nautical_twilight_begin": moment(data["nautical_twilight_begin"]).local(),
-            "nautical_twilight_end": moment(data["nautical_twilight_end"]).local(),
-            "astronomical_twilight_begin": moment(data["astronomical_twilight_begin"]).local(),
-            "astronomical_twilight_end": moment(data["astronomical_twilight_end"]).local(),
+            "civil_twilight_begin": moment(data["civil_twilight_begin"]).utcOffset(utcOffset),
+            "civil_twilight_end": moment(data["civil_twilight_end"]).utcOffset(utcOffset),
+            "nautical_twilight_begin": moment(data["nautical_twilight_begin"]).utcOffset(utcOffset),
+            "nautical_twilight_end": moment(data["nautical_twilight_end"]).utcOffset(utcOffset),
+            "astronomical_twilight_begin": moment(data["astronomical_twilight_begin"]).utcOffset(utcOffset),
+            "astronomical_twilight_end": moment(data["astronomical_twilight_end"]).utcOffset(utcOffset),
         }
     }
 };
