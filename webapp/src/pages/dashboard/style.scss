@@ -22,6 +22,18 @@ $content-analytics-sections-height: 40px;
     height: 100%;
 }
 
+.sbd-dashboard-filters {
+    margin-bottom: var(--mantine-spacing-sm);
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    gap: var(--mantine-spacing-sm);
+    flex-direction: row;
+    @include responsive(phone) {
+        flex-direction: column;
+    }
+}
+
 .sbd-dashboard-not-supported {
     background-color: white;
     position: fixed;
