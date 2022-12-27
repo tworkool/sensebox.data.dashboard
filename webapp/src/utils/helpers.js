@@ -45,9 +45,17 @@ function getFormattedHoursStringFromDates(d1, d2) {
 }
 
 function getLocalTime(date, location) {
-  console.log(date, location);
   return ts.getFuzzyLocalTimeFromPoint(date, location);
 }
+
+var stringToColor = (string, saturation = 100, lightness = 75) => {
+  let hash = 0;
+  for (let i = 0; i < string.length; i++) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  return `hsl(${hash % 360}, ${saturation}%, ${lightness}%)`;
+};
 
 export {
   isFloat,
@@ -57,4 +65,5 @@ export {
   getFormattedHoursStringFromSeconds,
   getFormattedHoursStringFromDates,
   getLocalTime,
+  stringToColor,
 };

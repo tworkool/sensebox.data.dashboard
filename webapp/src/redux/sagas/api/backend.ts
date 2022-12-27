@@ -1,5 +1,6 @@
 import { fetch } from "cross-fetch";
 import moment from "moment";
+import CONSTANTS from "../../../utils/constants";
 import ENVIRONMENT from "../../../utils/env";
 import { isFloat } from "../../../utils/helpers";
 import MOCK_DATA from "./mockData";
@@ -61,8 +62,8 @@ const BACKEND = {
         return _fetch(url);
     },
 
-    fetchSenseboxInfo: (id: string) => {
-        var url = `https://api.opensensemap.org/boxes/${id}`;
+    fetchSenseboxInfo: (senseboxId: string) => {
+        var url = `https://api.opensensemap.org/boxes/${senseboxId}`;
         return _fetch(url, MOCK_DATA.senseboxInfoData);
     },
 
@@ -76,8 +77,8 @@ const BACKEND = {
         return _fetch(url, MOCK_DATA.DBMiscData);
     },
 
-    fetchSenseboxSensorData: (senseboxID) => {
-        var url = `https://api.opensensemap.org/boxes/${senseboxID}/sensors`;
+    fetchSenseboxSensorData: (senseboxId) => {
+        var url = `https://api.opensensemap.org/boxes/${senseboxId}/sensors`;
         return _fetch(url);
     },
 
@@ -93,6 +94,11 @@ const BACKEND = {
         var url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=${_date}`;
         return _fetch(url, MOCK_DATA.sunApiData(17));
     },
+
+    fetchSenseboxSensorLatestMeasurements: (senseboxId, sensorId, fromDate, toDate) => {
+        const url = `https://api.opensensemap.org/boxes/${senseboxId}/data/${sensorId}?from-date=${fromDate.format(CONSTANTS.OSEM_DATE_FORMAT)}&to-date=${toDate.format(CONSTANTS.OSEM_DATE_FORMAT)}&format=json`;
+        return _fetch(url);
+    }
 };
 
 export default BACKEND;

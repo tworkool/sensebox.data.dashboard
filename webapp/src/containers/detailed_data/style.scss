@@ -1,4 +1,6 @@
-.sbd-data-map-container {
+.sbd-detailed-data-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .sbd-detailed-data-relative-time-container {
@@ -6,4 +8,8 @@
         display: flex;
         flex-direction: column;
     }
+}
+
+.sbd-detailed-data-graph-container {
+    height: 100%;
 }

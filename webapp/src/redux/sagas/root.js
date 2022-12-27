@@ -4,7 +4,8 @@ import {
   watchFetchSenseboxInfoData,
   watchFetchSenseboxDBMiscData,
   watchFetchSenseboxSensorData,
-  watchFetchGeocodingData
+  watchFetchGeocodingData,
+  watchFetchSenseboxSensorLatestMeasurementsData,
 } from "./app_state";
 
 function* rootSaga() {
@@ -13,6 +14,7 @@ function* rootSaga() {
   yield fork(watchFetchSenseboxDBMiscData);
   yield fork(watchFetchSenseboxSensorData);
   yield fork(watchFetchGeocodingData);
+  yield fork(watchFetchSenseboxSensorLatestMeasurementsData);
 }
 
 export default rootSaga;

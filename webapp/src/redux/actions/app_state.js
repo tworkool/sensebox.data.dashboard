@@ -26,6 +26,10 @@ import {
   SUN_API_FETCH_REQUESTED,
   SUN_API_FETCH_FAILED,
   SUN_API_FETCH_SUCCEEDED,
+
+  SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_REQUESTED,
+  SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_FAILED,
+  SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_SUCCEEDED,
 } from "../action_types/app_state";
 import { createAction } from "redux-actions";
 
@@ -57,6 +61,10 @@ const requestSunApiDataFetch = createAction(SUN_API_FETCH_REQUESTED);
 const failSunApiDataFetch = createAction(SUN_API_FETCH_FAILED);
 const succeedSunApiDataFetch = createAction(SUN_API_FETCH_SUCCEEDED);
 
+const requestSenseboxSensorLatestMeasurementsDataFetch = createAction(SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_REQUESTED);
+const failSenseboxSensorLatestMeasurementsDataFetch = createAction(SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_FAILED);
+const succeedSenseboxSensorLatestMeasurementsDataFetch = createAction(SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_SUCCEEDED);
+
 export {
   requestWeatherDataFetch,
   failWeatherDataFetch,
@@ -85,4 +93,8 @@ export {
   requestSunApiDataFetch,
   failSunApiDataFetch, 
   succeedSunApiDataFetch,
+
+  requestSenseboxSensorLatestMeasurementsDataFetch,
+  failSenseboxSensorLatestMeasurementsDataFetch,
+  succeedSenseboxSensorLatestMeasurementsDataFetch,
 };

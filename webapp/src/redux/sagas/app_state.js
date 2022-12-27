@@ -1,4 +1,4 @@
-import { call, put, select, takeLatest } from "redux-saga/effects";
+import { call, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import {
   succeedSenseboxesDataFetch,
   failSenseboxesDataFetch,
@@ -12,6 +12,8 @@ import {
   failGeocodingDataFetch,
   succeedSunApiDataFetch,
   failSunApiDataFetch,
+  succeedSenseboxSensorLatestMeasurementsDataFetch,
+  failSenseboxSensorLatestMeasurementsDataFetch,
 } from "../actions/app_state";
 import {
   GEOCODING_FETCH_REQUESTED,
@@ -19,11 +21,15 @@ import {
   SENSEBOX_DB_MISC_FETCH_REQUESTED,
   SENSEBOX_INFO_FETCH_REQUESTED,
   SENSEBOX_SENSOR_FETCH_REQUESTED,
+  SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_REQUESTED,
 } from "../action_types/app_state";
 import BACKEND from "./api/backend";
 import { showNotification } from "@mantine/notifications";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
-import { getSenseboxInfoData } from "../selectors/appState";
+import {
+  getSenseboxInfoData,
+  getSenseboxSensorLatestMeasurements,
+} from "../selectors/appState";
 import { getLocalTime } from "../../utils/helpers";
 
 // TODO: implement generic resolution generator function for sagas
@@ -152,6 +158,7 @@ function* fetchSenseboxInfoData(action) {
               dispatchInterval: sensorData.dispatchInterval,
             },
           },
+          senseboxSensorLatestMeasurements: { data: {} },
         })
       );
 
@@ -172,6 +179,7 @@ function* fetchSenseboxInfoData(action) {
           isLoading: false,
         },
         senseboxSensorData: undefined,
+        senseboxSensorLatestMeasurements: { data: {} },
       })
     );
 
@@ -363,6 +371,52 @@ function* fetchSunApiData(action) {
   }
 }
 
+function* fetchSenseboxSensorLatestMeasurementsData(action) {
+  try {
+    const boxData = yield select(getSenseboxInfoData);
+    const senseboxId = boxData?.data?._id;
+    const { sensorId, fromDate, toDate } = action.payload;
+
+    const response = yield call(
+      BACKEND.fetchSenseboxSensorLatestMeasurements,
+      senseboxId,
+      sensorId,
+      fromDate,
+      toDate
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+      const rawData = yield response.json();
+      const data = rawData.reverse();
+
+      const previousDataRaw = yield select(getSenseboxSensorLatestMeasurements);
+      const previousData = previousDataRaw.data;
+
+      yield put(
+        succeedSenseboxSensorLatestMeasurementsDataFetch({
+          senseboxSensorLatestMeasurements: {
+            data: { ...previousData, [sensorId]: data },
+          },
+        })
+      );
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(
+      failSenseboxSensorLatestMeasurementsDataFetch({
+        senseboxSensorLatestMeasurements: { data: {} },
+      })
+    );
+
+    const notificationConfig = buildSagaFailNotificationConfig(
+      "senseboxSensorLatestMeasurementsData_data",
+      "Could not fetch latest measurements for a sensor of this Sensebox"
+    );
+    showNotification(notificationConfig);
+  }
+}
+
 /* function* watchFetchWeatherData() {
   yield takeLatest(WEATHER_DATA_FETCH_REQUESTED, fetchWeatherData);
 } */
@@ -387,10 +441,18 @@ function* watchFetchGeocodingData() {
   yield takeLatest(GEOCODING_FETCH_REQUESTED, fetchGeocodingData);
 }
 
+function* watchFetchSenseboxSensorLatestMeasurementsData() {
+  yield takeEvery(
+    SENSEBOX_SENSOR_LATEST_MEASUREMENTS_FETCH_REQUESTED,
+    fetchSenseboxSensorLatestMeasurementsData
+  );
+}
+
 export {
   watchFetchSenseboxesData,
   watchFetchSenseboxInfoData,
   watchFetchSenseboxDBMiscData,
   watchFetchSenseboxSensorData,
   watchFetchGeocodingData,
+  watchFetchSenseboxSensorLatestMeasurementsData,
 };

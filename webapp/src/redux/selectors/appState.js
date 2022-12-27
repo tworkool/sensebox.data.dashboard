@@ -23,8 +23,11 @@ const getGeocodingData = (state) => {
 };
 
 const getSunApiData = (state) => {
-    return state.appState.sunApiData;
-  };
+  return state.appState.sunApiData;
+};
+
+const getSenseboxSensorLatestMeasurements = (state) =>
+  state.appState.senseboxSensorLatestMeasurements;
 
 export {
   getWeatherData,
@@ -34,4 +37,5 @@ export {
   getSenseboxSensorData,
   getGeocodingData,
   getSunApiData,
+  getSenseboxSensorLatestMeasurements,
 };

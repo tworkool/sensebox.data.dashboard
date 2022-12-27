@@ -102,6 +102,8 @@ const QUERY_DATA_MODIFIERS = {
     },
 
     aggregateSunApiData: (data) => {
+        if (!data || Object.keys(data).length === 0)
+            return null;
         const utcOffset = data["utcOffset"];
         return {
             "utcOffset": data["utcOffset"],

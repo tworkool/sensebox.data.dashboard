@@ -11,6 +11,7 @@ const CONSTANTS = {
         SENSEBOX_ID: "boxid"
     },
     DATE_FORMAT: "MMM Do YY",
+    OSEM_DATE_FORMAT: "YYYY-MM-DDTHH:mm:ss.SSS[Z]",
 };
 
 export default CONSTANTS;
