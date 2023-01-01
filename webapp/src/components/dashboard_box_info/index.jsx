@@ -10,6 +10,7 @@ import {
   Alert,
   Badge,
   Button,
+  CloseButton,
   Divider,
   Group,
   Image,
@@ -183,6 +184,15 @@ const DashboardBoxInfo = () => {
         </ActionIcon>
       )}
       <div className="sbd-dashboard-box-info__scroll-container">
+        <CloseButton
+          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
+          title="hide box info"
+          size="xl"
+          iconSize={26}
+          onClick={(_) => {
+            setIsExpanded(false);
+          }}
+        />
         <div className="sbd-dashboard-box-info__content">
           {isExpanded && (
             <LoadingOverlay
@@ -205,19 +215,6 @@ const DashboardBoxInfo = () => {
             )}
             {senseboxInfoData?.data && (
               <>
-                <Button
-                  variant="light"
-                  color="pink"
-                  radius="xs"
-                  compact
-                  className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
-                  rightIcon={<BoxOff size={16} />}
-                  onClick={(_) => {
-                    setIsExpanded(false);
-                  }}
-                >
-                  hide box info
-                </Button>
                 <div>
                   <Text size="lg" weight={500}>
                     {senseboxInfoData.data.name}

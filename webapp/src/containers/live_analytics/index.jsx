@@ -247,232 +247,227 @@ const LiveAnalyticsContainer = () => {
         </NoDataContainer>
       ) : (
         <>
-          <Stack className="sbd-live-analytics-filters">
-            <Group position="apart" className="full-width">
-              <Group>
-                <Popover
-                  width={280}
-                  //closeOnItemClick={false}
-                  position="bottom-start"
-                  offset={4}
-                  withArrow
-                  shadow="lg"
-                >
-                  <Popover.Target>
+          <div className="sbd-dashboard-filters">
+            <Group>
+              <Popover
+                width={280}
+                //closeOnItemClick={false}
+                position="bottom-start"
+                offset={4}
+                withArrow
+                shadow="lg"
+              >
+                <Popover.Target>
+                  <Indicator
+                    label="!"
+                    size={16}
+                    color="red"
+                    position="middle-end"
+                    disabled={isLiveUpdateEnabled}
+                    style={{ zIndex: 3 }}
+                    withBorder
+                  >
+                    <Button
+                      color="dark.3"
+                      size="xs"
+                      leftIcon={<FileSettings size={18} />}
+                    >
+                      Views &amp; Settings
+                    </Button>
+                  </Indicator>
+                </Popover.Target>
+
+                <Popover.Dropdown>
+                  <Stack spacing="xs">
+                    <SegmentedControl
+                      onChange={(s) => {
+                        setdataView(s);
+                      }}
+                      defaultValue={dataView}
+                      size="xs"
+                      data={[
+                        {
+                          value: "box-view",
+                          label: (
+                            <Center>
+                              <BoxMultiple size={16} />
+                              <Box ml={10}>Widget View</Box>
+                            </Center>
+                          ),
+                        },
+                        {
+                          value: "table-view",
+                          label: (
+                            <Center>
+                              <Table size={16} />
+                              <Box ml={10}>Table View</Box>
+                            </Center>
+                          ),
+                        },
+                      ]}
+                    />
                     <Indicator
                       label="!"
                       size={16}
                       color="red"
                       position="middle-end"
                       disabled={isLiveUpdateEnabled}
-                      style={{ zIndex: 3 }}
-                      withBorder
                     >
-                      <Button
-                        color="dark.3"
-                        size="xs"
-                        leftIcon={<FileSettings size={18} />}
-                      >
-                        Views &amp; Settings
-                      </Button>
-                    </Indicator>
-                  </Popover.Target>
-
-                  <Popover.Dropdown>
-                    <Stack spacing="xs">
-                      <SegmentedControl
-                        onChange={(s) => {
-                          setdataView(s);
-                        }}
-                        defaultValue={dataView}
-                        size="xs"
-                        data={[
-                          {
-                            value: "box-view",
-                            label: (
-                              <Center>
-                                <BoxMultiple size={16} />
-                                <Box ml={10}>Widget View</Box>
-                              </Center>
-                            ),
-                          },
-                          {
-                            value: "table-view",
-                            label: (
-                              <Center>
-                                <Table size={16} />
-                                <Box ml={10}>Table View</Box>
-                              </Center>
-                            ),
-                          },
-                        ]}
-                      />
-                      <Indicator
-                        label="!"
-                        size={16}
-                        color="red"
-                        position="middle-end"
-                        disabled={isLiveUpdateEnabled}
-                      >
-                        <Checkbox
-                          label="Stop Live Updates"
-                          size="xs"
-                          checked={!isLiveUpdateEnabled}
-                          onChange={() => {
-                            setIsLiveUpdateEnabled((old) => !old);
-                          }}
-                        />
-                      </Indicator>
-                    </Stack>
-                  </Popover.Dropdown>
-                </Popover>
-                <Popover
-                  width={280}
-                  position="bottom-start"
-                  offset={4}
-                  withArrow
-                  shadow="lg"
-                >
-                  <Popover.Target>
-                    <Button
-                      color="dark.3"
-                      size="xs"
-                      leftIcon={<TablerIconsFilter size={18} />}
-                    >
-                      Filters
-                    </Button>
-                  </Popover.Target>
-
-                  <Popover.Dropdown>
-                    <Stack spacing="xs">
-                      <TextInput
-                        placeholder="Search"
-                        radius="xs"
-                        //variant="filled"
-                        size="sm"
-                        withAsterisk
-                        value={sensorFilters.search}
-                        onChange={(event) => {
-                          handleFilters({
-                            search: event.currentTarget.value,
-                          });
-                        }}
-                      />
                       <Checkbox
-                        label="Show Inactive"
+                        label="Stop Live Updates"
                         size="xs"
-                        checked={sensorFilters.showInactive}
-                        onChange={(event) =>
-                          handleFilters({
-                            showInactive: event.currentTarget.checked,
-                          })
-                        }
+                        checked={!isLiveUpdateEnabled}
+                        onChange={() => {
+                          setIsLiveUpdateEnabled((old) => !old);
+                        }}
                       />
-                    </Stack>
-                    <Divider
-                      my="xs"
-                      labelPosition="center"
-                      label={
-                        <>
-                          <Box ml={5}>Types</Box>
-                        </>
+                    </Indicator>
+                  </Stack>
+                </Popover.Dropdown>
+              </Popover>
+              <Popover
+                width={280}
+                position="bottom-start"
+                offset={4}
+                withArrow
+                shadow="lg"
+              >
+                <Popover.Target>
+                  <Button
+                    color="dark.3"
+                    size="xs"
+                    leftIcon={<TablerIconsFilter size={18} />}
+                  >
+                    Filters
+                  </Button>
+                </Popover.Target>
+
+                <Popover.Dropdown>
+                  <Stack spacing="xs">
+                    <TextInput
+                      placeholder="Search"
+                      radius="sm"
+                      //variant="filled"
+                      size="md"
+                      withAsterisk
+                      value={sensorFilters.search}
+                      onChange={(event) => {
+                        handleFilters({
+                          search: event.currentTarget.value,
+                        });
+                      }}
+                    />
+                    <Checkbox
+                      label="Show Inactive"
+                      size="xs"
+                      checked={sensorFilters.showInactive}
+                      onChange={(event) =>
+                        handleFilters({
+                          showInactive: event.currentTarget.checked,
+                        })
                       }
                     />
-                    {senseboxInfoData?.extraData?.sensorFilters !==
-                      undefined && (
-                      <Radio.Group
-                        name="sensor-filter-types"
-                        orientation="vertical"
-                        spacing="xs"
-                        size="xs"
-                        withAsterisk
-                        value={
-                          sensorFilters.type === sensorFilterDefaultValues.type
-                            ? "0"
-                            : sensorFilters.type
-                        }
-                        onChange={(e) => {
-                          handleFilters({
-                            type:
-                              e === "0" ? sensorFilterDefaultValues.type : e,
-                          });
-                        }}
+                  </Stack>
+                  <Divider
+                    my="xs"
+                    labelPosition="center"
+                    label={
+                      <>
+                        <Box ml={5}>Types</Box>
+                      </>
+                    }
+                  />
+                  {senseboxInfoData?.extraData?.sensorFilters !== undefined && (
+                    <Radio.Group
+                      name="sensor-filter-types"
+                      orientation="vertical"
+                      spacing="xs"
+                      size="xs"
+                      withAsterisk
+                      value={
+                        sensorFilters.type === sensorFilterDefaultValues.type
+                          ? "0"
+                          : sensorFilters.type
+                      }
+                      onChange={(e) => {
+                        handleFilters({
+                          type: e === "0" ? sensorFilterDefaultValues.type : e,
+                        });
+                      }}
+                    >
+                      <Indicator
+                        label={senseboxInfoData.data.length}
+                        size={16}
+                        color="gray"
+                        position="middle-end"
+                        radius="xs"
                       >
-                        <Indicator
-                          label={senseboxInfoData.data.length}
-                          size={16}
-                          color="gray"
-                          position="middle-end"
-                          radius="xs"
-                        >
-                          <Radio value={"0"} label={"All"} />
-                        </Indicator>
-                        {Object.keys(
-                          senseboxInfoData.extraData.sensorFilters
-                        ).map((key, i) => {
-                          const e =
-                            senseboxInfoData.extraData.sensorFilters[key];
-                          const labelText = e.sensors.reduce(
-                            (previous, current) =>
-                              `${previous}${previous === "" ? "" : "/"}${
-                                current.title
-                              }`,
-                            ""
-                          );
-                          return (
-                            <Tooltip label={labelText} key={i}>
-                              <Indicator
-                                label={e.totalAmount}
-                                size={16}
-                                color="gray"
-                                position="middle-end"
-                                radius="xs"
-                              >
-                                <Radio
-                                  value={e.classifier}
-                                  label={capString(
-                                    `${e.classifier} | ${labelText}`,
-                                    30
-                                  )}
-                                />
-                              </Indicator>
-                            </Tooltip>
-                          );
-                        })}
-                      </Radio.Group>
-                    )}
-                  </Popover.Dropdown>
-                </Popover>
-                {areFiltersActive && (
-                  <Button
-                    variant="outline"
-                    color="dark"
-                    size="xs"
-                    onClick={resetFilters}
-                  >
-                    Clear Filters
-                  </Button>
-                )}
-              </Group>
-              <Group spacing="xs">
-                {sensorFilters.search !== sensorFilterDefaultValues.search &&
-                  filterSelection(`Search: ${sensorFilters.search}`, () => {
-                    //handleFilters({ search: sensorFilterDefaultValues.search });
-                    resetFilters(null, "search");
-                  })}
-                {sensorFilters.type !== sensorFilterDefaultValues.type &&
-                  filterSelection(`Type: ${sensorFilters.type}`, () => {
-                    //handleFilters({ type: sensorFilterDefaultValues.type });
-                    resetFilters(null, "type");
-                  })}
-                {sensorFilters.showInactive !==
-                  sensorFilterDefaultValues.showInactive &&
-                  filterSelection("Only Show Active", () => {
-                    resetFilters(null, "showInactive");
-                  })}
-              </Group>
+                        <Radio value={"0"} label={"All"} />
+                      </Indicator>
+                      {Object.keys(
+                        senseboxInfoData.extraData.sensorFilters
+                      ).map((key, i) => {
+                        const e = senseboxInfoData.extraData.sensorFilters[key];
+                        const labelText = e.sensors.reduce(
+                          (previous, current) =>
+                            `${previous}${previous === "" ? "" : "/"}${
+                              current.title
+                            }`,
+                          ""
+                        );
+                        return (
+                          <Tooltip label={labelText} key={i}>
+                            <Indicator
+                              label={e.totalAmount}
+                              size={16}
+                              color="gray"
+                              position="middle-end"
+                              radius="xs"
+                            >
+                              <Radio
+                                value={e.classifier}
+                                label={capString(
+                                  `${e.classifier} | ${labelText}`,
+                                  30
+                                )}
+                              />
+                            </Indicator>
+                          </Tooltip>
+                        );
+                      })}
+                    </Radio.Group>
+                  )}
+                </Popover.Dropdown>
+              </Popover>
+              {areFiltersActive && (
+                <Button
+                  variant="outline"
+                  color="dark"
+                  size="xs"
+                  onClick={resetFilters}
+                >
+                  Clear Filters
+                </Button>
+              )}
             </Group>
-          </Stack>
+            <Group spacing="xs">
+              {sensorFilters.search !== sensorFilterDefaultValues.search &&
+                filterSelection(`Search: ${sensorFilters.search}`, () => {
+                  //handleFilters({ search: sensorFilterDefaultValues.search });
+                  resetFilters(null, "search");
+                })}
+              {sensorFilters.type !== sensorFilterDefaultValues.type &&
+                filterSelection(`Type: ${sensorFilters.type}`, () => {
+                  //handleFilters({ type: sensorFilterDefaultValues.type });
+                  resetFilters(null, "type");
+                })}
+              {sensorFilters.showInactive !==
+                sensorFilterDefaultValues.showInactive &&
+                filterSelection("Only Show Active", () => {
+                  resetFilters(null, "showInactive");
+                })}
+            </Group>
+          </div>
           <Divider my="xs" />
           <Text
             size="xs"

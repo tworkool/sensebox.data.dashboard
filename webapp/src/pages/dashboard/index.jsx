@@ -1,9 +1,8 @@
-import { Alert, Tabs } from "@mantine/core";
-import React, { createContext, useEffect, useState } from "react";
-import { useMemo } from "react";
+import { Tabs } from "@mantine/core";
+import React, { createContext, useEffect, useState, Suspense } from "react";
+import { CubeSpinner } from "../../components/spinners";
 import {
   AccessPoint,
-  AlertCircle,
   DeviceDesktopAnalytics,
   MapSearch,
 } from "tabler-icons-react";
@@ -17,6 +16,7 @@ import { getSenseboxInfoData } from "../../redux/selectors/appState";
 import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
 import DashboardFooter from "../../components/dashboard_footer";
 import CONSTANTS from "../../utils/constants";
+import DetailedDataContainer from "../../containers/detailed_data";
 
 const DashboardContext = createContext();
 
@@ -102,14 +102,18 @@ const DashboardPage = () => {
               pt="xs"
               className="sbd-mantine-tabs-panel"
             >
-              <LiveAnalyticsContainer />
+              <Suspense fallback={<CubeSpinner />}>
+                <LiveAnalyticsContainer />
+              </Suspense>
             </Tabs.Panel>
             <Tabs.Panel
               value="detailed-data"
               pt="xs"
               className="sbd-mantine-tabs-panel"
             >
-              {/* <DetailedDataContainer /> */}
+              <Suspense fallback={<CubeSpinner />}>
+                <DetailedDataContainer />
+              </Suspense>
             </Tabs.Panel>
             <Tabs.Panel
               value="data-map"

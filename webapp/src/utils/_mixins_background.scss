@@ -1,0 +1,98 @@
+$primary-background-mixin-col: #f7f7f7;
+$secondary-background-mixin-col1: #f1f1f1; //#eeeeee;
+$secondary-background-mixin-col2: #e2e2e2; //#eeeeee55;
+
+// https://www.magicpattern.design/tools/css-backgrounds
+@mixin background($class) {
+    @if $class == zigzag3d {
+        background-color: $primary-background-mixin-col;
+        opacity: 1;
+        background: linear-gradient(135deg, $secondary-background-mixin-col2 25%, transparent 25%) -9px 0/ 18px 18px,
+            linear-gradient(225deg, $secondary-background-mixin-col1 25%, transparent 25%) -9px 0/ 18px 18px,
+            linear-gradient(315deg, $secondary-background-mixin-col2 25%, transparent 25%) 0px 0/ 18px 18px,
+            linear-gradient(45deg, $secondary-background-mixin-col1 25%, $primary-background-mixin-col 25%)
+                0px
+                0/
+                18px
+                18px;
+    } @else if $class == isometric {
+        background-color: $primary-background-mixin-col;
+        opacity: 1;
+        background-image: linear-gradient(
+                30deg,
+                $secondary-background-mixin-col1 12%,
+                transparent 12.5%,
+                transparent 87%,
+                $secondary-background-mixin-col1 87.5%,
+                $secondary-background-mixin-col1
+            ),
+            linear-gradient(
+                150deg,
+                $secondary-background-mixin-col1 12%,
+                transparent 12.5%,
+                transparent 87%,
+                $secondary-background-mixin-col1 87.5%,
+                $secondary-background-mixin-col1
+            ),
+            linear-gradient(
+                30deg,
+                $secondary-background-mixin-col1 12%,
+                transparent 12.5%,
+                transparent 87%,
+                $secondary-background-mixin-col1 87.5%,
+                $secondary-background-mixin-col1
+            ),
+            linear-gradient(
+                150deg,
+                $secondary-background-mixin-col1 12%,
+                transparent 12.5%,
+                transparent 87%,
+                $secondary-background-mixin-col1 87.5%,
+                $secondary-background-mixin-col1
+            ),
+            linear-gradient(
+                60deg,
+                $secondary-background-mixin-col2 25%,
+                transparent 25.5%,
+                transparent 75%,
+                $secondary-background-mixin-col2 75%,
+                $secondary-background-mixin-col2
+            ),
+            linear-gradient(
+                60deg,
+                $secondary-background-mixin-col2 25%,
+                transparent 25.5%,
+                transparent 75%,
+                $secondary-background-mixin-col2 75%,
+                $secondary-background-mixin-col2
+            );
+        background-size: 18px 32px;
+        background-position: 0 0, 0 0, 9px 16px, 9px 16px, 0 0, 9px 16px;
+    } @else if $class == diag {
+        background-color: $primary-background-mixin-col;
+        opacity: 1;
+        background-size: 9px 9px;
+        background-image: repeating-linear-gradient(
+            45deg,
+            $secondary-background-mixin-col1 0,
+            $secondary-background-mixin-col1 0.9px,
+            $primary-background-mixin-col 0,
+            $primary-background-mixin-col 50%
+        );
+    } @else if $class == polka {
+        background-color: $primary-background-mixin-col;
+        opacity: 1;
+        background-image: radial-gradient($secondary-background-mixin-col2 0.8px, $primary-background-mixin-col 0.8px);
+        background-size: 16px 16px;
+    } @else if $class == polka2 {
+        background-color: $primary-background-mixin-col;
+        opacity: 1;
+        background-image: radial-gradient($secondary-background-mixin-col2 0.8px, transparent 0.8px),
+            radial-gradient($secondary-background-mixin-col2 0.8px, $primary-background-mixin-col 0.8px);
+        background-size: 32px 32px;
+        background-position: 0 0, 16px 16px;
+    } @else {
+        @warn "Valid parameters: [zigzag3d, isometric, diag]";
+        background-color: $primary-background-mixin-col;
+    }
+}

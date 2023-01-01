@@ -1,5 +1,6 @@
 @import "../../utils/colors";
 @import "../../utils/mixins";
+@import "../../utils/mixins_background";
 @import "../../components/dashboard_header/dimensions";
 @import "../../components/dashboard_footer/dimensions";
 @import "../../components/dashboard_box_info/dimensions";
@@ -7,69 +8,84 @@
 $content-analytics-sections-height: 40px;
 
 .sbd-mantine-tabs-panel {
-    height: calc(100% - 48px);
-    overflow: auto;
-    padding: 0 !important;
+  height: calc(100% - 48px);
+  overflow: auto;
+  padding: 0 !important;
 }
 
 .sbd-mantine-tabs-root {
-    height: 100%;
+  height: 100%;
 }
 
 .sbd-dashboard-container {
-    padding: 10px 20px;
-    height: 100%;
+  @include responsive(desktop-down) {
+    padding: 18px 20px;
+  }
+  padding: 10px 20px;
+  height: 100%;
+}
+
+.sbd-dashboard-filters {
+  margin-bottom: var(--mantine-spacing-sm);
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  gap: var(--mantine-spacing-sm);
+  flex-direction: row;
+  @include responsive(phone) {
+    flex-direction: column;
+  }
 }
 
 .sbd-dashboard-not-supported {
-    background-color: white;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    padding: 20px;
+  background-color: white;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
 }
 
 .sbd-dashboard-main {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: antiquewhite;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: antiquewhite;
 }
 
 .sbd-dashboard-content {
-    height: calc(100vh - $dashboard-header-height - $dashboard-footer-height);
-    @include responsive(phone) {
-        height: calc(100vh - $dashboard-header-height - $dashboard-footer-height-phone);
-    }
-    background-color: rgb(176, 127, 255);
-    position: relative;
+  height: calc(100vh - $dashboard-header-height - $dashboard-footer-height);
+  @include responsive(phone) {
+    height: calc(100vh - $dashboard-header-height - $dashboard-footer-height-phone);
+  }
+  background-color: rgb(176, 127, 255);
+  position: relative;
 
-    &__analytics {
-        padding-left: $dashboard-box-info-width;
-        @include responsive(desktop-down) {
-            padding-left: $dashboard-box-info-width-mobile--collapsed;
-            //margin-left: $dashboard-box-info-width-mobile--collapsed;
-        }
-        height: 100%;
-        background-color: $analytics-bg-color;
-        position: absolute;
-        inset: 0;
-
-        &__tab-header {
-            padding-right: 20px;
-            @include responsive(desktop-down) {
-                padding-right: 8px;
-            }
-            width: calc(100% + $dashboard-box-info-border-radius);
-            transform: translateX(-$dashboard-box-info-border-radius);
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 1;
-        }
+  &__analytics {
+    padding-left: $dashboard-box-info-width;
+    @include responsive(desktop-down) {
+      padding-left: 0;
     }
+    height: 100%;
+    //background-color: $analytics-bg-color;
+    @include background(diag);
+    position: absolute;
+    inset: 0;
+
+    &__tab-header {
+      padding-right: 20px;
+      @include responsive(desktop-down) {
+        padding-right: 8px;
+      }
+      width: calc(100% + $dashboard-box-info-border-radius);
+      transform: translateX(-$dashboard-box-info-border-radius);
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1;
+    }
+  }
 }

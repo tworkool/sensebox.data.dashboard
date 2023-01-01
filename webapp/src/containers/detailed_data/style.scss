@@ -1,2 +1,9 @@
 .sbd-data-map-container {
 }
+
+.sbd-detailed-data-relative-time-container {
+    &__section {
+        display: flex;
+        flex-direction: column;
+    }
+}
