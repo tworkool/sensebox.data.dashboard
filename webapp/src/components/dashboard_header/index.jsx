@@ -124,6 +124,7 @@ const DashboardHeader = () => {
           <div className="sbd-search-grid">
             <FocusTrap active>
               <TextInput
+                size="md"
                 defaultValue={searchContent}
                 placeholder="Search by name"
                 icon={<Search size={16} />}
@@ -132,7 +133,7 @@ const DashboardHeader = () => {
                 }}
                 error={searchError}
               />
-              <Button onClick={handleSearchExecution}>Search</Button>
+              <Button size="md" onClick={handleSearchExecution}>Search</Button>
             </FocusTrap>
           </div>
 

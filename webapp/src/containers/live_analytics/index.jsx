@@ -346,9 +346,9 @@ const LiveAnalyticsContainer = () => {
                   <Stack spacing="xs">
                     <TextInput
                       placeholder="Search"
-                      radius="xs"
+                      radius="sm"
                       //variant="filled"
-                      size="sm"
+                      size="md"
                       withAsterisk
                       value={sensorFilters.search}
                       onChange={(event) => {
