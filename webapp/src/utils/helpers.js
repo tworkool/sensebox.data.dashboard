@@ -45,7 +45,6 @@ function getFormattedHoursStringFromDates(d1, d2) {
 }
 
 function getLocalTime(date, location) {
-  console.log(date, location);
   return ts.getFuzzyLocalTimeFromPoint(date, location);
 }
 
