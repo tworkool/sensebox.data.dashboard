@@ -55,16 +55,6 @@ $margin-right-mobile-expanded: 10px;
     }
   }
 
-  &__data-container {
-    /* opacity: 1;
-        transition: opacity $animation-duration;
-        min-width: calc($dashboard-box-info-width - $content-margin-desktop-left - $content-margin-desktop-right);
-
-        @include responsive(phone) {
-            min-width: calc(100% - $content-margin-mobile * 2);
-        } */
-  }
-
   &__icon {
     position: absolute;
     right: 10px;
@@ -72,7 +62,8 @@ $margin-right-mobile-expanded: 10px;
     @include responsive(desktop) {
       display: none;
     }
-    &--expand {
+
+    &__expand {
       margin: 0 auto;
       position: absolute;
       left: 0;
@@ -80,9 +71,9 @@ $margin-right-mobile-expanded: 10px;
       top: 10px;
       z-index: 4;
     }
-    &--collapse {
-      width: 100%;
-      margin-bottom: 0.5rem;
+
+    &__collapse {
+      z-index: 4;
     }
   }
 

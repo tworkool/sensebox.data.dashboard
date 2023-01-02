@@ -175,7 +175,7 @@ const DashboardBoxInfo = () => {
         <ActionIcon
           size="lg"
           variant="subtle"
-          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--expand"
+          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon__expand"
           onClick={(_) => {
             setIsExpanded(true);
           }}
@@ -185,7 +185,7 @@ const DashboardBoxInfo = () => {
       )}
       <div className="sbd-dashboard-box-info__scroll-container">
         <CloseButton
-          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon--collapse"
+          className="sbd-dashboard-box-info__icon sbd-dashboard-box-info__icon__collapse"
           title="hide box info"
           size="xl"
           iconSize={26}
