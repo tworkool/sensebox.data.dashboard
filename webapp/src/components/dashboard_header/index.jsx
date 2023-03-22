@@ -3,12 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
-  ActionIcon,
   Box,
   Button,
   Center,
   Divider,
-  FocusTrap,
   Group,
   Highlight,
   Indicator,
@@ -87,31 +85,33 @@ const DashboardHeader = () => {
             <IdenticonAvatar id={dashboardContext.selectedSenseboxId} />
           </Indicator>
         </div>
-        <TextInput
+        <Button
           className="sbd-hide--phone"
-          variant="filled"
-          onClick={() => {
-            setOpened(true);
-          }}
-          placeholder="Find a SenseBox"
-          icon={<Search size={16} />}
-          rightSectionWidth={90}
-          rightSection={
-            <div style={{ display: "flex", alignItems: "center" }}>
+          variant="light"
+          color="gray"
+          onClick={() => setOpened(true)}
+          leftIcon={<Search size={16} />}
+          rightIcon={
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: "10px",
+              }}
+            >
               <Kbd>Ctrl</Kbd>
               <span style={{ margin: "0 5px" }}>+</span>
               <Kbd>K</Kbd>
             </div>
           }
-          styles={{ rightSection: { pointerEvents: "none" } }}
-        />
+        >
+          Find a SenseBox
+        </Button>
         <Button
           leftIcon={<Search size={18} />}
           variant="light"
           color="gray"
-          onClick={() => {
-            setOpened(true);
-          }}
+          onClick={() => setOpened(true)}
           className="sbd-hide--tablet-and-desktop"
         >
           Find Sensebox
@@ -123,29 +123,27 @@ const DashboardHeader = () => {
           title="Find a Sensebox"
         >
           <div className="sbd-search-grid">
-            <FocusTrap active>
-              <TextInput
-                size="md"
-                defaultValue={searchContent}
-                placeholder="Search by name"
-                icon={<Search size={16} />}
-                onChange={(e) => {
-                  setSearchContent(e.target.value);
-                }}
-                error={searchError}
-              />
-              <Button
-                size="md"
-                onClick={() => {
-                  posthog.capture("Search SenseBox on dashboard", {
-                    property: searchContent,
-                  });
-                  handleSearchExecution();
-                }}
-              >
-                Search
-              </Button>
-            </FocusTrap>
+            <TextInput
+              size="md"
+              defaultValue={searchContent}
+              placeholder="Search by name"
+              icon={<Search size={16} />}
+              onChange={(e) => {
+                setSearchContent(e.target.value);
+              }}
+              error={searchError}
+            />
+            <Button
+              size="md"
+              onClick={() => {
+                posthog.capture("Search SenseBox on dashboard", {
+                  property: searchContent,
+                });
+                handleSearchExecution();
+              }}
+            >
+              Search
+            </Button>
           </div>
 
           <Divider
@@ -164,41 +162,41 @@ const DashboardHeader = () => {
 
             {senseboxesData?.data === undefined ||
             senseboxesData?.data?.length === 0 ? (
-              <Center style={{ height: 200 }}>
-                <NoDataContainer>
+                <Center style={{ height: 200 }}>
+                  <NoDataContainer>
                   Search for a Sensebox by its name in the field above
-                </NoDataContainer>
-              </Center>
-            ) : (
-              senseboxesData.data.map((e, i) => (
-                <UnstyledButton
-                  onClick={() => {
-                    handleSenseboxSelect(e._id);
-                  }}
-                  key={i}
-                  className="sbd-dashboard-header-search-result"
-                >
-                  <Group>
-                    <IdenticonAvatar id={e._id} />
-                    <Stack
-                      spacing="xs"
-                      className="sbd-dashboard-header-search-result__info"
-                    >
-                      <Highlight
-                        highlightColor="blue"
-                        highlight={searchHighlightContent}
-                        weight={600}
+                  </NoDataContainer>
+                </Center>
+              ) : (
+                senseboxesData.data.map((e, i) => (
+                  <UnstyledButton
+                    onClick={() => {
+                      handleSenseboxSelect(e._id);
+                    }}
+                    key={i}
+                    className="sbd-dashboard-header-search-result"
+                  >
+                    <Group>
+                      <IdenticonAvatar id={e._id} />
+                      <Stack
+                        spacing="xs"
+                        className="sbd-dashboard-header-search-result__info"
                       >
-                        {e.name}
-                      </Highlight>
-                      <Text size="xs" color="dimmed">
-                        {e._id}
-                      </Text>
-                    </Stack>
-                  </Group>
-                </UnstyledButton>
-              ))
-            )}
+                        <Highlight
+                          highlightColor="blue"
+                          highlight={searchHighlightContent}
+                          weight={600}
+                        >
+                          {e.name}
+                        </Highlight>
+                        <Text size="xs" color="dimmed">
+                          {e._id}
+                        </Text>
+                      </Stack>
+                    </Group>
+                  </UnstyledButton>
+                ))
+              )}
           </div>
           <Divider
             my="xs"
