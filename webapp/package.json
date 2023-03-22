@@ -51,6 +51,8 @@
     "@parcel/transformer-react-refresh-wrap": "^2.6.2",
     "@parcel/transformer-sass": "^2.6.2",
     "@parcel/transformer-webmanifest": "^2.6.2",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
     "buffer": "^6.0.3",
     "eslint": "^8.19.0",
     "eslint-plugin-react": "^7.30.1",
