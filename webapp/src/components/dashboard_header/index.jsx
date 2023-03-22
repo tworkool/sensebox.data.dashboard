@@ -21,6 +21,7 @@ import {
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
+import posthog from "posthog-js";
 import { Bookmark, Search } from "tabler-icons-react";
 import "./style.scss";
 import { useSearchParams } from "react-router-dom";
@@ -133,7 +134,17 @@ const DashboardHeader = () => {
                 }}
                 error={searchError}
               />
-              <Button size="md" onClick={handleSearchExecution}>Search</Button>
+              <Button
+                size="md"
+                onClick={() => {
+                  posthog.capture("Search SenseBox on dashboard", {
+                    property: searchContent,
+                  });
+                  handleSearchExecution();
+                }}
+              >
+                Search
+              </Button>
             </FocusTrap>
           </div>
 
