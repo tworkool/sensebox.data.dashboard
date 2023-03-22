@@ -19,6 +19,7 @@ import {
   DeviceDesktopAnalytics,
   MapSearch,
 } from "tabler-icons-react";
+import posthog from "posthog-js";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { requestSenseboxDBMiscDataFetch } from "../../redux/actions/app_state";
@@ -116,6 +117,12 @@ const HomePage = () => {
               size="xl"
               component={Link}
               to={`/dashboard?${CONSTANTS.ROUTING.SENSEBOX_ID}=61bc908c67e5ad001b462766`}
+              onClick={() =>
+                posthog.capture(
+                  "Click on button: change page from Landingpage to dashboard",
+                  { property: "-" }
+                )
+              }
             >
               Go to Dashboard
             </Button>
