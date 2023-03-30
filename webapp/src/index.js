@@ -5,8 +5,14 @@ import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import store from "./redux/store";
+import posthog from "posthog-js";
 import "./style.scss";
 import "./utils/osemicons.scss";
+import ENVIRONMENT from "./utils/env";
+
+posthog.init(ENVIRONMENT.POSTHOG_API_TOKEN, {
+  api_host: ENVIRONMENT.POSTHOG_API_HOST,
+});
 
 const root = document.getElementById("root");
 ReactDOM.render(

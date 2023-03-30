@@ -23,9 +23,7 @@ import {
 } from "../../redux/selectors/appState";
 import moment from "moment";
 import "./style.scss";
-import {
-  getFormattedHoursStringFromSeconds,
-} from "../../utils/helpers";
+import { getFormattedHoursStringFromSeconds } from "../../utils/helpers";
 
 const SunApiWidget = (props) => {
   const sunApiData = useSelector(getSunApiData);
@@ -49,7 +47,9 @@ const SunApiWidget = (props) => {
 
   useEffect(() => {
     if (!aggregatedSunApiData?.utcOffset) return;
-    setLocalLiveTime(moment(liveTime).utcOffset(aggregatedSunApiData.utcOffset));
+    setLocalLiveTime(
+      moment(liveTime).utcOffset(aggregatedSunApiData.utcOffset)
+    );
   }, [aggregatedSunApiData, liveTime]);
 
   // live data refetch
