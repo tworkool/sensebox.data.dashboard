@@ -1,50 +1,109 @@
 @import "./dimensions";
 @import "../../utils/colors";
 @import "../../utils/mixins";
+@import "../../utils/animations";
 
 .sbd-search-grid {
-    grid-template-columns: auto min-content;
-    display: grid;
-    gap: 8px;
+  grid-template-columns: auto min-content;
+  display: grid;
+  gap: 8px;
 }
 
 .sbd-dashboard-header {
-    height: $dashboard-header-height;
-    padding: 0 20px;
+  height: $dashboard-header-height;
+  padding: 0 20px;
+  @include responsive(desktop-down) {
+    padding: 0 8px;
+  }
+  background-color: white;
+  border-bottom: 1px solid $gray-dark;
+  z-index: 5;
+
+  &__content {
+    max-width: 2000px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+
+  &__bookmarks {
     @include responsive(desktop-down) {
-        padding: 0 8px;
+      display: none;
     }
-    background-color: white;
-    border-bottom: 1px solid $gray-dark;
-    z-index: 5;
+    position: relative;
+    // pop in animation
+    animation: scale-up-center 1s ease-in-out 0.2s;
+
+    height: 36px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+
+    &__header {
+      border-radius: 100%;
+      width: 30px;
+      height: 30px;
+      background-color: white;
+      color: #757575;
+      //border: 1px solid #bebebe;
+      margin-right: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     &__content {
-        max-width: 2000px;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 0 auto;
+      height: 100%;
+      display: flex;
+      gap: 5px;
+      transition: filter 0.6s;
+      filter: blur(0px);
+
+      /*       &__item:hover .sbd-dashboard-header__bookmarks__content {
+        filter: blur(1px);
+      } */
     }
 
-    &__favorites {
+    &__item {
+      margin-right: -18px;
+      z-index: 5;
+      transition: margin 0.35s;
+      margin-top: auto;
+      border: 2px solid white;
+
+      &:hover {
+        transform: scale(1.2);
+        margin-right: 0;
+      }
+
+      &:not(:first-child):hover {
+        margin-left: 15px;
+      }
+
+      &--active {
+        border: 2px solid #40c05785;
+        box-shadow: rgb(64 192 87 / 56%) 0px 0 2px;
+      }
     }
+  }
 }
 
 .sbd-dashboard-header-search-result {
-    background-color: white;
-    padding: 0.5rem;
-    width: 100%;
-    border-radius: 4px;
-    //border: 1px solid #339af0;
-    transition: background-color 0.2s;
+  background-color: white;
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: 4px;
+  //border: 1px solid #339af0;
+  transition: background-color 0.2s;
 
-    &__info {
-        gap: 0;
-    }
+  &__info {
+    gap: 0;
+  }
 
-    &:hover {
-        background-color: #e0f2ff;
-        //border-color: #339af0;
-    }
+  &:hover {
+    background-color: #e0f2ff;
+    //border-color: #339af0;
+  }
 }
