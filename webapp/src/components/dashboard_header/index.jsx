@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
@@ -77,14 +77,56 @@ const DashboardHeader = () => {
     [setSearch]
   );
 
+  const sortedBookmarkedBoxes = useCallback((activeId) => {
+    const _arr = [...bookmarkedBoxes];
+    const index = _arr.findIndex(e => e._id === activeId);
+    if (index == -1) return bookmarkedBoxes;
+    const element = _arr[index];
+    _arr.splice(index, 1);
+    _arr.push(element);
+    return _arr;
+  }, [bookmarkedBoxes]);
+
   return (
     <div className="sbd-dashboard-header">
       <div className="sbd-dashboard-header__content">
-        <div className="sbd-dashboard-header__favorites">
+        <Group spacing="xl">
           <Indicator size={16} position="middle-end" color="green" withBorder>
             <IdenticonAvatar id={dashboardContext.selectedSenseboxId} />
           </Indicator>
-        </div>
+          {!(bookmarkedBoxes.length === 0 || (bookmarkedBoxes.length === 1 && bookmarkedBoxes[0]._id === dashboardContext.selectedSenseboxId)) && 
+          <div className="sbd-dashboard-header__bookmarks">
+            <div className="sbd-dashboard-header__bookmarks__header">
+              <Bookmark size={22}/>
+            </div>
+            <div className="sbd-dashboard-header__bookmarks__content">
+              {bookmarkedBoxes.map((e,i) => {
+                const boxSelected = e._id === dashboardContext.selectedSenseboxId;
+                return <Tooltip
+                  key={i}
+                  label={e.name}
+                  color="dark"
+                  position="bottom"
+                  withArrow
+                >
+                  <UnstyledButton
+                    onClick={(_) => {
+                      if (boxSelected) return;
+                      handleSenseboxSelect(e._id);
+                    }}
+                  >
+                    <IdenticonAvatar 
+                      size="md" 
+                      className={`sbd-dashboard-header__bookmarks__item ${boxSelected ? "sbd-dashboard-header__bookmarks__item--active" : ""}`} 
+                      id={e._id} 
+                    />
+                  </UnstyledButton>
+                </Tooltip>;
+              })}
+            </div>
+          </div>
+          }
+        </Group>
         <Button
           className="sbd-hide--phone"
           variant="light"
