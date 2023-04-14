@@ -1,7 +1,7 @@
 {
   "name": "sensebox-data-dashboard",
   "private": true,
-  "version": "0.4.0-dev_build",
+  "version": "0.3.3",
   "description": "sensebox-data-dashboard",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "authors": [],
