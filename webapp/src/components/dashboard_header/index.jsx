@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Center,
+  CloseButton,
   Divider,
   Group,
   Highlight,
@@ -42,7 +43,7 @@ const DashboardHeader = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
   const [searchHighlightContent, setSearchHighlightContent] = useState("");
-  const [bookmarkedBoxes] = useLocalStorage({
+  const [bookmarkedBoxes, setBookmarkedBoxes] = useLocalStorage({
     key: "bookmarked-senseboxes",
     defaultValue: [],
   });
@@ -132,9 +133,9 @@ const DashboardHeader = () => {
         <Group>
           <Menu shadow="md" width={200}>
             <Menu.Target>
-              <Button variant="subtle" color="gray" compact>
+              <Button variant="light" color="gray" compact>
                 <span>Menu</span>
-                <GridDots size={20} />
+                <GridDots size={18} />
               </Button>
             </Menu.Target>
 
@@ -322,6 +323,7 @@ const DashboardHeader = () => {
                 </Tooltip>
               );
             })}
+            {bookmarkedBoxes.length !== 0 && <CloseButton onClick={() => {setBookmarkedBoxes([]);}} title="Clear Bookmarks" size="md" iconSize={14} />}
           </Group>
         </Modal>
       </div>
