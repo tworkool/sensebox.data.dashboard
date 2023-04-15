@@ -1,33 +1,64 @@
 @import "./dimensions";
+@import "../../utils/mixins";
 
 .wbs-header {
-  width: 100%;
+  position: sticky;
+  top: 0;
   height: $header-height;
-  background-color: rgb(31, 31, 31);
+  background-color: white;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #ebebeb;
+  z-index: 9;
 
   &__nav {
     display: flex;
     gap: 1rem;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
 
     &__item {
-      color: white;
-      text-transform: uppercase;
-      font-weight: 500;
+      color: rgb(82, 82, 82);
+      //text-transform: uppercase;
+      //font-weight: 500;
       text-decoration: none;
+      font-weight: 450;
       transition: color 0.3s;
+      width: min-content;
+
+      &--dropdown {
+        width: auto;
+      }
 
       &:hover {
-        text-decoration: overline;
+        color: black;
+      }
+
+      &--highlighted {
+        background: linear-gradient(45deg, #c70244 0%, #7308ca 100%);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 600;
       }
 
       &--selected {
-        text-decoration: overline;
-        color: rgb(248, 213, 11);
+        //text-decoration: underline;
+        color: black;
+        font-weight: 600;
+
+        &::before {
+          background: black;
+          content: "";
+          display: none;
+          height: 2px;
+          width: calc(100% + 4px);
+          transform: translateX(-2px);
+          position: absolute;
+          display: block;
+          bottom: 0;
+        }
       }
     }
   }

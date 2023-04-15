@@ -1,5 +1,5 @@
 import { HoverCard, Text } from "@mantine/core";
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./style.scss";
 
 const getAirQualityTable = () => {
@@ -8,7 +8,8 @@ const getAirQualityTable = () => {
     link: "",
     label: "EPA Air Quality Index (AQI) for last measured value",
     viewProperties: {
-      gradientStopsMode: "hard",
+      //gradientStopsMode: "hard",
+      evenDistribution: true,
     },
     rows: [
       {
@@ -66,95 +67,81 @@ const getAirQualityTable = () => {
 const getLumenTable = () => {
   return {
     name: "Light (lx)",
-    link: "https://en.wikipedia.org/wiki/Lux#Illuminance",
-    label: "Light",
+    link: "https://securitycamcenter.com/cctv-lux-light-ratings-explained/",
+    label: "Light (1 lx = lm / m^2)",
+    viewProperties: {
+      evenDistribution: true,
+    },
     rows: [
       {
-        LIGHT: 0.002,
-        index: 0.002,
+        LIGHT: 0.0001,
+        index: 0.0001,
         label: "",
-        shortLabel: "Moonless night, starlight",
+        shortLabel: "Moonless Overcase Night",
         color: "#03051c",
       },
       {
-        LIGHT: 0.3,
-        index: 0.3,
+        LIGHT: 0.0011,
+        index: 0.0011,
         label: "",
-        shortLabel: "Night with bright moon",
+        shortLabel: "Starlight",
       },
       {
-        LIGHT: 3.4,
-        index: 3.4,
+        LIGHT: 0.0108,
+        index: 0.0108,
         label: "",
-        shortLabel: "Dark limit of civil twilight under a clear sky",
+        shortLabel: "Quarter Moon",
       },
       {
-        LIGHT: 20,
-        index: 20,
+        LIGHT: 0.108,
+        index: 0.108,
         label: "",
-        shortLabel: "Darkness with very little light",
+        shortLabel: "Full Moon",
       },
       {
-        LIGHT: 50,
-        index: 50,
+        LIGHT: 1.08,
+        index: 1.08,
         label: "",
-        shortLabel: "living room lights",
+        shortLabel: "Deep Twilight",
       },
       {
-        LIGHT: 80,
-        index: 80,
+        LIGHT: 10.75,
+        index: 10.75,
         label: "",
-        shortLabel: "Office building hallway/toilet lighting",
+        shortLabel: "Darkness with very little light or Twilight",
       },
       {
-        LIGHT: 100,
-        index: 100,
+        LIGHT: 107.53,
+        index: 107.53,
         label: "",
-        shortLabel: "Very dark overcast day",
+        shortLabel: "Very Dark Day",
       },
       {
-        LIGHT: 150,
-        index: 150,
+        LIGHT: 1075.3,
+        index: 1075.3,
         label: "",
-        shortLabel: "Train station platforms",
+        shortLabel: "Overcast Day",
       },
       {
-        LIGHT: 500,
-        index: 500,
+        LIGHT: 10752.7,
+        index: 10752.7,
         label: "",
-        shortLabel: "Office/desk lighting or sunrise/sunset on a clear day",
+        shortLabel: "Daylight",
+        color: "rgb(255, 223, 139)",
       },
       {
-        LIGHT: 1000,
-        index: 1000,
+        LIGHT: 107527,
+        index: 107527,
         label: "",
-        shortLabel: "Overcast day or typical TV studio lighting",
-      },
-      {
-        LIGHT: 10000,
-        index: 10000,
-        label: "",
-        shortLabel: "Overcast day to full daylight",
-      },
-      {
-        LIGHT: 25000,
-        index: 25000,
-        label: "",
-        shortLabel: "Full daylight",
-        color: "#af8f22",
-      },
-      {
-        LIGHT: 100000,
-        index: 100000,
-        label: "",
-        shortLabel: "Direct sunlight",
+        shortLabel: "Sunlight",
+        color: "rgb(255 234 129)",
       },
       {
         LIGHT: 220000,
         index: 220000,
         label: "",
-        shortLabel: "Very bright direct sunlight",
-        color: "#fff2af",
+        shortLabel: "Very Bright Direct Sunlight",
+        color: "rgb(255 254 232)",
       },
     ],
   };
@@ -260,9 +247,44 @@ const LiveAnalyticsValueIndicator = (props) => {
     } else if (calculatedIndexValue < min) {
       calculatedIndexValue = min;
     }
-    const percentage = Math.floor((calculatedIndexValue / max) * 100);
+    
+    // calculate section percentages
+    var indicatorSection = undefined;
+    for (let i = 0; i < sections.length; i++) {
+      const element = sections[i];
+
+      const _previousIndex = i === 0 ? min : sections[i - 1].index;
+      var _absolutePercentage, _relativePercentage;
+      if (valueInfo.table?.viewProperties?.evenDistribution === true) {
+        const oneSectionPercentageLength = (100 / sections.length);
+        _absolutePercentage = oneSectionPercentageLength * i;
+        _relativePercentage = oneSectionPercentageLength;
+      } else {
+        _absolutePercentage = (element.index / max) * 100;
+        _relativePercentage = ((element.index - _previousIndex) / max) * 100; // same as e.index/max - _previousIndex/max
+      }
+      
+      if (calculatedIndexValue < element.index ) {
+        indicatorSection = {
+          ...element,
+          _previousIndex,
+          _absolutePercentage,
+          _relativePercentage
+        };
+        break;
+      }
+    }
+
+    if (indicatorSection === undefined) return;
+
+    // calculate relative percentage on section based on calculated index and add it to absolute whole graph percentage
+    const d_min_calculated = calculatedIndexValue - indicatorSection._previousIndex;
+    const d_max_min = indicatorSection.index - indicatorSection._previousIndex;
+    const relative_section_percentage = d_min_calculated / d_max_min;
+    const absolute_total_percentage = indicatorSection._absolutePercentage + indicatorSection._relativePercentage * relative_section_percentage;
+
     setSelectedSectionDescription(itemDescription);
-    setIndicatorStyle({ left: `${percentage}%` });
+    setIndicatorStyle({ left: `${absolute_total_percentage}%` });
   }, [_valueInfo]);
 
   useEffect(() => {
@@ -270,8 +292,12 @@ const LiveAnalyticsValueIndicator = (props) => {
     const valueInfo = { ..._valueInfo };
     const sections = valueInfo.table.rows;
     var max = sections[sections.length - 1].index;
-    sections.forEach((e) => {
-      e._percentage = Math.floor((e.index / max) * 100);
+    sections.forEach((e, i) => {
+      if (valueInfo.table?.viewProperties?.evenDistribution === true) {
+        e._percentage = (100 / sections.length) * i;
+      } else {
+        e._percentage = (e.index / max) * 100;
+      }
     });
 
     var previousValidColor = undefined;

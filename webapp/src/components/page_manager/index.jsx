@@ -4,11 +4,29 @@ import DatenschutzPage from "../../pages/datenschutz";
 import DashboardPage, { DashboardContextProvider } from "../../pages/dashboard";
 import HomePage from "../../pages/home";
 import { CubeSpinner } from "../spinners";
+import InfoPage from "../../pages/info";
+import ImpressumPage from "../../pages/impressum";
 
 const PageManager = (_props) => {
   return (
     <>
       <Routes>
+        <Route
+          path="/info"
+          element={
+            <Suspense fallback={<CubeSpinner />}>
+              <InfoPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/impressum"
+          element={
+            <Suspense fallback={<CubeSpinner />}>
+              <ImpressumPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/datenschutz"
           element={

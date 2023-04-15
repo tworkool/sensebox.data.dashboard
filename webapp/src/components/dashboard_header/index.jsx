@@ -1,17 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
+  ActionIcon,
   Box,
   Button,
   Center,
+  CloseButton,
   Divider,
   Group,
   Highlight,
   Indicator,
   Kbd,
   LoadingOverlay,
+  Menu,
   Modal,
   Stack,
   Text,
@@ -20,7 +23,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import posthog from "posthog-js";
-import { Bookmark, Search } from "tabler-icons-react";
+import { Bookmark, Search, Settings as IconSettings, Home as IconHome, InfoCircle as IconInfoCircle, GridDots } from "tabler-icons-react";
 import "./style.scss";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -40,7 +43,7 @@ const DashboardHeader = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchContent, setSearchContent] = useState("");
   const [searchHighlightContent, setSearchHighlightContent] = useState("");
-  const [bookmarkedBoxes] = useLocalStorage({
+  const [bookmarkedBoxes, setBookmarkedBoxes] = useLocalStorage({
     key: "bookmarked-senseboxes",
     defaultValue: [],
   });
@@ -77,45 +80,118 @@ const DashboardHeader = () => {
     [setSearch]
   );
 
+  const sortedBookmarkedBoxes = useCallback((activeId) => {
+    const _arr = [...bookmarkedBoxes];
+    const index = _arr.findIndex(e => e._id === activeId);
+    if (index == -1) return bookmarkedBoxes;
+    const element = _arr[index];
+    _arr.splice(index, 1);
+    _arr.push(element);
+    return _arr;
+  }, [bookmarkedBoxes]);
+
   return (
     <div className="sbd-dashboard-header">
       <div className="sbd-dashboard-header__content">
-        <div className="sbd-dashboard-header__favorites">
+        <Group spacing="xl">
           <Indicator size={16} position="middle-end" color="green" withBorder>
             <IdenticonAvatar id={dashboardContext.selectedSenseboxId} />
           </Indicator>
-        </div>
-        <Button
-          className="sbd-hide--phone"
-          variant="light"
-          color="gray"
-          onClick={() => setOpened(true)}
-          leftIcon={<Search size={16} />}
-          rightIcon={
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginLeft: "10px",
-              }}
-            >
-              <Kbd>Ctrl</Kbd>
-              <span style={{ margin: "0 5px" }}>+</span>
-              <Kbd>K</Kbd>
+          {!(bookmarkedBoxes.length === 0 || (bookmarkedBoxes.length === 1 && bookmarkedBoxes[0]._id === dashboardContext.selectedSenseboxId)) && 
+          <div className="sbd-dashboard-header__bookmarks">
+            <div className="sbd-dashboard-header__bookmarks__header">
+              <Bookmark size={22}/>
             </div>
+            <div className="sbd-dashboard-header__bookmarks__content">
+              {bookmarkedBoxes.map((e,i) => {
+                const boxSelected = e._id === dashboardContext.selectedSenseboxId;
+                return <Tooltip
+                  key={i}
+                  label={e.name}
+                  color="dark"
+                  position="bottom"
+                  withArrow
+                >
+                  <UnstyledButton
+                    onClick={(_) => {
+                      if (boxSelected) return;
+                      handleSenseboxSelect(e._id);
+                    }}
+                  >
+                    <IdenticonAvatar 
+                      size="md" 
+                      className={`sbd-dashboard-header__bookmarks__item ${boxSelected ? "sbd-dashboard-header__bookmarks__item--active" : ""}`} 
+                      id={e._id} 
+                    />
+                  </UnstyledButton>
+                </Tooltip>;
+              })}
+            </div>
+          </div>
           }
-        >
+        </Group>
+        <Group>
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <Button variant="light" color="gray" compact>
+                <span>Menu</span>
+                <GridDots size={18} />
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Label>General</Menu.Label>
+              <Menu.Item 
+                icon={<IconHome size={18} strokeWidth={1.5}/>} 
+                component="a"
+                href="/">
+                  Home
+              </Menu.Item>
+              <Menu.Item 
+                icon={<IconInfoCircle size={18} strokeWidth={1.5}/>}
+                component="a"
+                href="/info">
+                Info/Help
+              </Menu.Item>
+
+              <Menu.Divider />
+
+              <Menu.Label>Dashboard</Menu.Label>
+              <Menu.Item disabled icon={<IconSettings size={18} strokeWidth={1.5}/>}>Settings</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          <Button
+            className="sbd-hide--phone"
+            variant="light"
+            color="gray"
+            onClick={() => setOpened(true)}
+            leftIcon={<Search size={16} />}
+            rightIcon={
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "10px",
+                }}
+              >
+                <Kbd>Ctrl</Kbd>
+                <span style={{ margin: "0 5px" }}>+</span>
+                <Kbd>K</Kbd>
+              </div>
+            }
+          >
           Find a SenseBox
-        </Button>
-        <Button
-          leftIcon={<Search size={18} />}
-          variant="light"
-          color="gray"
-          onClick={() => setOpened(true)}
-          className="sbd-hide--tablet-and-desktop"
-        >
+          </Button>
+          <Button
+            leftIcon={<Search size={18} />}
+            variant="light"
+            color="gray"
+            onClick={() => setOpened(true)}
+            className="sbd-hide--tablet-and-desktop"
+          >
           Find Sensebox
-        </Button>
+          </Button>
+        </Group>
         <Modal
           size={"lg"}
           opened={opened}
@@ -247,6 +323,7 @@ const DashboardHeader = () => {
                 </Tooltip>
               );
             })}
+            {bookmarkedBoxes.length !== 0 && <CloseButton onClick={() => {setBookmarkedBoxes([]);}} title="Clear Bookmarks" size="md" iconSize={14} />}
           </Group>
         </Modal>
       </div>

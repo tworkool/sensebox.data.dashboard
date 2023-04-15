@@ -1,133 +1,136 @@
 @import "../../utils/mixins";
 
 .sbd-home-page {
-    height: 100%;
-    background: rgb(76, 167, 66);
-    background: linear-gradient(150deg, #4ca742 50%, #1cbd89 100%);
-    overflow: auto;
-    &__content {
-        position: absolute;
-        inset: 20px 20px;
-        @include responsive(desktop-down) {
-            inset: 20px 0;
-        }
-    }
+  background: rgb(76, 167, 66);
+  background: linear-gradient(150deg, #4ca742 50%, #1cbd89 100%);
 }
 
+/* .sbd-home-page {
+  height: 100%;
+  background: rgb(76, 167, 66);
+  background: linear-gradient(150deg, #4ca742 50%, #1cbd89 100%);
+  overflow: auto;
+  &__content {
+      position: absolute;
+      inset: 20px 20px;
+      @include responsive(desktop-down) {
+          inset: 20px 0;
+      }
+  }
+} */
+
 .sbd-dashboard-btn-container {
-    @include responsive(desktop-down) {
-        position: fixed;
-        bottom: 20px;
-        width: 100vw;
-        left: 10px;
-        right: 10px;
-        z-index: 99;
-    }
+  margin-top: 40px;
+  @include responsive(desktop-down) {
+    position: fixed;
+    bottom: 100px;
+    width: 100vw;
+    z-index: 99;
+  }
 }
 
 .sbd-home-feature-container {
-    color: white;
-    text-shadow: 2px 2px rgba(0, 0, 0, 0.137);
-    padding-bottom: 40px;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.137);
+  padding: 40px 0;
 
-    &__group {
-        display: grid;
-        gap: 1rem;
-        align-items: flex-start;
-        justify-content: space-between;
-        grid-template-columns: 1fr 1fr 1fr;
-
-        @include responsive(tablet) {
-            gap: 0.5rem;
-        }
-
-        @include responsive(phone) {
-            gap: 0.5rem;
-            grid-template-columns: 1fr;
-            grid-template-rows: min-content min-content min-content;
-        }
-    }
-}
-
-.sbd-home-page-preview-image img {
-    margin-left: auto;
-    padding: 5px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-    width: 500px !important;
+  &__group {
+    display: grid;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    grid-template-columns: 1fr 1fr 1fr;
 
     @include responsive(tablet) {
-        width: 90% !important;
-        margin: 0 auto;
+      gap: 0.5rem;
     }
 
     @include responsive(phone) {
-        width: 100% !important;
-        margin: 0;
-        padding: 0;
+      gap: 0.5rem;
+      grid-template-columns: 1fr;
+      grid-template-rows: min-content min-content min-content;
     }
+  }
+}
+
+.sbd-home-page-preview-image img {
+  margin-left: auto;
+  padding: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  width: 500px !important;
+
+  @include responsive(tablet) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+
+  @include responsive(phone) {
+    width: 100% !important;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .sbd-home-page-copyright {
-    position: fixed;
-    top: 0;
-    right: 0;
-    color: gray;
-    font-size: 0.7rem;
-    z-index: 1;
-    padding: 0.5rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: gray;
+  font-size: 0.7rem;
+  z-index: 1;
+  padding: 0.5rem;
 }
 
 .sbd-page-shape-divider {
-    &__shape {
-        aspect-ratio: 1200/120;
-        width: 100%;
-        background-image: url("../../assets/content/waves.svg");
-        background-position: 50%;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
+  &__shape {
+    aspect-ratio: 1200/120;
+    width: 100%;
+    background-image: url("../../assets/content/waves.svg");
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
 
-    &__rest {
-        background-color: white;
-        height: 50%;
-    }
+  &__rest {
+    background-color: white;
+    height: 50%;
+  }
 }
 
 .sbd-home-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  align-content: stretch;
+  @include responsive(desktop-down) {
+    flex-direction: column;
+    align-items: center;
+  }
+  &__stack {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
     gap: 1rem;
-    align-content: stretch;
     @include responsive(desktop-down) {
+      flex-direction: column-reverse;
+      align-items: center;
+    }
+
+    &__data {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+      border-radius: var(--mantine-radius-sm);
+      @include responsive(desktop-down) {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background-color: var(--mantine-color-gray-1);
+      }
+
+      @include responsive(phone-l) {
         flex-direction: column;
         align-items: center;
+        width: auto;
+      }
     }
-    &__stack {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        @include responsive(desktop-down) {
-            flex-direction: column-reverse;
-            align-items: center;
-        }
-
-        &__data {
-            display: flex;
-            flex-direction: row;
-            gap: 0.5rem;
-            border-radius: var(--mantine-radius-sm);
-            @include responsive(desktop-down) {
-                width: 100%;
-                justify-content: space-between;
-                padding: 0.5rem;
-                background-color: var(--mantine-color-gray-1);
-            }
-
-            @include responsive(phone-l) {
-                flex-direction: column;
-                align-items: center;
-                width: auto;
-            }
-        }
-    }
+  }
 }
