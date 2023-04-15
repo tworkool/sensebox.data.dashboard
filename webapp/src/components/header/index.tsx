@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavLink } from "react-router-dom";
 import "./style.scss";
 import { ActionIcon, Button, Group, Popover, Stack } from "@mantine/core";
-import { BrandGithub, ChevronDown, Help } from "tabler-icons-react";
+import { BrandGithub, ChevronDown, Help, InfoCircle } from "tabler-icons-react";
 import { useMemo } from "react";
 
 type headerProps = {
@@ -72,7 +72,7 @@ const Header = (props: headerProps) => {
           component="a"
           href="/info"
         >
-          <Help />
+          <InfoCircle />
         </ActionIcon></Group>
     </div>
   );

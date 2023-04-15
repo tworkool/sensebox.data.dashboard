@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxesData } from "../../redux/selectors/appState";
 import { requestSenseboxesDataFetch } from "../../redux/actions/app_state";
 import {
+  ActionIcon,
   Box,
   Button,
   Center,
@@ -12,6 +13,7 @@ import {
   Indicator,
   Kbd,
   LoadingOverlay,
+  Menu,
   Modal,
   Stack,
   Text,
@@ -20,7 +22,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import posthog from "posthog-js";
-import { Bookmark, Search } from "tabler-icons-react";
+import { Bookmark, Search, Settings as IconSettings, Home as IconHome, InfoCircle as IconInfoCircle, GridDots } from "tabler-icons-react";
 import "./style.scss";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -127,37 +129,68 @@ const DashboardHeader = () => {
           </div>
           }
         </Group>
-        <Button
-          className="sbd-hide--phone"
-          variant="light"
-          color="gray"
-          onClick={() => setOpened(true)}
-          leftIcon={<Search size={16} />}
-          rightIcon={
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginLeft: "10px",
-              }}
-            >
-              <Kbd>Ctrl</Kbd>
-              <span style={{ margin: "0 5px" }}>+</span>
-              <Kbd>K</Kbd>
-            </div>
-          }
-        >
+        <Group>
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <Button variant="subtle" color="gray" compact>
+                <span>Menu</span>
+                <GridDots size={20} />
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Label>General</Menu.Label>
+              <Menu.Item 
+                icon={<IconHome size={18} strokeWidth={1.5}/>} 
+                component="a"
+                href="/">
+                  Home
+              </Menu.Item>
+              <Menu.Item 
+                icon={<IconInfoCircle size={18} strokeWidth={1.5}/>}
+                component="a"
+                href="/info">
+                Info/Help
+              </Menu.Item>
+
+              <Menu.Divider />
+
+              <Menu.Label>Dashboard</Menu.Label>
+              <Menu.Item disabled icon={<IconSettings size={18} strokeWidth={1.5}/>}>Settings</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          <Button
+            className="sbd-hide--phone"
+            variant="light"
+            color="gray"
+            onClick={() => setOpened(true)}
+            leftIcon={<Search size={16} />}
+            rightIcon={
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "10px",
+                }}
+              >
+                <Kbd>Ctrl</Kbd>
+                <span style={{ margin: "0 5px" }}>+</span>
+                <Kbd>K</Kbd>
+              </div>
+            }
+          >
           Find a SenseBox
-        </Button>
-        <Button
-          leftIcon={<Search size={18} />}
-          variant="light"
-          color="gray"
-          onClick={() => setOpened(true)}
-          className="sbd-hide--tablet-and-desktop"
-        >
+          </Button>
+          <Button
+            leftIcon={<Search size={18} />}
+            variant="light"
+            color="gray"
+            onClick={() => setOpened(true)}
+            className="sbd-hide--tablet-and-desktop"
+          >
           Find Sensebox
-        </Button>
+          </Button>
+        </Group>
         <Modal
           size={"lg"}
           opened={opened}

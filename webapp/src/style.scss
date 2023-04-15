@@ -98,8 +98,42 @@ code {
     max-width: 1280px;
     min-height: calc(100vh - $header-height - $footer-height);
     margin: 0 auto;
-    padding: 10px 28px;
+    padding: 10px 28px 50px 28px;
     background-color: white;
     color: black;
   }
+}
+
+.mantine-Title-root { 
+  &:not(:first-child) {
+    margin-top: 1rem;
+  }
+}
+
+h1.mantine-Title-root {
+  font-size: 1.5em;
+}
+
+h2.mantine-Title-root {
+  font-size: 1.2em;
+}
+
+h3.mantine-Title-root {
+  font-size: 0.9em;
+  text-decoration: underline;
+}
+
+h4.mantine-Title-root {
+  font-size: 0.8em;
+  text-decoration: underline;
+}
+
+h5.mantine-Title-root {
+  font-size: 0.7em;
+  text-decoration: underline;
+}
+
+h6.mantine-Title-root {
+  font-size: 0.6em;
+  text-decoration: underline;
 }
