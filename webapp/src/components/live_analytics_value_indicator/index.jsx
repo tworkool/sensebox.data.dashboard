@@ -8,7 +8,7 @@ const getAirQualityTable = () => {
     link: "",
     label: "EPA Air Quality Index (AQI) for last measured value",
     viewProperties: {
-      gradientStopsMode: "hard",
+      //gradientStopsMode: "hard",
       evenDistribution: true,
     },
     rows: [

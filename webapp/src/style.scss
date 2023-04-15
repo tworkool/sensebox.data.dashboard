@@ -1,4 +1,6 @@
 @import "./utils/mixins";
+@import "./components/header/dimensions";
+@import "./components/footer/dimensions";
 
 html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
@@ -80,5 +82,21 @@ code {
     @include responsive(phone-up) {
       display: none;
     }
+  }
+}
+
+.page {
+  &__container {
+    background-color: white;
+  }
+
+  &__content {
+    z-index: 8;
+    max-width: 1280px;
+    min-height: calc(100vh - $header-height - $footer-height);
+    margin: 0 auto;
+    padding: 10px 28px;
+    background-color: white;
+    color: black;
   }
 }
