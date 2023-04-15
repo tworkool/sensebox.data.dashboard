@@ -3,7 +3,8 @@
 //@import "../../utils/icons.scss";
 
 .wsb-app-container {
-    background-color: rgb(45, 201, 128);
-    width: 100vw;
-    height: 100vh;
+  background-color: rgb(45, 201, 128);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
