@@ -60,7 +60,7 @@ const HomePage = () => {
             <Stack>
               <Stack align="flex-start">
                 <Title order={1}>Welcome...</Title>
-                <Title order={5}>
+                <Title order={2}>
                   {"To the unofficial data dashboard for "}
                   <Anchor href="https://sensebox.de/" target="_blank">
                   Sensebox
