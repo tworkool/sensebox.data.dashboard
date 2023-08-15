@@ -9,7 +9,6 @@ import {
   ActionIcon,
   Alert,
   Badge,
-  Button,
   CloseButton,
   Divider,
   Group,
@@ -26,7 +25,9 @@ import {
   MapPin,
   ScreenShare,
   Box as SenseboxIcon,
-  BoxOff,
+  Copy as CopyIcon,
+  World,
+  ClipboardCheck as ClipboardCheckIcon,
 } from "tabler-icons-react";
 import "./style.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -219,9 +220,28 @@ const DashboardBoxInfo = () => {
                   <Text size="lg" weight={500}>
                     {senseboxInfoData.data.name}
                   </Text>
-                  <Text size="xs" color="dimmed">
-                    {senseboxInfoData.data._id}
-                  </Text>
+                  <Group spacing="xs">
+                    <Text size="xs" color="dimmed">
+                      {senseboxInfoData.data._id}
+                    </Text>
+                    <ActionIcon
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(senseboxInfoData.data._id);
+                        showNotification({
+                          id: "id_copied_to_clipboard_notification",
+                          title: "ID copied to clipboard",
+                          autoClose: 5000,
+                          disallowClose: true,
+                          radius: "sm",
+                          color: "green",
+                          icon: <ClipboardCheckIcon size={18}/>
+                        });
+                      }}
+                    >
+                      <CopyIcon size={18}/>
+                    </ActionIcon>
+                  </Group>
                   <Space h="xs" />
                   <Group spacing="xs">
                     {senseboxInfoData?.data?.exposure !== "unknown" && (
@@ -239,19 +259,19 @@ const DashboardBoxInfo = () => {
                       moment(senseboxInfoData.data.updatedAt),
                       "days"
                     ) > CONSTANTS.SENSEBOX_INACTIVITY_TIME_DAYS ? (
-                      <Badge color="red" size="sm" radius="sm" variant="filled">
+                        <Badge color="red" size="sm" radius="sm" variant="filled">
                         INACTIVE
-                      </Badge>
-                    ) : (
-                      <Badge
-                        color="gray"
-                        size="sm"
-                        radius="sm"
-                        variant="filled"
-                      >
+                        </Badge>
+                      ) : (
+                        <Badge
+                          color="gray"
+                          size="sm"
+                          radius="sm"
+                          variant="filled"
+                        >
                         ACTIVE
-                      </Badge>
-                    )}
+                        </Badge>
+                      )}
                   </Group>
                 </div>
                 <Space h="xs" />
@@ -313,6 +333,19 @@ const DashboardBoxInfo = () => {
                         <ScreenShare size={26} />
                       </ActionIcon>
                     </Tooltip>
+                    {
+                      senseboxInfoData?.data?.weblink && 
+                      <Tooltip label="Visit Box Website">
+                        <ActionIcon
+                          size="lg"
+                          component="a"
+                          href={`${senseboxInfoData.data.weblink}`}
+                          target="_blank"
+                        >
+                          <World size={26} />
+                        </ActionIcon>
+                      </Tooltip>
+                    }
                   </Group>
                 </div>
               </>
