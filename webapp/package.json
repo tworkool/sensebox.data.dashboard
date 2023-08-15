@@ -46,6 +46,7 @@
     "@parcel/babel-preset-env": "^2.7.0",
     "@parcel/config-default": "^2.6.2",
     "@parcel/css": "^1.14.0",
+    "@parcel/packager-raw-url": "^2.6.2",
     "@parcel/transformer-css": "^2.7.0",
     "@parcel/transformer-js": "^2.6.2",
     "@parcel/transformer-react-refresh-wrap": "^2.6.2",
