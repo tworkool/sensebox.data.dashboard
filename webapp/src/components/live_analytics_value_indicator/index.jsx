@@ -17,7 +17,7 @@ const getAirQualityTable = () => {
         PM25: 12,
         index: 50,
         label: "",
-        shortLabel: "Good",
+        shortLabel: "Good Airquality",
         color: "#79bc6a",
       },
       {
@@ -25,7 +25,7 @@ const getAirQualityTable = () => {
         PM25: 35.4,
         index: 100,
         label: "",
-        shortLabel: "Moderate",
+        shortLabel: "Moderate Airquality",
         color: "#BBCF4C",
       },
       {
@@ -41,7 +41,7 @@ const getAirQualityTable = () => {
         PM25: 150.4,
         index: 200,
         label: "",
-        shortLabel: "Unhealthy",
+        shortLabel: "Unhealthy Airquality",
         color: "#F29305",
       },
       {
@@ -49,7 +49,7 @@ const getAirQualityTable = () => {
         PM25: 250.4,
         index: 300,
         label: "",
-        shortLabel: "Very Unhealthy",
+        shortLabel: "Very Unhealthy Airquality",
         color: "#E8416F",
       },
       {
@@ -57,7 +57,7 @@ const getAirQualityTable = () => {
         PM25: 500.4,
         index: 500,
         label: "",
-        shortLabel: "Hazardous",
+        shortLabel: "Hazardous Airquality",
         color: "#7E0023",
       },
     ],
@@ -77,7 +77,7 @@ const getLumenTable = () => {
         LIGHT: 0.0001,
         index: 0.0001,
         label: "",
-        shortLabel: "Moonless Overcase Night",
+        shortLabel: "Moonless Overcast Night",
         color: "#03051c",
       },
       {
@@ -178,7 +178,7 @@ const calculateAirQualityIndex = (unmappedValue, handleRowSelection) => {
   const C = unmappedValue[mappingProperty];
   var AQI_INDEX = ((I_high - I_low) / (C_high - C_low)) * (C - C_low) + I_low;
   AQI_INDEX = Math.round(AQI_INDEX);
-  handleRowSelection(`Index ${AQI_INDEX}, ${high.shortLabel} Airquality`);
+  handleRowSelection(`Index ${AQI_INDEX}, ${high.shortLabel}`);
   return AQI_INDEX;
 };
 
