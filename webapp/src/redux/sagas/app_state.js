@@ -25,6 +25,7 @@ import { showNotification } from "@mantine/notifications";
 import QUERY_DATA_MODIFIERS from "./api/query_data_modifiers";
 import { getSenseboxInfoData } from "../selectors/appState";
 import { getLocalTime } from "../../utils/helpers";
+import CONSTANTS from "../../utils/constants";
 
 // TODO: implement generic resolution generator function for sagas
 /* function* completeSagaAction(success, action, actionValue) {
@@ -155,6 +156,8 @@ function* fetchSenseboxInfoData(action) {
         })
       );
 
+      localStorage.setItem(CONSTANTS.LAST_SENSEBOX_ID, action?.payload?.id);
+
       const coordinates = rawData?.currentLocation?.coordinates;
       if (coordinates) {
         const [lon, lat] = coordinates;
@@ -266,8 +269,7 @@ function* fetchSenseboxSensorData(action) {
 
     const notificationConfig = buildSagaFailNotificationConfig(
       "sensebox_sensor_data",
-      `Could not fetch sensor data for Sensebox (ID: ${
-        action.payload.senseboxID ?? "NO_ID"
+      `Could not fetch sensor data for Sensebox (ID: ${action.payload.senseboxID ?? "NO_ID"
       })`
     );
     showNotification(notificationConfig);
