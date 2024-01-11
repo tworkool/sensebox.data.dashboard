@@ -6,6 +6,7 @@ import HomePage from "../../pages/home";
 import { CubeSpinner } from "../spinners";
 import InfoPage from "../../pages/info";
 import ImpressumPage from "../../pages/impressum";
+import DashboardSettings from "../../containers/dashboard_settings";
 
 const PageManager = (_props) => {
   return (

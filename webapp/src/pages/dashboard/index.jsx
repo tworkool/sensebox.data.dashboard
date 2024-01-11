@@ -17,6 +17,8 @@ import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
 import DashboardFooter from "../../components/dashboard_footer";
 import CONSTANTS from "../../utils/constants";
 import DetailedDataContainer from "../../containers/detailed_data";
+import { useLocalStorage } from "@mantine/hooks";
+import { getDefaultSettings, simplifySettings } from "../../utils/settings";
 
 const DashboardContext = createContext();
 
@@ -27,6 +29,10 @@ const DashboardContextProvider = (props) => {
   const [selectedSenseboxId, setSelectedSenseboxId] = useState();
   const [isLoadingSenseboxInfoData, setIsLoadingSenseboxInfoData] =
     useState(false);
+  const [dashboardSettings, setDashboardSettings] = useLocalStorage({
+    key: "dashboard-settings",
+    defaultValue: simplifySettings(getDefaultSettings()),
+  });
 
   useEffect(() => {
     if (senseboxInfoData?.validBoxId) {
@@ -49,7 +55,7 @@ const DashboardContextProvider = (props) => {
 
   return (
     <DashboardContext.Provider
-      value={{ selectedSenseboxId, isLoadingSenseboxInfoData }}
+      value={{ selectedSenseboxId, isLoadingSenseboxInfoData, dashboardSettings, setDashboardSettings }}
     >
       {props.children}
     </DashboardContext.Provider>

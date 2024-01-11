@@ -8,3 +8,5 @@ report.html
 coverage/
 
 .env.*
+
+FEATUREMAP.md

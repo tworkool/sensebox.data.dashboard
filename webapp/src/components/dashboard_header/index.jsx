@@ -33,6 +33,7 @@ import IdenticonAvatar from "../identicon_avatar";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { DashboardContext } from "../../pages/dashboard";
 import CONSTANTS from "../../utils/constants";
+import DashboardSettings from "../../containers/dashboard_settings";
 
 const DashboardHeader = () => {
   const [, setSearch] = useSearchParams();
@@ -49,6 +50,7 @@ const DashboardHeader = () => {
   });
   useHotkeys([["mod+K", () => setOpened(true)]]);
   const [searchError, setSearchError] = useState(null);
+  const [settingsOpened, setSettingsOpened] = useState(false);
 
   const handleSearchExecution = useCallback(() => {
     if (searchContent === "") {
@@ -157,7 +159,10 @@ const DashboardHeader = () => {
               <Menu.Divider />
 
               <Menu.Label>Dashboard</Menu.Label>
-              <Menu.Item disabled icon={<IconSettings size={18} strokeWidth={1.5}/>}>Settings</Menu.Item>
+              <Menu.Item 
+                icon={<IconSettings size={18} strokeWidth={1.5}/>}
+                onClick={() => setSettingsOpened(true)}
+              >Settings</Menu.Item>
             </Menu.Dropdown>
           </Menu>
           <Button
@@ -193,6 +198,14 @@ const DashboardHeader = () => {
           </Button>
         </Group>
         <Modal
+          size={"xl"}
+          opened={settingsOpened}
+          onClose={() => setSettingsOpened(false)}
+          title="Dashboard Settings"
+        >
+          <DashboardSettings/>
+        </Modal>
+        <Modal
           size={"lg"}
           opened={opened}
           onClose={() => setOpened(false)}
@@ -201,6 +214,7 @@ const DashboardHeader = () => {
           <div className="sbd-search-grid">
             <TextInput
               size="md"
+              data-autofocus
               defaultValue={searchContent}
               placeholder="Search by name"
               icon={<Search size={16} />}
