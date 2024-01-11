@@ -198,7 +198,13 @@ const DashboardHeader = () => {
           onClose={() => setOpened(false)}
           title="Find a Sensebox"
         >
-          <div className="sbd-search-grid">
+          <form className="sbd-search-grid" onSubmit={e => {
+            e?.preventDefault();
+            posthog.capture("Search SenseBox on dashboard", {
+              property: searchContent,
+            });
+            handleSearchExecution();
+          }}>
             <TextInput
               size="md"
               defaultValue={searchContent}
@@ -211,16 +217,12 @@ const DashboardHeader = () => {
             />
             <Button
               size="md"
-              onClick={() => {
-                posthog.capture("Search SenseBox on dashboard", {
-                  property: searchContent,
-                });
-                handleSearchExecution();
-              }}
+              autoFocus
+              type="submit"
             >
-              Search
+                Search
             </Button>
-          </div>
+          </form>
 
           <Divider
             my="xs"
