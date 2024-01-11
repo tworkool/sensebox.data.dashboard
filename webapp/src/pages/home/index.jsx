@@ -121,7 +121,7 @@ const HomePage = () => {
                 radius="xl"
                 size="xl"
                 component={Link}
-                to={`/dashboard?${CONSTANTS.ROUTING.SENSEBOX_ID}=61bc908c67e5ad001b462766`}
+                to="dashboard"
                 onClick={() =>
                   posthog.capture(
                     "Click on button: change page from Landingpage to dashboard",
