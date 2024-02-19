@@ -10,7 +10,7 @@ import DashboardBoxInfo from "../../components/dashboard_box_info";
 import DashboardHeader from "../../components/dashboard_header";
 import LiveAnalyticsContainer from "../../containers/live_analytics";
 import "./style.scss";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSenseboxInfoData } from "../../redux/selectors/appState";
 import { requestSenseboxInfoDataFetch } from "../../redux/actions/app_state";
@@ -22,6 +22,7 @@ const DashboardContext = createContext();
 
 const DashboardContextProvider = (props) => {
   const [search] = useSearchParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const senseboxInfoData = useSelector(getSenseboxInfoData);
   const [selectedSenseboxId, setSelectedSenseboxId] = useState();
@@ -39,12 +40,21 @@ const DashboardContextProvider = (props) => {
 
   useEffect(() => {
     const param = search.get(CONSTANTS.ROUTING.SENSEBOX_ID);
+    const lastSenseboxId = localStorage.getItem(CONSTANTS.LAST_SENSEBOX_ID);
     if (!param) {
-      setSelectedSenseboxId(undefined);
+      if (lastSenseboxId){
+        //dispatch(requestSenseboxInfoDataFetch({ id: lastSenseboxId }));
+        //setIsLoadingSenseboxInfoData(true);
+        navigate(`/dashboard?${CONSTANTS.ROUTING.SENSEBOX_ID}=${lastSenseboxId}`);
+        //search.set(CONSTANTS.ROUTING.SENSEBOX_ID, lastSenseboxId);
+      } else {
+        setSelectedSenseboxId(undefined);
+      }
     } else {
       dispatch(requestSenseboxInfoDataFetch({ id: param }));
       setIsLoadingSenseboxInfoData(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, dispatch]);
 
   return (
