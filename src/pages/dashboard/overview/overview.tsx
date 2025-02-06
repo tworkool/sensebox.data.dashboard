@@ -164,7 +164,7 @@ const DashboardOverview = () => {
                         </Group>
                         <Space h="sm" />
                         <Group gap="0.3rem">
-                          {data && <Badge size="sm" radius="sm" variant="light">{data?.active ? "active" : "inactive" + ` (${dayjs(data?.updatedAt).fromNow()})`}</Badge>}
+                          {data && <Badge size="sm" radius="sm" variant="light">{data?.active ? "active" : "inactive"}</Badge>}
                           <Badge size="sm" radius="sm" variant="light">{data?.exposure}</Badge>
                           <Badge size="sm" radius="sm" variant="light">{`${data?.sensors?.length} Sensors`}</Badge>
                           {data?.createdAt && <Badge size="sm" radius="sm" variant="light">{dayjs(data.createdAt).fromNow()}</Badge>}

@@ -13,9 +13,9 @@ interface ISettings {
 // Default settings for the dashboard
 // all settings MUST be present in this object and have a default value
 const defaultSettings: ISettings = {
-  automaticUpdateInterval: 60,
-  boxInactiveAfter: 24,
-  sensorInactiveAfter: 12,
+  automaticUpdateInterval: 60, // seconds
+  boxInactiveAfter: 24, // hours
+  sensorInactiveAfter: 12, // hours
   fallbackNullValue: "<EMPTY>",
   primaryDashboardColor: "#9038e8",
   dateFormat: "MMM Do YY",

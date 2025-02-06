@@ -27,8 +27,12 @@ const getOneSenseBox = async (
   // active status
   const reData = response.data as OSEM_Response_OneSenseBox_E;
   try {
-    const boxInactiveAfter = useSettingsStore.getState()?.current?.boxInactiveAfter ?? 24;
-    const isActive = dayjs().diff(dayjs(reData.updatedAt), "hours") < boxInactiveAfter;
+    const lastActiveSensorDate = reData.sensors.reduce((acc, sensor) => {
+      const sensorDate = dayjs(sensor.lastMeasurement?.createdAt);
+      return sensorDate.isAfter(acc) ? sensorDate : acc;
+    }, dayjs(0));
+    const sensorInactiveAfter = useSettingsStore.getState()?.current?.sensorInactiveAfter ?? 12;
+    const isActive = dayjs().diff(lastActiveSensorDate, "hours") < sensorInactiveAfter;
     reData["active"] = isActive;
   } catch (e) {
     console.warn(`Could not determine active status for senseBox: ${e}`, params.senseBoxId);

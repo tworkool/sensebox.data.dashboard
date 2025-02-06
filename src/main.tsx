@@ -37,7 +37,7 @@ const root = document.getElementById("root");
 createRoot(root!).render(
   <ThemeProvider>
     <StrictMode>
-      <Notifications />
+      <Notifications position="top-right" />
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
