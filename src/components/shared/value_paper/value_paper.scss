@@ -19,7 +19,7 @@ $transition-duration: 0.3s;
 
   &__last-measure {
     position: absolute;
-    top: -0.5em;
+    top: 0.2em;
     left: 0;
     right: 0;
     margin-inline: auto;
@@ -29,7 +29,7 @@ $transition-duration: 0.3s;
     background-color: var(--mantine-color-body);
     z-index: 3;
     padding: 0.1em;
-    border-radius: 0 0 var(--mantine-radius-sm) var(--mantine-radius-sm);
+    border-radius: var(--mantine-radius-sm);
     display: none;
   }
 
