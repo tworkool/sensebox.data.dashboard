@@ -16,7 +16,7 @@ const defaultSettings: ISettings = {
   automaticUpdateInterval: 60, // seconds
   boxInactiveAfter: 24, // hours
   sensorInactiveAfter: 12, // hours
-  fallbackNullValue: "<EMPTY>",
+  fallbackNullValue: "N/A",
   primaryDashboardColor: "#9038e8",
   dateFormat: "MMM Do YY",
 };

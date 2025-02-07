@@ -15,6 +15,7 @@ $transition-duration: 0.3s;
   border-radius: var(--mantine-radius-md);
   transition: background-color $transition-duration ease;
   overflow: hidden;
+  height: fit-content;
 
   &__last-measure {
     position: absolute;
@@ -67,6 +68,7 @@ $transition-duration: 0.3s;
       font-family: "Satoshi-Regular";
       font-size: 0.5em;
       margin-left: 0.2em;
+      white-space: nowrap;
     }
 
     &--refresh {
