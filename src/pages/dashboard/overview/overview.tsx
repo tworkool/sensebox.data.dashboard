@@ -225,9 +225,9 @@ const DashboardOverview = () => {
               </Group>
               <ValuePaper.Grid>
                 {data && data?.sensors.filter(sensor => !filter || filter === "None" || sensor[sensorFilterProperty] == filter).map((sensor, index) => {
-                  return <ValuePaper.Item key={index} value={sensor.lastMeasurement?.value} unit={sensor.unit} subtitle={sensor.title} icon={sensor?.icon} />;
+                  return <ValuePaper.Item key={index} sensor={sensor} />;
                 })}
-                {(!data && isPending) && [...new Array(7)].map((_, index) => <Skeleton key={index} visible><ValuePaper.Item value={0} unit="N/A" subtitle="N/A" /></Skeleton>)}
+                {(!data && isPending) && [...new Array(7)].map((_, index) => <Skeleton key={index} visible><ValuePaper.ItemEmpty /></Skeleton>)}
               </ValuePaper.Grid>
             </Stack>
           </> : <>

@@ -5,28 +5,44 @@ import ValueConverter from "@components/shared/value_converter/value_converter";
 import { memo, useEffect, useRef } from "react";
 import { useSettingsStore } from "@stores";
 import OsemIcon from "@components/shared/osem_icon/osem_icon";
+import { getTimeFromNow } from "@utils/helpers";
+import dayjs from "dayjs";
 
 const ValuePaperItem = (props) => {
-  const { color, value, unit, subtitle, icon, withCopyButton = false } = props;
+  const { sensor, withCopyButton = false } = props;
   const valueRef = useRef(null);
   const settingsStore = useSettingsStore();
+  console.log(props);
 
   useEffect(() => {
     if (valueRef.current) {
       valueRef.current.classList.remove("value-paper__value--refresh");
       valueRef.current.classList.add("value-paper__value--refresh");
     }
-  }, [color, value]);
+  }, [sensor.lastMeasurement?.value, sensor.unit]);
 
-  return <ValuePaperBare subtitle={subtitle} withCopyButton={withCopyButton}>
-    {icon && <OsemIcon className="value-paper__icon" icon={icon}></OsemIcon>}
+  return <ValuePaperBare subtitle={sensor.title} withCopyButton={withCopyButton}>
+    {sensor.lastMeasurement?.createdAt && 
+      <div className="value-paper__last-measure">
+        {getTimeFromNow(dayjs(sensor.lastMeasurement.createdAt))}
+      </div>
+    }
+    {sensor?.icon && <OsemIcon className="value-paper__icon" icon={sensor?.icon}></OsemIcon>}
     <div className="value-paper__value" ref={valueRef}>
       {/* <span>{value}</span>
       <span>{unit}</span> */}
-      { (value != undefined && value != null && unit) ? 
-        <ValueConverter value={value} unit={unit}></ValueConverter> : 
+      { (sensor.lastMeasurement?.value != undefined && sensor.lastMeasurement?.value != null && sensor.unit) ? 
+        <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> : 
         <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></> 
       }
+    </div>
+  </ValuePaperBare>;
+};
+
+const ValuePaperItemEmpty = () => {
+  return <ValuePaperBare subtitle={"N/A"}>
+    <div className="value-paper__value">
+      <ValueConverter value={"N/A"} unit={"N/A"}></ValueConverter>
     </div>
   </ValuePaperBare>;
 };
@@ -52,6 +68,7 @@ const ValuePaperBare = (props) => {
 const ValuePaper = {
   Bare: memo(ValuePaperBare),
   Item: memo(ValuePaperItem),
+  ItemEmpty: memo(ValuePaperItemEmpty),
   Grid: (props) => {
     return <div className="value-paper__grid">{props.children}</div>;
   },

@@ -1,4 +1,4 @@
-import CONSTANTS from "./constants";
+import dayjs, { Dayjs } from "dayjs";
 
 const isFloat = (n: number) => Number(n) === n && n % 1 !== 0;
 
@@ -8,14 +8,17 @@ const capString = (s: string, at = 20) => {
 };
 
 const getMinuteFormattedString = (secondsAgo: number) => {
-  if (!secondsAgo) {
-    return CONSTANTS.DEFAULT_NULL_FALLBACK_VALUE;
-  } else {
-    if (secondsAgo < 120) {
-      return "now";
-    }
-    return `${Math.floor(secondsAgo / 60)} minutes ago`;
+  if (secondsAgo < 120) {
+    return "now";
   }
+  return `${Math.floor(secondsAgo / 60)} minutes ago`;
+};
+
+const getTimeFromNow = (date: Dayjs) => {
+  if (dayjs().diff(date, "second") < 120) {
+    return "now";
+  }
+  return date.fromNow();
 };
 
 function hexToRgb(hex: string) {
@@ -40,6 +43,7 @@ export {
   isFloat,
   capString,
   getMinuteFormattedString,
+  getTimeFromNow,
   hexToRgb,
   getFormattedHoursStringFromSeconds,
 };
