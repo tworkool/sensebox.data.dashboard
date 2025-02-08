@@ -39,7 +39,7 @@ const createStore = <T>(defaultState: T, localStorageKey: string) => create<ICre
         try {
           const parsedSettings = JSON.parse(storedState);
           if (!validateStructure(defaultState, parsedSettings)) {
-            console.error("stored data do not match default data");
+            console.warn("stored data do not match default data");
             // overwrite localstorage with default settings to not get error every time
             localStorage.setItem(localStorageKey, JSON.stringify(defaultState));
             return { current: defaultState };
@@ -50,7 +50,8 @@ const createStore = <T>(defaultState: T, localStorageKey: string) => create<ICre
           return { current: defaultState };
         }
       } else {
-        console.error("no localstorage found");
+        console.warn("no localstorage found");
+        localStorage.setItem(localStorageKey, JSON.stringify(defaultState));
         return { current: defaultState };
       }
     })(),

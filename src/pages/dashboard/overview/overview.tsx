@@ -6,8 +6,9 @@ import IdenticonAvatar from "@components/shared/identicon_avatar/identicon_avata
 import { useQuery } from "@tanstack/react-query";
 import { OSEMBoxesService } from "@api/services/boxes";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-/* import { useSettingsStore, useOverviewBoxInfoStore } from "@stores"; */
+/* import { useOverviewBoxInfoStore } from "@stores"; */
 import DashboardBoxSearch from "@components/static/dashboard_box_search/dashboard_box_search";
 import { notifications } from "@mantine/notifications";
 import { useOverviewBoxInfoStore } from "../../../stores";
@@ -15,7 +16,7 @@ import { useOverviewBoxInfoStore } from "../../../stores";
 const sensorFilterProperty = "title";
 
 const DashboardOverview = () => {
-  /* const settingsStore = useSettingsStore(); */
+  const { boxId: urlBoxId } = useParams();
   const overviewBoxInfoStore = useOverviewBoxInfoStore();
   const [selectedSenseBoxId, setSelectedSenseBoxId] = useState<string>();
   const [filter, setFilter] = useState<string>("None");
@@ -32,13 +33,11 @@ const DashboardOverview = () => {
   });
 
   const handleSearch = useCallback((boxId: string) => {
-    console.log("handleSearch");
     setSelectedSenseBoxId(boxId);
     setSelectedOverviewType("search");
   }, []);
 
   const handlePinnedSelect = useCallback(() => {
-    console.log("handlePinnedSelect");
     if (overviewBoxInfoStore.current?.pinnedBoxId) {
       setSelectedSenseBoxId(overviewBoxInfoStore.current.pinnedBoxId);
       setSelectedOverviewType("pinned");
@@ -48,7 +47,6 @@ const DashboardOverview = () => {
   }, [overviewBoxInfoStore]);
 
   const handleClosestSelect = useCallback(() => {
-    console.log("handleClosestSelect");
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         setIsLoadingLocation(true);
@@ -78,7 +76,6 @@ const DashboardOverview = () => {
 
   // initial selection
   useLayoutEffect(() => {
-    console.log(overviewBoxInfoStore.current);
     if (overviewBoxInfoStore.current?.lastActiveBoxId) {
       handleSearch(overviewBoxInfoStore.current.lastActiveBoxId);
       return;
@@ -102,6 +99,8 @@ const DashboardOverview = () => {
     overviewBoxInfoStore.update({ lastActiveBoxId: data._id });
     // remove filter when changing sensebox
     setFilter("None");
+    /* console.log(location.pathname);
+    location.pathname = `/dashboard/${data._id}`; */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
