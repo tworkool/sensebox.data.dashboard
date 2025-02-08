@@ -1,7 +1,7 @@
 export type RFC3339Date = string;
 
 export interface OSEM_Location {
-  coordinates: [number, number];
+  coordinates: [longitude: number, latitude: number, altitude?: number];
   timestamp: RFC3339Date;
   type: string;
 }

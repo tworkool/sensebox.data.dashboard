@@ -4,29 +4,16 @@ const ENVIRONMENT = {
   MOCK_API_DATA: import.meta.env.VITE_MOCK_API_DATA == "True" ? true : false,
   CONSOLE_LOGS: import.meta.env.VITE_CONSOLE_LOGS == "True" ? true : false,
   POSTHOG_API_TOKEN: import.meta.env.POSTHOG_API_TOKEN ?? "",
-  POSTHOG_API_HOST: import.meta.env.VITE_POSTHOG_API_HOST ?? "",
+  LOCATION_IQ_API_TOKEN: import.meta.env.LOCATION_IQ_API_TOKEN ?? "",
 };
 
 const CONSTANTS = {
-  SENSEBOX_INACTIVITY_TIME_DAYS: 3,
-  SENSEBOX_SENSOR_INACTIVITY_TIME_HOURS: 25,
-  MAX_BOOKMARKED_BOXES: 5,
-  MIN_SENSEBOX_SEARCH_CHARACTERS: 3,
-  LIVE_ANALYTICS_INTERVAL_STEPS: 5, // s
-  DEFAULT_NULL_FALLBACK_VALUE: "-",
-  MIN_LIVE_UPDATE_DISPATCH_INTERVAL: 60, //s
-  MAX_LIVE_UPDATE_DISPATCH_INTERVAL: 360, //s - 6 minutes
-  ROUTING: {
-    SENSEBOX_ID: "boxid"
-  },
-  DATE_FORMAT: "MMM Do YY",
-  LAST_SENSEBOX_ID: "LAST_SENSEBOX_ID",
-  SENSEBOX_SEARCH_HOTKEY: "K",
   THEME_LOCALSTORAGE_KEY: "sbd-color-theme",
   SETTINGS_LOCALSTORAGE_KEY: "dashboard-settings",
   PINNED_BOX_LOCALSTORAGE_KEY: "pinned-box",
   OSEM_API_URL: "https://api.opensensemap.org/",
   OSEM_MOCK_API_URL: "http://localhost:3001/",
+  POSTHOG_HOST_URL: "https://app.posthog.com",
 };
 
 if (ENVIRONMENT.MOCK_API_DATA) {
