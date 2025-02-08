@@ -44,8 +44,6 @@ const DashboardBoxSearch = (props: DashboardBoxSearchProps) => {
     handleSearch(newValue);
   };
 
-  console.log(currentSearchQuery, data);
-
   return (
     <>
       <Modal p="sm" opened={opened} onClose={close} withCloseButton={false} radius="lg" shadow="xl">
@@ -88,7 +86,7 @@ const DashboardBoxSearch = (props: DashboardBoxSearchProps) => {
       <Button
         loading={loading}
         className="dashboard-box-search__target"
-        onClick={open} ml="auto" variant="default" size="xs" radius="xl"
+        onClick={open} ml="auto" variant="light" size="xs" radius="xl"
         /* leftSection={<Icon icon="line-md:search-twotone" width="1rem" height="1rem" />} */
         rightSection={
           <Group gap="2px" className="dashboard-box-search__target__kbg">

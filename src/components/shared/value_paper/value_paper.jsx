@@ -12,7 +12,6 @@ const ValuePaperItem = (props) => {
   const { sensor, withCopyButton = false } = props;
   const valueRef = useRef(null);
   const settingsStore = useSettingsStore();
-  console.log(props);
 
   useEffect(() => {
     if (valueRef.current) {

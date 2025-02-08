@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface ICreateStore<T> {
   current: T;
   set: (newState: T) => void;
+  update: (partialState: Partial<T>) => void;
   restore: () => void;
 }
 
@@ -56,6 +57,13 @@ const createStore = <T>(defaultState: T, localStorageKey: string) => create<ICre
     "set": (newState: T) => {
       set({ current: newState });
       localStorage.setItem(localStorageKey, JSON.stringify(newState));
+    },
+    "update": (partialState: Partial<T>) => {
+      set(state => {
+        const mergedState = { ...state.current, ...partialState };
+        localStorage.setItem(localStorageKey, JSON.stringify(mergedState));
+        return { current: mergedState };
+      });
     },
     "restore": () => {
       set({ current: defaultState });

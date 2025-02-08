@@ -7,36 +7,48 @@ import { useQuery } from "@tanstack/react-query";
 import { OSEMBoxesService } from "@api/services/boxes";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
-import { useSettingsStore, usePinnedBoxStore } from "@stores";
+/* import { useSettingsStore, useOverviewBoxInfoStore } from "@stores"; */
 import DashboardBoxSearch from "@components/static/dashboard_box_search/dashboard_box_search";
 import { notifications } from "@mantine/notifications";
+import { useOverviewBoxInfoStore } from "../../../stores";
 
 const sensorFilterProperty = "title";
 
 const DashboardOverview = () => {
   /* const settingsStore = useSettingsStore(); */
-  const pinnedBoxStore = usePinnedBoxStore();
-  const [selectedSenseBoxId, setSelectedSenseBoxId] = useState("5bf8373386f11b001aae627e");
+  const overviewBoxInfoStore = useOverviewBoxInfoStore();
+  const [selectedSenseBoxId, setSelectedSenseBoxId] = useState<string>();
   const [filter, setFilter] = useState<string>("None");
   const [selectedOverviewType, setSelectedOverviewType] = useState("none");
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  const isBoxPinned = pinnedBoxStore.current?.boxId === selectedSenseBoxId;
+  const isBoxPinned = useMemo(() => overviewBoxInfoStore.current?.pinnedBoxId === selectedSenseBoxId, [overviewBoxInfoStore, selectedSenseBoxId]);
+
+  const { data, isPending, refetch } = useQuery({
+    queryKey: ["OSEM_GET_ONE_BOX", { senseBoxId: selectedSenseBoxId }],
+    queryFn: async (params) => OSEMBoxesService.getOneSenseBox(params),
+    "refetchOnReconnect": false, // disable for now!
+    "refetchOnMount": false,
+    "refetchOnWindowFocus": false,
+  });
 
   const handleSearch = useCallback((boxId: string) => {
+    console.log("handleSearch");
     setSelectedSenseBoxId(boxId);
     setSelectedOverviewType("search");
   }, []);
 
   const handlePinnedSelect = useCallback(() => {
-    if (pinnedBoxStore.current?.boxId) {
-      setSelectedSenseBoxId(pinnedBoxStore.current.boxId);
+    console.log("handlePinnedSelect");
+    if (overviewBoxInfoStore.current?.pinnedBoxId) {
+      setSelectedSenseBoxId(overviewBoxInfoStore.current.pinnedBoxId);
       setSelectedOverviewType("pinned");
       return true;
     }
     return false;
-  }, [pinnedBoxStore]);
+  }, [overviewBoxInfoStore]);
 
   const handleClosestSelect = useCallback(() => {
+    console.log("handleClosestSelect");
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         setIsLoadingLocation(true);
@@ -47,7 +59,6 @@ const DashboardOverview = () => {
           maxDistance: 400,
         }];
         OSEMBoxesService.getAllSenseBoxes({ queryKey: queryKey }).then((data) => {
-          console.log(data);
           if (data && data.length > 0) {
             setSelectedOverviewType("closest");
             setSelectedSenseBoxId(data[0]._id);
@@ -67,6 +78,11 @@ const DashboardOverview = () => {
 
   // initial selection
   useLayoutEffect(() => {
+    console.log(overviewBoxInfoStore.current);
+    if (overviewBoxInfoStore.current?.lastActiveBoxId) {
+      handleSearch(overviewBoxInfoStore.current.lastActiveBoxId);
+      return;
+    }
     if (handlePinnedSelect()) return;
     if (handleClosestSelect()) return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,29 +90,25 @@ const DashboardOverview = () => {
 
   const togglePin = () => {
     if (isBoxPinned) {
-      pinnedBoxStore.set({ boxId: null });
+      overviewBoxInfoStore.update({ pinnedBoxId: null });
     } else {
-      pinnedBoxStore.set({ boxId: selectedSenseBoxId });
+      overviewBoxInfoStore.update({ pinnedBoxId: selectedSenseBoxId });
     }
   };
 
-  const { data, isPending, refetch } = useQuery({
-    queryKey: ["OSEM_GET_ONE_BOX", { senseBoxId: selectedSenseBoxId }],
-    queryFn: async (params) => OSEMBoxesService.getOneSenseBox(params),
-    "refetchOnReconnect": false, // disable for now!
-    "refetchOnMount": false,
-    "refetchOnWindowFocus": false,
-  });
-
+  // handle data successfully coming in
   useEffect(() => {
+    if (!data) return;
+    overviewBoxInfoStore.update({ lastActiveBoxId: data._id });
     // remove filter when changing sensebox
     setFilter("None");
-  }, [selectedSenseBoxId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
-  const sensorFilterGroups = useMemo(() => {
+  const sensorFilterGroups = useMemo<string[]>(() => {
     if (!data) return [];
     const units = data.sensors.map((sensor) => sensor[sensorFilterProperty]);
-    return [...new Set(units)];
+    return [...new Set(units)] as string[];
   }, [data]);
 
   return (
@@ -116,7 +128,7 @@ const DashboardOverview = () => {
                   closest to you
                 </Chip>}
               <Chip
-                disabled={isLoadingLocation || !pinnedBoxStore.current?.boxId}
+                disabled={isLoadingLocation || !overviewBoxInfoStore.current?.pinnedBoxId}
                 value="pinned"
                 variant="filled"
                 icon={<Icon icon="tabler:pin" width="1rem" height="1rem" />}

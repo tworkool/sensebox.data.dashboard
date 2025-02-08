@@ -10,14 +10,14 @@ const ENVIRONMENT = {
 const CONSTANTS = {
   THEME_LOCALSTORAGE_KEY: "sbd-color-theme",
   SETTINGS_LOCALSTORAGE_KEY: "dashboard-settings",
-  PINNED_BOX_LOCALSTORAGE_KEY: "pinned-box",
+  OVERVIEW_BOX_INFO_LOCALSTORAGE_KEY: "overview-box-info",
   OSEM_API_URL: "https://api.opensensemap.org/",
   OSEM_MOCK_API_URL: "http://localhost:3001/",
   POSTHOG_HOST_URL: "https://app.posthog.com",
 };
 
 if (ENVIRONMENT.MOCK_API_DATA) {
-  console.log(`[MOCK API] Redirecting to mock API '${CONSTANTS.OSEM_MOCK_API_URL}'`);
+  console.info(`[MOCK API] Redirecting to mock API '${CONSTANTS.OSEM_MOCK_API_URL}'`);
   CONSTANTS.OSEM_API_URL = CONSTANTS.OSEM_MOCK_API_URL;  // Redirect to the mock URL
 }
 

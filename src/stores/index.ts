@@ -23,11 +23,15 @@ const defaultSettings: ISettings = {
 
 const useSettingsStore = createStore<ISettings>(defaultSettings, CONSTANTS.SETTINGS_LOCALSTORAGE_KEY);
 
-interface IPinnedBox {
-  boxId: string | null;
+interface IOverviewBoxInfo {
+  pinnedBoxId: string | null;
+  lastActiveBoxId: string | null;
 };
 
-const usePinnedBoxStore = createStore<IPinnedBox>({ boxId: null }, CONSTANTS.PINNED_BOX_LOCALSTORAGE_KEY);
+const useOverviewBoxInfoStore = createStore<IOverviewBoxInfo>(
+  { pinnedBoxId: null, lastActiveBoxId: null }, 
+  CONSTANTS.OVERVIEW_BOX_INFO_LOCALSTORAGE_KEY
+);
 
-export { useSettingsStore, defaultSettings, usePinnedBoxStore };
-export type { ISettings, IPinnedBox };
+export { useSettingsStore, defaultSettings, useOverviewBoxInfoStore };
+export type { ISettings, IOverviewBoxInfo };

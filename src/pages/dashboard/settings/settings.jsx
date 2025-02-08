@@ -1,8 +1,9 @@
-import { Button, ColorInput, Grid, Group, NumberInput, Select, Space, TextInput } from "@mantine/core";
+import { Button, ColorInput, Grid, Group, Input, NumberInput, Select, Space, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useLayoutEffect } from "react";
 import { notifications } from "@mantine/notifications";
 import { useSettingsStore, defaultSettings } from "@stores";
+import { Icon } from "@iconify/react";
 
 const sharedStyle = {
   variant: "filled",
@@ -13,7 +14,7 @@ const dateFormats = ["MMM Do YY", "DD/MM/YYYY", "MM/DD/YYYY", "YYYY/MM/DD"];
 const DashboardSettings = (props) => {
   const { current, set, restore } = useSettingsStore();
   const form = useForm({
-    initialValues: {...defaultSettings},
+    initialValues: { ...defaultSettings },
   });
 
   const handleSubmit = (values) => {
@@ -71,6 +72,11 @@ const DashboardSettings = (props) => {
     restore(defaultSettings);
   };
 
+  const handleClearAppData = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   // load settings from local storage
   useLayoutEffect(() => {
     form.setValues(current);
@@ -93,8 +99,9 @@ const DashboardSettings = (props) => {
               key={form.key("automaticUpdateInterval")}
               {...form.getInputProps("automaticUpdateInterval")}
               min={60}
-              max={60*60*24}
+              max={60 * 60 * 24}
               suffix="s"
+              disabled
             />
           </Grid.Col>
           <Grid.Col span={4}>
@@ -106,7 +113,7 @@ const DashboardSettings = (props) => {
               key={form.key("boxInactiveAfter")}
               {...form.getInputProps("boxInactiveAfter")}
               min={1}
-              max={24*7}
+              max={24 * 7}
               suffix="h"
             />
           </Grid.Col>
@@ -119,8 +126,9 @@ const DashboardSettings = (props) => {
               key={form.key("sensorInactiveAfter")}
               {...form.getInputProps("sensorInactiveAfter")}
               min={1}
-              max={24*7}
+              max={24 * 7}
               suffix="h"
+              disabled
             />
           </Grid.Col>
           <Grid.Col span={"content"}>
@@ -132,6 +140,22 @@ const DashboardSettings = (props) => {
               key={form.key("fallbackNullValue")}
               {...form.getInputProps("fallbackNullValue")}
             />
+          </Grid.Col>
+          <Grid.Col span={"content"}>
+            <Input.Wrapper label="Clear Data" description="This will reset all stored application data, settings and cache">
+              <Button
+                {...sharedStyle}
+                mt="calc(var(--mantine-spacing-xs) / 2)"
+                variant="light"
+                type="button"
+                id="clear-data-btn"
+                onClick={() => { handleClearAppData(); }}
+                color="red"
+                rightSection={<Icon icon="mdi:clear-octagon" width="1rem" height="1rem" />}
+              >
+                Clear
+              </Button>
+            </Input.Wrapper>
           </Grid.Col>
         </Grid>
 
@@ -168,10 +192,10 @@ const DashboardSettings = (props) => {
         <Space h="xl" />
 
         <Group gap="xs">
-          <Button variant="light" onClick={handleRestore}>Restore Defaults</Button>
-          <Button variant="light" onClick={handleExport}>Export</Button>
-          <Button variant="light" onClick={handleImport}>Import</Button>
-          <Button variant="filled" ml="auto" type="submit">Save</Button>
+          <Button radius="xl" variant="light" onClick={handleRestore}>Restore Defaults</Button>
+          <Button radius="xl" variant="light" onClick={handleExport}>Export</Button>
+          <Button radius="xl" variant="light" onClick={handleImport}>Import</Button>
+          <Button radius="xl" variant="filled" ml="auto" type="submit">Save</Button>
         </Group>
       </form>
     </>

@@ -19,7 +19,8 @@ const getOneSenseBox = async (
   { queryKey }: ReactQueryKey<OSEM_Request_OneSenseBox>,
 ) => {
   const [_, params] = queryKey;
-  /* return {}; */
+  console.log(params);
+  if (!params?.senseBoxId) return undefined;
   const path = new RelativePathBuilder("/boxes").appendUrlParam(params.senseBoxId).build();
   const response = await OSEMApiClient.get<OSEM_Response_OneSenseBox>(path);
 
