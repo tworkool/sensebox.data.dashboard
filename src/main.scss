@@ -126,3 +126,9 @@ code {
 .mantine-Modal-overlay {
   backdrop-filter: blur(5px);
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

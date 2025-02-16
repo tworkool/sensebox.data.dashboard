@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import Footer from "@components/static/footer/footer";
 import Header from "@components/static/header/header";
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
+import Spinner from "@components/shared/spinner/spinner";
 
 // lazy load pages
 const Home = lazy(() => import("@pages/home/home"));
@@ -40,19 +41,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Suspense fallback={<>LOADING</>}><Home /></Suspense>,
+        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Home /></Suspense>,
       },
       {
         path: "impressum",
-        element: <Suspense fallback={<>LOADING</>}><Impressum /></Suspense>,
+        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Impressum /></Suspense>,
       },
       {
         path: "datenschutz",
-        element: <Suspense fallback={<>LOADING</>}><Datenschutz /></Suspense>,
+        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Datenschutz /></Suspense>,
       },
       {
         path: "info",
-        element: <Suspense fallback={<>LOADING</>}><Info /></Suspense>,
+        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Info /></Suspense>,
       }
     ]
   },
@@ -62,15 +63,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Suspense fallback={<>LOADING</>}><Dashboard /></Suspense>,
+        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Dashboard /></Suspense>,
         children: [
           {
             path: ":boxId?",
-            element: <Suspense fallback={<>LOADING</>}><DashboardOverview /></Suspense>,
+            element: <Suspense fallback={<Spinner.Round size={"2rem"} />}><DashboardOverview /></Suspense>,
           },
           {
             path: "settings",
-            element: <Suspense fallback={<>LOADING</>}><DashboardSettings /></Suspense>,
+            element: <Suspense fallback={<Spinner.Round size={"2rem"} />}><DashboardSettings /></Suspense>,
           },
         ]
       }

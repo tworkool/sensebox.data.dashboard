@@ -30,7 +30,6 @@ const queryClient = new QueryClient({
 // styles
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
-import "@utils/osemicons.scss";
 import "./main.scss";
 
 const root = document.getElementById("root");
