@@ -84,7 +84,6 @@ const DashboardOverview = () => {
   }, []);
 
   useLayoutEffect(() => {
-    console.log("useLayoutEffect", urlBoxId);
     if (!urlBoxId) {
       if (overviewBoxInfoStore.current?.lastActiveBoxId) {
         navigate(`/dashboard/overview/${overviewBoxInfoStore.current.lastActiveBoxId}`);
@@ -117,7 +116,6 @@ const DashboardOverview = () => {
   // handle data successfully coming in
   useEffect(() => {
     if (!data) return;
-    console.log("useEffect", data);
     overviewBoxInfoStore.update({ lastActiveBoxId: data._id });
     // remove filter when changing sensebox
     setFilter("None");

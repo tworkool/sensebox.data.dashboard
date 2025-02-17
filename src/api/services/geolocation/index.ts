@@ -53,7 +53,6 @@ const getReverseGeolocation = async (
 
   // prepare data
   const reData = response.data as LocationIQ_Response_ReverseGeolocation;
-  console.log(reData);
 
   return reData;
 };
