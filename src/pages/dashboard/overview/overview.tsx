@@ -5,13 +5,14 @@ import { Icon } from "@iconify/react";
 import IdenticonAvatar from "@components/shared/identicon_avatar/identicon_avatar";
 import { useQuery } from "@tanstack/react-query";
 import { OSEMBoxesService } from "@api/services/boxes";
+import { GeolocationService } from "@api/services/geolocation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 /* import { useOverviewBoxInfoStore } from "@stores"; */
 import DashboardBoxSearch from "@components/static/dashboard_box_search/dashboard_box_search";
 import { notifications } from "@mantine/notifications";
-import { useOverviewBoxInfoStore } from "../../../stores";
+import { useOverviewBoxInfoStore } from "@stores";
 
 const sensorFilterProperty = "title";
 
@@ -31,6 +32,13 @@ const DashboardOverview = () => {
     "refetchOnReconnect": false, // disable for now!
     "refetchOnMount": false,
     "refetchOnWindowFocus": false,
+  });
+
+  const { data: reverseGeolocationData, isPending: reverseGeolocationIsPending, refetch: refetchReverseGeolocation } = useQuery({
+    queryKey: ["GET_REVERSE_GEOLOCATION", { lat: data?.currentLocation?.coordinates?.[1], lon: data?.currentLocation?.coordinates?.[0] }],
+    queryFn: async (params) => GeolocationService.getReverseGeolocation(params),
+    retry: false,
+    /* "enabled": false, */
   });
 
   const handleSearch = useCallback((boxId: string) => {
@@ -204,9 +212,13 @@ const DashboardOverview = () => {
                     <Stack>
                       {data && <iframe
                         style={{ height: 300 }}
-                        src={`https://maps.google.com/maps?q=${data?.currentLocation?.coordinates?.[1]},${data?.currentLocation?.coordinates?.[0]}&hl=en&z=14&output=embed`}>
+                        src={`https://maps.google.com/maps?q=${data?.currentLocation?.coordinates?.[1]},${data?.currentLocation?.coordinates?.[0]}&hl=en&z=12&t=p&output=embed`}>
                       </iframe>}
-                      <Text>Berlin, Germany</Text>
+                      {reverseGeolocationData && <Group gap="xs">
+                        <Icon icon="line-md:map-marker-radius-twotone" width="1.2rem" height="1.2rem" />
+                        <Text>{`${reverseGeolocationData?.address?.city}, ${reverseGeolocationData?.address?.country}`}</Text>
+                      </Group>
+                      }
                     </Stack>
                   </ValuePaper.Bare>
                 </Skeleton>
@@ -259,8 +271,7 @@ const DashboardOverview = () => {
                 <Icon icon="carbon:retry-failed" width="100" height="100" />
                 <Group gap="xs" align="baseline">
                   <Text ta="center">Could not fetch data!</Text>
-                  <Button size="compact-sm" variant="transparent" p={0} onClick={() => { 
-                    console.log(selectedSenseBoxId);
+                  <Button display={selectedSenseBoxId ? "block" : "none"} size="compact-sm" variant="transparent" p={0} onClick={() => {
                     refetch();
                   }}>Retry</Button>
                 </Group>

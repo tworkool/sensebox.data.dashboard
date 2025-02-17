@@ -1,10 +1,10 @@
 const ENVIRONMENT = {
   INFO: import.meta.env.MODE,
-  MAPBOX_PUBLIC_KEY: import.meta.env.MAPBOX_PUBLIC_KEY,
+  MAPBOX_PUBLIC_KEY: import.meta.env.VITE_MAPBOX_PUBLIC_KEY,
   MOCK_API_DATA: import.meta.env.VITE_MOCK_API_DATA == "True" ? true : false,
   CONSOLE_LOGS: import.meta.env.VITE_CONSOLE_LOGS == "True" ? true : false,
-  POSTHOG_API_TOKEN: import.meta.env.POSTHOG_API_TOKEN ?? "",
-  LOCATION_IQ_API_TOKEN: import.meta.env.LOCATION_IQ_API_TOKEN ?? "",
+  POSTHOG_API_TOKEN: import.meta.env.VITE_POSTHOG_API_TOKEN ?? "",
+  LOCATION_IQ_API_TOKEN: import.meta.env.VITE_LOCATION_IQ_API_TOKEN ?? "",
 };
 
 const CONSTANTS = {
@@ -12,13 +12,15 @@ const CONSTANTS = {
   SETTINGS_LOCALSTORAGE_KEY: "dashboard-settings",
   OVERVIEW_BOX_INFO_LOCALSTORAGE_KEY: "overview-box-info",
   OSEM_API_URL: "https://api.opensensemap.org/",
-  OSEM_MOCK_API_URL: "http://localhost:3001/",
+  MOCKOON_MOCK_API_URL: "http://localhost:3001/",
   POSTHOG_HOST_URL: "https://app.posthog.com",
+  LOCATION_IQ_API_URL: "https://us1.locationiq.com/v1/",
 };
 
 if (ENVIRONMENT.MOCK_API_DATA) {
-  console.info(`[MOCK API] Redirecting to mock API '${CONSTANTS.OSEM_MOCK_API_URL}'`);
-  CONSTANTS.OSEM_API_URL = CONSTANTS.OSEM_MOCK_API_URL;  // Redirect to the mock URL
+  console.info(`[MOCK API] Redirecting to mock API '${CONSTANTS.MOCKOON_MOCK_API_URL}'`);
+  CONSTANTS.OSEM_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL;  // Redirect to the mock URL
+  CONSTANTS.LOCATION_IQ_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL;  // Redirect to the mock URL
 }
 
 export {

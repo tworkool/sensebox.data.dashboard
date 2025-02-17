@@ -5,6 +5,24 @@ const OSEMApiClient = axios.create({
   baseURL: CONSTANTS.OSEM_API_URL,
 });
 
+const LocationIQApiClient = axios.create({
+  baseURL: CONSTANTS.LOCATION_IQ_API_URL,
+  params: {
+    key: ENVIRONMENT.LOCATION_IQ_API_TOKEN,
+    format: "json",
+    normalizeaddress: 1,
+  }
+});
+
+LocationIQApiClient.interceptors.response.use(
+  (response) => {
+    if (ENVIRONMENT.CONSOLE_LOGS && response.status === 429) {
+      console.warn("Rate limit exceeded for LocationIQ API. Please try again later.");
+    }
+    return response;
+  },
+);
+
 // Add a request interceptor
 /* OSEMApiClient.interceptors.request.use(
   (config) => {
@@ -68,4 +86,5 @@ class RelativePathBuilder {
 export {
   RelativePathBuilder,
   OSEMApiClient,
+  LocationIQApiClient,
 };
