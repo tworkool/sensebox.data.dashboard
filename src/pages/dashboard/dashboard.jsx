@@ -5,6 +5,7 @@ import "./dashboard.scss";
 import { useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { Group } from "@mantine/core";
+import { version } from "../../../package.json";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -45,7 +46,10 @@ const Dashboard = () => {
     </div>
     <div className="dashboard__footer">
       <Group justify="space-between">
-        <span>© 2025 Oliver Tworkowski</span>
+        <Group gap="xs">
+          <span>{`Version ${version}`}</span>
+          <span>© 2025 Oliver Tworkowski</span>
+        </Group>
         <span>
           <a href="https://sensebox-data-dashboard.de/">GitHub Repository</a>
         </span>

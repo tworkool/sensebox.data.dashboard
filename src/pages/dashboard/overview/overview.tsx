@@ -266,9 +266,9 @@ const DashboardOverview = () => {
           </> : <>
             <Center>
               <Stack align="center" gap="sm" mt="md">
-                <Icon icon="carbon:retry-failed" width="100" height="100" />
+                <Icon icon="carbon:retry-failed" width="2rem" height="2rem" />
                 <Group gap="xs" align="baseline">
-                  <Text ta="center">Could not fetch data!</Text>
+                  <Text size="sm" ta="center" c="dimmed">Could not fetch data.</Text>
                   <Button display={selectedSenseBoxId ? "block" : "none"} size="compact-sm" variant="transparent" p={0} onClick={() => {
                     refetch();
                   }}>Retry</Button>
