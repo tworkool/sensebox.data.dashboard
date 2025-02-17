@@ -66,13 +66,17 @@ const router = createBrowserRouter([
         element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Dashboard /></Suspense>,
         children: [
           {
-            path: ":boxId?",
+            path: "overview/:boxId?",
             element: <Suspense fallback={<Spinner.Round size={"2rem"} />}><DashboardOverview /></Suspense>,
           },
           {
             path: "settings",
             element: <Suspense fallback={<Spinner.Round size={"2rem"} />}><DashboardSettings /></Suspense>,
           },
+          {
+            path: "*",
+            element: <Navigate to="overview" />
+          }
         ]
       }
     ]

@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import React from "react";
 import DashboardMenu from "@components/static/dashboard_menu/dashboard_menu";
 import "./dashboard.scss";
@@ -8,16 +8,30 @@ import { Group } from "@mantine/core";
 
 const Dashboard = () => {
   const location = useLocation();
+  const params = useParams();
+
   const dashboardPath = useMemo(() => {
-    const path = location.pathname.replace("/dashboard", "");
+    let path = location.pathname;
+    if (path.indexOf("?") !== -1) {
+      // strip query params
+      path = location.pathname.split(path.indexOf("?")[0]);
+    }
+    // remove /dashboard from path
+    path = path.replace("/dashboard", "");
+    if (params) {
+      path = Object.values(params).reduce(
+        (_path, _param) => _path.replace("/" + _param, ""),
+        path,
+      );
+    }
     return path ? path.split("/").filter(i => i) : null;
-  }, [location.pathname]);
+  }, [location.pathname, params]);
 
   return <div className="dashboard">
     <DashboardMenu />
     <div className="dashboard__header">
       Dashboard
-      {dashboardPath && dashboardPath.map((path, index) => 
+      {dashboardPath && dashboardPath.map((path, index) =>
         <React.Fragment key={index}>
           <Icon icon="tabler:chevron-right" width="1rem" height="1rem"></Icon>
           <span style={{ textTransform: "capitalize" }}>

@@ -6,7 +6,7 @@ import IdenticonAvatar from "@components/shared/identicon_avatar/identicon_avata
 import { useQuery } from "@tanstack/react-query";
 import { OSEMBoxesService } from "@api/services/boxes";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 /* import { useOverviewBoxInfoStore } from "@stores"; */
 import DashboardBoxSearch from "@components/static/dashboard_box_search/dashboard_box_search";
@@ -17,6 +17,7 @@ const sensorFilterProperty = "title";
 
 const DashboardOverview = () => {
   const { boxId: urlBoxId } = useParams();
+  const navigate = useNavigate();
   const overviewBoxInfoStore = useOverviewBoxInfoStore();
   const [selectedSenseBoxId, setSelectedSenseBoxId] = useState<string>();
   const [filter, setFilter] = useState<string>("None");
@@ -74,16 +75,28 @@ const DashboardOverview = () => {
     return false;
   }, []);
 
-  // initial selection
   useLayoutEffect(() => {
-    if (overviewBoxInfoStore.current?.lastActiveBoxId) {
-      handleSearch(overviewBoxInfoStore.current.lastActiveBoxId);
+    console.log("useLayoutEffect", urlBoxId);
+    if (!urlBoxId) {
+      if (overviewBoxInfoStore.current?.lastActiveBoxId) {
+        navigate(`/dashboard/overview/${overviewBoxInfoStore.current.lastActiveBoxId}`);
+      } else if (overviewBoxInfoStore.current?.pinnedBoxId) {
+        navigate("/dashboard/overview/pinned");
+      } else {
+        navigate("/dashboard/overview/closest");
+      }
       return;
     }
-    if (handlePinnedSelect()) return;
-    if (handleClosestSelect()) return;
+
+    if (urlBoxId === "pinned") {
+      handlePinnedSelect();
+    } else if (urlBoxId === "closest") {
+      handleClosestSelect();
+    } else if (urlBoxId) {
+      handleSearch(urlBoxId);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [urlBoxId]);
 
   const togglePin = () => {
     if (isBoxPinned) {
@@ -96,11 +109,10 @@ const DashboardOverview = () => {
   // handle data successfully coming in
   useEffect(() => {
     if (!data) return;
+    console.log("useEffect", data);
     overviewBoxInfoStore.update({ lastActiveBoxId: data._id });
     // remove filter when changing sensebox
     setFilter("None");
-    /* console.log(location.pathname);
-    location.pathname = `/dashboard/${data._id}`; */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
@@ -123,7 +135,7 @@ const DashboardOverview = () => {
                   value="closest"
                   variant="filled"
                   icon={<Icon icon="tabler:location-pin" width="1rem" height="1rem" />}
-                  onClick={handleClosestSelect}>
+                  onClick={() => {navigate("/dashboard/overview/closest");}}>
                   closest to you
                 </Chip>}
               <Chip
@@ -131,13 +143,13 @@ const DashboardOverview = () => {
                 value="pinned"
                 variant="filled"
                 icon={<Icon icon="tabler:pin" width="1rem" height="1rem" />}
-                onClick={handlePinnedSelect}>
+                onClick={() => {navigate("/dashboard/overview/pinned");}}>
                 pinned
               </Chip>
               <Chip disabled={isLoadingLocation} value="search" variant="filled" display="none">search</Chip>
             </Group>
           </Chip.Group>
-          <DashboardBoxSearch loading={isLoadingLocation} onSelect={(boxId) => { handleSearch(boxId); }} />
+          <DashboardBoxSearch loading={isLoadingLocation} onSelect={(boxId) => { navigate(`/dashboard/overview/${boxId}`); }} />
         </Group>
 
         {(data || isPending) ?
@@ -247,7 +259,10 @@ const DashboardOverview = () => {
                 <Icon icon="carbon:retry-failed" width="100" height="100" />
                 <Group gap="xs" align="baseline">
                   <Text ta="center">Could not fetch data!</Text>
-                  <Button size="compact-sm" variant="transparent" p={0} onClick={() => { refetch(); }}>Retry</Button>
+                  <Button size="compact-sm" variant="transparent" p={0} onClick={() => { 
+                    console.log(selectedSenseBoxId);
+                    refetch();
+                  }}>Retry</Button>
                 </Group>
               </Stack>
             </Center>
