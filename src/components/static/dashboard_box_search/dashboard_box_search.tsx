@@ -46,11 +46,12 @@ const DashboardBoxSearch = (props: DashboardBoxSearchProps) => {
 
   return (
     <>
-      <Modal p="sm" opened={opened} onClose={close} withCloseButton={false} radius="lg" shadow="xl">
+      <Modal p="sm" opened={opened} onClose={close} withCloseButton={false} radius="xl" shadow="xl">
         <form onSubmit={(e) => { e.preventDefault(); }}>
           <Stack>
             <TextInput
-              radius="lg"
+              autoComplete="off"
+              radius="xl"
               minLength={2}
               defaultValue={value}
               onChange={handleChange}

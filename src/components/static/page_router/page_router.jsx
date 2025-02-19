@@ -74,7 +74,7 @@ const router = createBrowserRouter([
             element: <Suspense fallback={<Spinner.Round size={"2rem"} />}><DashboardSettings /></Suspense>,
           },
           {
-            path: "*",
+            path: "",
             element: <Navigate to="overview" />
           }
         ]
