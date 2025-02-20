@@ -1,0 +1,119 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Sensebox data dashboard",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3001/"
+        }
+    ],
+    "paths": {
+        "/boxes/*": {
+            "get": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": "{\n    \"_id\": \"6015594e571de9001b2a160e\",\n    \"createdAt\": \"2022-03-30T11:25:43.919Z\",\n    \"updatedAt\": \"2022-11-07T16:55:07.824Z\",\n    \"name\": \"Kilian\",\n    \"currentLocation\": {\n        \"timestamp\": \"2021-01-30T13:04:14.176Z\",\n        \"coordinates\": [\n            13.518207,\n            52.463217,\n            50\n        ],\n        \"type\": \"Point\"\n    },\n    \"grouptag\": [\n        \"RB-DSJ\"\n    ],\n    \"exposure\": \"indoor\",\n    \"sensors\": [\n        {\n            \"icon\": \"osem-temperature-celsius\",\n            \"title\": \"Temperatur\",\n            \"unit\": \"Celcius\",\n            \"sensorType\": \"BME 280\",\n            \"_id\": \"6015594e571de9001b2a1613\",\n            \"lastMeasurement\": {\n                \"value\": \"32.92\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        },\n        {\n            \"icon\": \"osem-barometer\",\n            \"title\": \"Luftdruck\",\n            \"unit\": \"hPa\",\n            \"sensorType\": \"BME 280\",\n            \"_id\": \"6015594e571de9001b2a1612\",\n            \"lastMeasurement\": {\n                \"value\": \"1008.73\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        },\n        {\n            \"icon\": \"osem-umbrella\",\n            \"title\": \"Luftfeuchte\",\n            \"unit\": \"Prozent rH\",\n            \"sensorType\": \"BME 280\",\n            \"_id\": \"6015594e571de9001b2a1611\",\n            \"lastMeasurement\": {\n                \"value\": \"27.65\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        },\n        {\n            \"icon\": \"osem-wifi\",\n            \"title\": \"WiFi\",\n            \"unit\": \"Prozent\",\n            \"sensorType\": \"M5\",\n            \"_id\": \"6015594e571de9001b2a1610\",\n            \"lastMeasurement\": {\n                \"value\": \"49.00\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        },\n        {\n            \"_id\": \"6015594e571de9001b2a160f\",\n            \"title\": \"Kein Wert\",\n            \"unit\": \"LUX\",\n            \"sensorType\": \"TSL45315\",\n            \"icon\": \"osem-not-available\"\n        },\n        {\n            \"_id\": \"6015b2d24f0ae0001bc9bd6a\",\n            \"title\": \"Helligkeit\",\n            \"unit\": \"LUX\",\n            \"sensorType\": \"VEML6070\",\n            \"icon\": \"osem-brightness\",\n            \"lastMeasurement\": {\n                \"value\": \"32.00\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        },\n        {\n            \"_id\": \"6015b2d24f0ae0001bc9bd6b\",\n            \"title\": \"UV\",\n            \"unit\": \"Unknown\",\n            \"sensorType\": \"FS2\",\n            \"icon\": \"osem-not-available\",\n            \"lastMeasurement\": null\n        },\n        {\n            \"_id\": \"6015b2d24f0ae0001bc9bd6c\",\n            \"icon\": \"osem-not-available\",\n            \"sensorType\": \"FS3\",\n            \"unit\": \"Fakes\",\n            \"title\": \"Fake Sensor3\",\n            \"lastMeasurement\": {\n                \"value\": \"0.00\",\n                \"createdAt\": \"2022-11-07T16:55:07.816Z\"\n            }\n        }\n    ],\n    \"model\": \"custom\",\n    \"lastMeasurementAt\": \"2022-11-07T16:55:07.816Z\",\n    \"description\": \"Projekt: Digitale Gartenzwerge der Schreberjugend-Bundesverband. Testgerät zur Messung vor allem von Lichtverhältnissen von LED-Leuchten im Vergleich zu natürlicher Sonnenstrahlung.\",\n    \"image\": \"6015594e571de9001b2a160e_qq2cw1.jpg\",\n    \"loc\": [\n        {\n            \"geometry\": {\n                \"timestamp\": \"2021-01-30T13:04:14.176Z\",\n                \"coordinates\": [\n                    13.518207,\n                    52.463217,\n                    50\n                ],\n                \"type\": \"Point\"\n            },\n            \"type\": \"Feature\"\n        }\n    ]\n}"
+                            }
+                        },
+                        "headers": {
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "*"
+                            },
+                            "Access-Control-Allow-Methods": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+                            },
+                            "Access-Control-Allow-Headers": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/boxes?*": {
+            "get": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": "[\n    {\n        \"_id\": \"562b48d3b3de1fe005dfd7be\",\n        \"name\": \"Testbox_2\",\n        \"currentLocation\": {\n            \"coordinates\": [\n                7.820774,\n                47.989024\n            ],\n            \"type\": \"Point\",\n            \"timestamp\": \"2015-10-24T09:01:07.000Z\"\n        }\n    },\n    {\n        \"_id\": \"580a3b97cd79a20011bf5b02\",\n        \"name\": \"Teststation BigGIS | FZI\",\n        \"currentLocation\": {\n            \"coordinates\": [\n                8.39528,\n                49.00039\n            ],\n            \"type\": \"Point\",\n            \"timestamp\": \"2016-10-21T16:00:23.000Z\"\n        }\n    },\n    {\n        \"_id\": \"5831b034de85220011c7ae3c\",\n        \"name\": \"TestStation - Daten werden nun anders verarbeitet\",\n        \"currentLocation\": {\n            \"coordinates\": [\n                11.960667,\n                48.044005\n            ],\n            \"type\": \"Point\",\n            \"timestamp\": \"2016-11-20T14:16:20.000Z\"\n        }\n    },\n    {\n        \"_id\": \"58947060d038b000103716ce\",\n        \"name\": \"Teststation 2\",\n        \"currentLocation\": {\n            \"coordinates\": [\n                8.425484,\n                49.011866\n            ],\n            \"type\": \"Point\",\n            \"timestamp\": \"2017-02-03T11:58:24.000Z\"\n        }\n    }\n]"
+                            }
+                        },
+                        "headers": {
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "*"
+                            },
+                            "Access-Control-Allow-Methods": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+                            },
+                            "Access-Control-Allow-Headers": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reverse?": {
+            "get": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": "{\"place_id\":\"133892613\",\"licence\":\"https://locationiq.com/attribution\",\"osm_type\":\"node\",\"osm_id\":\"2602028796\",\"lat\":\"52.4593301\",\"lon\":\"13.5736855\",\"display_name\":\"5, Friedenstraße, Dammvorstadt, Köpenick, Berlin, 12555, Deutschland\",\"address\":{\"house_number\":\"5\",\"road\":\"Friedenstraße\",\"neighbourhood\":\"Dammvorstadt\",\"suburb\":\"Köpenick\",\"city\":\"Berlin\",\"postcode\":\"12555\",\"country\":\"Deutschland\",\"country_code\":\"de\"},\"boundingbox\":[\"52.4592801\",\"52.4593801\",\"13.5736355\",\"13.5737355\"]}"
+                            }
+                        },
+                        "headers": {
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "*"
+                            },
+                            "Access-Control-Allow-Methods": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+                            },
+                            "Access-Control-Allow-Headers": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
