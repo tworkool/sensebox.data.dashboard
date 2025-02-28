@@ -55,14 +55,14 @@
   } */
 }
 
-@mixin grid($size) {
+@mixin grid($size, $gap: 1rem) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax($size, 1fr));
-  gap: 1rem;
+  gap: $gap;
 
   @include responsive(phone) {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: $gap;
   }
 }
 

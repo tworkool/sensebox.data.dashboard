@@ -1,6 +1,48 @@
-$height: 100px;
+@use "@utils/utils";
+
+$height: 60px;
 
 .header {
-  background-color: rgb(71, 236, 228);
+  background-color: transparent;
   height: $height;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+
+  &__content {
+    @include utils.page-content();
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  & ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-family: "Satoshi-Light";
+    color: black;
+    gap: 1em;
+    margin: 0;
+    padding: 0;
+
+    & li,
+    & a {
+      text-decoration: none;
+
+      &:not(:hover) {
+        color: gray;
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: inherit;
+      }
+    }
+  }
 }

@@ -37,12 +37,12 @@ const DashboardLayout = () => {
 const router = createBrowserRouter([
   {
     path: "",
+    element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Home /></Suspense>,
+  },
+  {
+    path: "",
     element: <SharedLayout />,
     children: [
-      {
-        path: "",
-        element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Home /></Suspense>,
-      },
       {
         path: "impressum",
         element: <Suspense fallback={<Spinner.Round size={"3rem"} />}><Impressum /></Suspense>,
@@ -75,7 +75,7 @@ const router = createBrowserRouter([
           },
           {
             path: "",
-            element: <Navigate to="overview" />
+            element: <Navigate to="overview" replace />
           }
         ]
       }

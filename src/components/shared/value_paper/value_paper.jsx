@@ -7,6 +7,7 @@ import { useSettingsStore } from "@stores";
 import OsemIcon from "@components/shared/osem_icon/osem_icon";
 import { getTimeFromNow } from "@utils/helpers";
 import dayjs from "dayjs";
+import DotValueIndicator from "@components/shared/dot_value_indicator/dot_value_indicator";
 
 const ValuePaperItem = (props) => {
   const { sensor, withCopyButton = false } = props;
@@ -34,6 +35,7 @@ const ValuePaperItem = (props) => {
         <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> : 
         <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></> 
       }
+      <DotValueIndicator unmappedValue={{ PM10: 200 }} />
     </div>
   </ValuePaperBare>;
 };
