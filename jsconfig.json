@@ -1,21 +1,15 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" },
-  ],
   "compilerOptions": {
     "allowJs": true,
-    "checkJs": false,  // (optional) if you don't want TS to type-check JS files
+    "checkJs": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "commonjs",
     "target": "es6",
     "strict": true,
-    "composite": true,
-    "noEmit": false,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"],
       "@public/*": ["public/*"],
@@ -24,7 +18,7 @@
       "@stores": ["src/stores/*"],
       "@api/*": ["src/api/*"],
       "@packages/": ["src/packages/*"],
-    },
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
