@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import DashboardBoxSearch from "@components/static/dashboard_box_search/dashboard_box_search";
 import { notifications } from "@mantine/notifications";
 import { useOverviewBoxInfoStore } from "@stores";
+import SunWidget from "@components/shared/sun_widget/sun_widget";
 
 const sensorFilterProperty = "title";
 
@@ -119,7 +120,7 @@ const DashboardOverview = () => {
     overviewBoxInfoStore.update({ lastActiveBoxId: data._id });
     // remove filter when changing sensebox
     setFilter("None");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const sensorFilterGroups = useMemo<string[]>(() => {
@@ -141,7 +142,7 @@ const DashboardOverview = () => {
                   value="closest"
                   variant="filled"
                   icon={<Icon icon="tabler:location-pin" width="1rem" height="1rem" />}
-                  onClick={() => {navigate("/dashboard/overview/closest");}}>
+                  onClick={() => { navigate("/dashboard/overview/closest"); }}>
                   closest to you
                 </Chip>}
               <Chip
@@ -149,7 +150,7 @@ const DashboardOverview = () => {
                 value="pinned"
                 variant="filled"
                 icon={<Icon icon="tabler:pin" width="1rem" height="1rem" />}
-                onClick={() => {navigate("/dashboard/overview/pinned");}}>
+                onClick={() => { navigate("/dashboard/overview/pinned"); }}>
                 pinned
               </Chip>
               <Chip disabled={isLoadingLocation} value="search" variant="filled" display="none">search</Chip>
@@ -277,6 +278,8 @@ const DashboardOverview = () => {
             </Center>
           </>
         }
+
+        <SunWidget></SunWidget>
       </Stack>
     </>
   );

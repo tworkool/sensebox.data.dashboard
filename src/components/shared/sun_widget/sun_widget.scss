@@ -1,0 +1,15 @@
+.sun-widget {
+  width: 300px;
+
+  &__sun-indicator {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 0;
+    box-shadow: 2px 4px 0 0px #000;
+    transform-origin: center center;
+  }
+}

@@ -49,10 +49,10 @@ const ValuePaperItemEmpty = () => {
 };
 
 const ValuePaperBare = (props) => {
-  const { children, subtitle, withCopyButton } = props;
+  const { children, subtitle, withCopyButton, className } = props;
 
   return (
-    <div className="value-paper">
+    <div className={`value-paper ${className ?? ""}`}>
       <div className="value-paper__content">
         {children}
       </div>
