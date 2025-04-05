@@ -15,12 +15,16 @@ const CONSTANTS = {
   MOCKOON_MOCK_API_URL: "http://localhost:3001/",
   POSTHOG_HOST_URL: "https://app.posthog.com",
   LOCATION_IQ_API_URL: "https://us1.locationiq.com/v1/",
+  SUNRISE_SUNSET_API_URL: "https://api.sunrise-sunset.org/json",
 };
 
 if (ENVIRONMENT.MOCK_API_DATA) {
+  // Redirect to the mock API if the mock data is enabled
+  // add API prefix as identifier for the mock API
   console.info(`[MOCK API] Redirecting to mock API '${CONSTANTS.MOCKOON_MOCK_API_URL}'`);
-  CONSTANTS.OSEM_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL;  // Redirect to the mock URL
-  CONSTANTS.LOCATION_IQ_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL;  // Redirect to the mock URL
+  CONSTANTS.OSEM_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL + "osem";  // Redirect to the mock URL
+  CONSTANTS.LOCATION_IQ_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL + "locationIQ";  // Redirect to the mock URL
+  CONSTANTS.SUNRISE_SUNSET_API_URL = CONSTANTS.MOCKOON_MOCK_API_URL + "sunriseSunset";  // Redirect to the mock URL
 }
 
 export {

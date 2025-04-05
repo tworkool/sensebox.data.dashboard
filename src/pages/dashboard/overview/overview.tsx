@@ -279,7 +279,7 @@ const DashboardOverview = () => {
           </>
         }
 
-        <SunWidget></SunWidget>
+        <SunWidget senseBox={data} />
       </Stack>
     </>
   );

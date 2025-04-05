@@ -14,6 +14,11 @@ const LocationIQApiClient = axios.create({
   }
 });
 
+const SunriseSunsetApiClient = axios.create({
+  baseURL: CONSTANTS.SUNRISE_SUNSET_API_URL,
+});
+// https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=today&formatted=0
+
 LocationIQApiClient.interceptors.response.use(
   (response) => {
     if (ENVIRONMENT.CONSOLE_LOGS && response.status === 429) {
@@ -45,12 +50,12 @@ class RelativePathBuilder {
   private queryParams = 0;
   private urlParams = 0;
 
-  constructor(path: string) {
-    this.path = path;
+  constructor(path?: string) {
+    this.path = path || "";
   }
 
   public appendUrlParam(value: string): RelativePathBuilder {
-    if (!value) return this;
+    if (value === null || value === undefined) return this;
     if (this.path.lastIndexOf("/") !== this.path.length - 1) {
       this.path += "/";
     }
@@ -60,7 +65,7 @@ class RelativePathBuilder {
   }
 
   public appendQueryParam(key: string, value: string): RelativePathBuilder {
-    if (!value || !key) return this;
+    if (value === null || value === undefined || !key) return this;
     if (this.queryParams === 0) {
       this.path += "?";
     } else {
@@ -87,4 +92,5 @@ export {
   RelativePathBuilder,
   OSEMApiClient,
   LocationIQApiClient,
+  SunriseSunsetApiClient,
 };

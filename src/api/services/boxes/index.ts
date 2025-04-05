@@ -12,6 +12,7 @@ export interface OSEM_Response_OneSenseBox_E extends OSEM_Response_OneSenseBox {
   active: boolean;
   updatedAt: dayjs.Dayjs;
   createdAt: dayjs.Dayjs;
+  timezone?: string;
   /* currentLocation.timestamp: dayjs.Dayjs; */
 }
 
@@ -47,6 +48,7 @@ const getOneSenseBox = async (
     reData["updatedAt"] = reData["updatedAt"].tz(ianaTzCode);
     reData["createdAt"] = reData["createdAt"].tz(ianaTzCode);
     reData["currentLocation"]["timestamp"] = reData["currentLocation"]["timestamp"].tz(ianaTzCode);
+    reData["timezone"] = ianaTzCode;
   } catch (e) {
     console.warn(`Could not determine timezone for senseBox: ${e}`, params.senseBoxId);
   }

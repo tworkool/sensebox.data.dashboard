@@ -11,5 +11,14 @@
     bottom: 0;
     box-shadow: 2px 4px 0 0px #000;
     transform-origin: center center;
+    transform: translate(-10px, 7px);
+  }
+
+  &-test {
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255, 0, 0, 0.26);
+    border-radius: 100px;
+    position: absolute;
   }
 }
