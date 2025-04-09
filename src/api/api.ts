@@ -19,6 +19,25 @@ const SunriseSunsetApiClient = axios.create({
 });
 // https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=today&formatted=0
 
+// reject api calls coming from localhost, because CORS does not allow them anyway!
+// this way it can be prevented to send requests to the api from localhost, which would fail anyway
+SunriseSunsetApiClient.interceptors.request.use((config) => {
+  const currentHostname = window.location.hostname;
+
+  if (currentHostname === "localhost" || currentHostname === "127.0.0.1") {
+    const controller = new AbortController();
+    config.signal = controller.signal;
+    controller.abort(); // Cancel immediately
+
+    console.warn("Requests from localhost are blocked!");
+    throw new axios.Cancel("Requests from localhost are blocked.");
+  }
+
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
 LocationIQApiClient.interceptors.response.use(
   (response) => {
     if (ENVIRONMENT.CONSOLE_LOGS && response.status === 429) {
