@@ -35,7 +35,7 @@ const ValuePaperItem = (props) => {
         <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> : 
         <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></> 
       }
-      <DotValueIndicator unmappedValue={{ PM10: 200 }} />
+      {/* <DotValueIndicator unmappedValue={{ PM10: 200 }} /> */}
     </div>
   </ValuePaperBare>;
 };

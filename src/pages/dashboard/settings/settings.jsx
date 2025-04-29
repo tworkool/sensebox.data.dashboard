@@ -90,7 +90,7 @@ const DashboardSettings = (props) => {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <h1>General</h1>
         <Grid>
-          <Grid.Col span={4}>
+          <Grid.Col span={{ base: 12, xs: 12, sm: 6, lg: 4 }}>
             <NumberInput
               {...sharedStyle}
               label="Automatic Update Interval"
@@ -104,7 +104,7 @@ const DashboardSettings = (props) => {
               disabled
             />
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={{ base: 12, xs: 12, sm: 6, lg: 4 }}>
             <NumberInput
               {...sharedStyle}
               label="Box Inactive After..."
@@ -117,7 +117,7 @@ const DashboardSettings = (props) => {
               suffix="h"
             />
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={{ base: 12, sm: 12, lg: 4 }}>
             <NumberInput
               {...sharedStyle}
               label="Sensor Inactive After..."
@@ -131,7 +131,7 @@ const DashboardSettings = (props) => {
               disabled
             />
           </Grid.Col>
-          <Grid.Col span={"content"}>
+          <Grid.Col span={{ base: 12, xs: 12, sm: "content" }}>
             <TextInput
               {...sharedStyle}
               label="Fallback Null Value"
@@ -141,7 +141,7 @@ const DashboardSettings = (props) => {
               {...form.getInputProps("fallbackNullValue")}
             />
           </Grid.Col>
-          <Grid.Col span={"content"}>
+          <Grid.Col span={{ base: 12, xs: 12, md: 12, lg: "auto" }}>
             <Input.Wrapper label="Clear Data" description="This will reset all stored application data, settings and cache">
               <Button
                 {...sharedStyle}
@@ -161,7 +161,7 @@ const DashboardSettings = (props) => {
 
         <h1>Internationalization</h1>
         <Grid>
-          <Grid.Col span={"content"}>
+          <Grid.Col span={{ base: 12, sm: 12, md: "content" }}>
             <Select
               {...sharedStyle}
               label="Date Format"
@@ -175,7 +175,7 @@ const DashboardSettings = (props) => {
 
         <h1>Style & Theme</h1>
         <Grid>
-          <Grid.Col span={"content"}>
+          <Grid.Col span={{ base: 12, sm: 12, md: "content" }}>
             <ColorInput
               {...sharedStyle}
               label="Primary Dashboard Color"

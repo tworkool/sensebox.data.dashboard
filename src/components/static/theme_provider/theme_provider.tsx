@@ -1,7 +1,7 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import { CONSTANTS } from "@utils/environment.js";
 import { MantineProvider, MantineThemeOverride, createTheme, localStorageColorSchemeManager, mergeThemeOverrides } from "@mantine/core";
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface IUseThemeStore {
   theme: MantineThemeOverride;
@@ -28,6 +28,13 @@ const theme = createTheme({
   "defaultRadius": "sm",
   "fontFamily": "Satoshi-Regular, Inter, Arial, system-ui, sans-serif",
   "primaryShade": { light: 6, dark: 8 },
+  "breakpoints": {
+    "xs": "300px",
+    "sm": "424px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1440px",
+  }
 });
 
 const useThemeStore = create<IUseThemeStore>((set) => ({

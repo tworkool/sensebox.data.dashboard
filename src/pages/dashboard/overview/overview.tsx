@@ -162,21 +162,22 @@ const DashboardOverview = () => {
         {(data || isPending) ?
           <>
             <Grid>
-              <Grid.Col span={6}>
-                <Skeleton visible={isPending}>
+              <Grid.Col span={{ base: 12, sm: 12, md: 6, xl: 4 }}>
+                {isPending ?
+                  <Skeleton visible={isPending} mih={160}></Skeleton> :
                   <ValuePaper.Bare>
                     {data &&
                       <Group style={{ top: "1rem", right: "1rem", position: "absolute", zIndex: 3 }} gap="xs">
-                        <Tooltip label="open in OSM" withArrow>
-                          <ActionIcon component="a" href={`https://opensensemap.org/explore/${data._id}`} target="_blank" variant="default" radius="xl" size="md">
-                            <Icon icon="tabler:world-share" width="1rem" height="1rem" />
-                          </ActionIcon>
-                        </Tooltip>
                         {(data?.weblink && new URL(data.weblink)?.origin) && <Tooltip label={`open website at ${new URL(data.weblink).origin}`} withArrow>
                           <ActionIcon component="a" href={data.weblink} target="_blank" variant="default" radius="xl" size="md">
-                            <Icon icon="tabler:map-share" width="1rem" height="1rem" />
+                            <Icon icon="tabler:world-share" width="1rem" height="1rem" />
                           </ActionIcon>
                         </Tooltip>}
+                        <Tooltip label="open in OSM" withArrow>
+                          <ActionIcon component="a" href={`https://opensensemap.org/explore/${data._id}`} target="_blank" variant="default" radius="xl" size="md">
+                            <Icon icon="tabler:map-share" width="1rem" height="1rem" />
+                          </ActionIcon>
+                        </Tooltip>
                         <Tooltip label={isBoxPinned ? "unpin" : "pin"} withArrow>
                           <ActionIcon variant={isBoxPinned ? "filled" : "default"} radius="xl" size="md" onClick={() => { togglePin(); }}>
                             <Icon icon="tabler:pin" width="1rem" height="1rem" />
@@ -202,11 +203,11 @@ const DashboardOverview = () => {
                         {data?.description && <Text>{data.description}</Text>}
                       </Stack>
                     </Group>
-                  </ValuePaper.Bare>
-                </Skeleton>
+                  </ValuePaper.Bare>}
               </Grid.Col>
-              <Grid.Col span={6}>
-                <Skeleton visible={isPending}>
+              <Grid.Col span={{ base: 12, sm: 12, md: 6, xl: 8 }}>
+                {isPending ?
+                  <Skeleton visible={isPending} mih={200}></Skeleton> :
                   <ValuePaper.Bare>
                     <Stack>
                       {data && <iframe
@@ -220,7 +221,7 @@ const DashboardOverview = () => {
                       }
                     </Stack>
                   </ValuePaper.Bare>
-                </Skeleton>
+                }
               </Grid.Col>
             </Grid>
 

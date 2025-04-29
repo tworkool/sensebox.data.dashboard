@@ -28,7 +28,7 @@
       @content;
     }
   } @else {
-    @warn "Valid parameters: [phone, phone-up, phone-l], [tablet], [desktop-down, desktop, desktop-4k]";
+    @warn "Valid parameters: [phone-sm, phone, phone-up, phone-l], [tablet], [desktop-down, desktop, desktop-4k]";
   }
 }
 
@@ -60,7 +60,7 @@
   grid-template-columns: repeat(auto-fill, minmax($size, 1fr));
   gap: $gap;
 
-  @include responsive(phone) {
+  @include responsive(phone-l) {
     grid-template-columns: 1fr;
     gap: $gap;
   }
@@ -79,6 +79,12 @@
 
 @mixin dark {
   [data-mantine-color-scheme="dark"] & {
+    @content;
+  }
+}
+
+@mixin flex-break($break-at) {
+  @container (max-width: $break-at) {
     @content;
   }
 }

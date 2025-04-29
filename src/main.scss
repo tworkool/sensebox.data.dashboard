@@ -132,3 +132,37 @@ code {
   justify-content: center;
   align-items: center;
 }
+
+.flex-break {
+  display: flex;
+  &--100 {
+    @include utils.flex-break(100px){
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &--200 {
+    @include utils.flex-break(200px){
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &--300 {
+    @include utils.flex-break(300px){
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &--400 {
+    @include utils.flex-break(400px){
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &--500 {
+    @include utils.flex-break(500px){
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
