@@ -1,6 +1,6 @@
 import { ActionIcon, Badge, Button, Center, Chip, Container, Grid, Group, Popover, Skeleton, Space, Stack, Switch, Text, Title, Tooltip } from "@mantine/core";
 import ValuePaper from "@components/shared/value_paper/value_paper";
-/* import CustomCopyButton from "@components/shared/custom_copy_button/custom_copy_button"; */
+import CustomCopyButton from "@components/shared/custom_copy_button/custom_copy_button";
 import { Icon } from "@iconify/react";
 import IdenticonAvatar from "@components/shared/identicon_avatar/identicon_avatar";
 import { useQuery } from "@tanstack/react-query";
@@ -188,19 +188,18 @@ const DashboardOverview = () => {
                     <Group align="flex-start">
                       {data?._id && <IdenticonAvatar id={data._id} size="xl" radius="xs">MK</IdenticonAvatar>}
                       <Stack gap="0.2rem">
-                        <Group gap="0.2rem">
-                          <Title order={2}>{data?.name}</Title>
-                          <Text ff="monospace" c="dimmed" size="xs">{data?._id ? data._id : "Sample Sensebox"}</Text>
-                          {/* <CustomCopyButton value="5bf8373386f11b001aae627e" /> */}
-                        </Group>
-                        <Space h="sm" />
+                        {data?._id && <Badge ff="monospace" size="sm" variant="light" color="gray" radius="xs">
+                          {data._id}
+                          {/* <CustomCopyButton value={data._id} size="xs" /> */}
+                        </Badge>}
+                        <Title order={2}>{data?.name ? data.name : "N/A"}</Title>
                         <Group gap="0.3rem">
                           {data && <Badge size="sm" radius="sm" variant="light">{data?.active ? "active" : "inactive"}</Badge>}
                           <Badge size="sm" radius="sm" variant="light">{data?.exposure}</Badge>
                           <Badge size="sm" radius="sm" variant="light">{`${data?.sensors?.length} Sensors`}</Badge>
                           {data?.createdAt && <Badge size="sm" radius="sm" variant="light">{dayjs(data.createdAt).fromNow()}</Badge>}
                         </Group>
-                        {data?.description && <Text>{data.description}</Text>}
+                        {data?.description && <Text mt="xs">{data.description}</Text>}
                       </Stack>
                     </Group>
                   </ValuePaper.Bare>}
@@ -210,10 +209,19 @@ const DashboardOverview = () => {
                   <Skeleton visible={isPending} mih={200}></Skeleton> :
                   <ValuePaper.Bare>
                     <Stack>
-                      {data && <iframe
-                        style={{ height: 300 }}
-                        src={`https://maps.google.com/maps?q=${data?.currentLocation?.coordinates?.[1]},${data?.currentLocation?.coordinates?.[0]}&hl=en&z=12&t=p&output=embed`}>
-                      </iframe>}
+                      {data &&
+                        <>
+                          {location.hostname.includes("localhost") ?
+                            <Center h={300}>
+                              <Text c="dimmed" size="xs" ta="center">Temporary placeholder on localhost. Real map will be displayed in production mode.</Text>
+                            </Center> :
+                            <iframe
+                              style={{ height: 300 }}
+                              src={`https://maps.google.com/maps?q=${data?.currentLocation?.coordinates?.[1]},${data?.currentLocation?.coordinates?.[0]}&hl=en&z=12&t=p&output=embed`}>
+                            </iframe>
+                          }
+                        </>
+                      }
                       {reverseGeolocationData && <Group gap="xs">
                         <Icon icon="line-md:map-marker-radius-twotone" width="1.2rem" height="1.2rem" />
                         <Text>{`${reverseGeolocationData?.address?.city}, ${reverseGeolocationData?.address?.country}`}</Text>
