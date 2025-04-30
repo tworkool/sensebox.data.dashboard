@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import "./header.scss";
+import { useWindowScroll } from "@mantine/hooks";
 
 const Header = (props) => {
+  const [scroll, _] = useWindowScroll();
+
   return (
-    <nav className="header">
+    <nav className={`header ${scroll.y > 100 ? "header--scroll" : ""}`}>
       <div className="header__content">
         <ul>
           <li>

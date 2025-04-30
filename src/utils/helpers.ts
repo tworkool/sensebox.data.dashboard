@@ -1,5 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 
+const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
+
 const isFloat = (n: number) => Number(n) === n && n % 1 !== 0;
 
 const capString = (s: string, at = 20) => {
@@ -40,6 +42,7 @@ function getFormattedHoursStringFromSeconds(seconds: number) {
 }
 
 export {
+  clamp,
   isFloat,
   capString,
   getMinuteFormattedString,

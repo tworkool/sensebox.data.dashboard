@@ -23,8 +23,10 @@ const SunriseSunsetApiClient = axios.create({
 // this way it can be prevented to send requests to the api from localhost, which would fail anyway
 SunriseSunsetApiClient.interceptors.request.use((config) => {
   const currentHostname = window.location.hostname;
+  const isLocalhostRequester = currentHostname === "localhost" || currentHostname === "127.0.0.1";
+  const isMockApi = config.baseURL?.includes(CONSTANTS.MOCKOON_MOCK_API_URL) || config.baseURL?.includes("localhost") || config.baseURL?.includes("127.0.0.1");
 
-  if (currentHostname === "localhost" || currentHostname === "127.0.0.1") {
+  if (isLocalhostRequester && !isMockApi) {
     const controller = new AbortController();
     config.signal = controller.signal;
     controller.abort(); // Cancel immediately

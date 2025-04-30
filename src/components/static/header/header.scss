@@ -11,6 +11,28 @@ $height: 60px;
   left: 0;
   right: 0;
   z-index: 99;
+  transition: all 0.5s;
+  font-size: 1rem;
+  width: 100%;
+
+  &--scroll {
+    width: /* clamp(300px, 40vw, 600px); */ fit-content;
+    height: 50px;
+    position: fixed;
+    margin: 0 auto;
+    background: #ffffffb8;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: 100px;
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+
+    & .header__content {
+      justify-content: center;
+    }
+  }
 
   &__content {
     @include utils.page-content();

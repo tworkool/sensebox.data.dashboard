@@ -31,7 +31,7 @@ const SunWidget = (props: SunWidgetProps) => {
       sunrise: dayjs(data.results.sunrise).utc().local().tz(senseBox.timezone),
       sunset: dayjs(data.results.sunset).utc().local().tz(senseBox.timezone),
       noon: dayjs(data.results.solar_noon).utc().local().tz(senseBox.timezone),
-      localTime: dayjs().utc().local().tz(senseBox.timezone),
+      localTime: dayjs().utc().local().tz(senseBox.timezone),//.set("h", 8),
     };
   }, [data, senseBox]);
 
@@ -45,38 +45,28 @@ const SunWidget = (props: SunWidgetProps) => {
     };
 
     // Get timestamps for comparison
-    const localTime = localData.localTime.valueOf();
-    const sunriseTime = localData.sunrise.valueOf();
-    const noonTime = localData.noon.valueOf();
-    const sunsetTime = localData.sunset.valueOf();
+    const dateTimeToFloat = (date: Dayjs) => date.hour() + (date.minute() / 60);
 
+    const localTime = dateTimeToFloat(localData.localTime);
+    const noonTime = dateTimeToFloat(localData.noon);
+        
     // Calculate p_x based on current time relative to sun events
     let p_x;
-    if (localTime < sunriseTime) {
-      // Before sunrise
-      p_x = 0;
-    } else if (localTime <= noonTime) {
-      // Between sunrise and noon
-      p_x = ((localTime - sunriseTime) / (noonTime - sunriseTime)) * 50;
-    } else if (localTime <= sunsetTime) {
-      // Between noon and sunset
-      p_x = 50 + ((localTime - noonTime) / (sunsetTime - noonTime)) * 50;
+    if (localTime <= noonTime) {
+      // Between midnight and noon
+      p_x = (localTime / noonTime) * 50;
     } else {
-      // After sunset
-      p_x = 100;
+      // Between noon and midnight
+      p_x = 50 + (((localTime - noonTime) / (24 - noonTime)) * 50);
     }
+            
+    if(p_x < 0) p_x = 0;
+    else if(p_x > 100) p_x = 100;
 
     const x = (Math.PI) * (p_x / 100);
     const heightFactor = 0.92; // tweak b = height
     const p_y = mappedSin(x) * (100 * heightFactor);
 
-    /* // day indicator
-    var dayLinePos;
-    if (localTime < noonTime){
-      dayLinePos = mappedSin()
-    } else {
-
-    } */
     return {
       sunIndicator: {
         left: `${p_x}%`,
@@ -125,16 +115,38 @@ const SunWidget = (props: SunWidgetProps) => {
           />
           <div className="sun-widget__sun-indicator" style={pos.sunIndicator}></div>
           {/* {new Array(24).fill(0).map((_, i) => {
+            if (localData === null) return null;
             const a = 0.58; // tweak a = stauchung
             const b = 0.92; // tweak b = height
             const c = -0.63; // tweak c = verschiebung
             // calc percentage of current hour
-            const p_x = (100 / 24) * i;
+            //const p_x = (100 / 24) * i;
+            const dateTimeToFloat = (date: Dayjs) => date.hour() + (date.minute() / 60);
+
+            const _localTime = dayjs(localData.localTime).set("h", i);
+            const localTime = dateTimeToFloat(_localTime);
+            const noonTime = dateTimeToFloat(localData.noon);
+        
+            // Calculate p_x based on current time relative to sun events
+            let p_x;
+            if (localTime <= noonTime) {
+              // Between midnight and noon
+              p_x = (localTime / noonTime) * 50;
+            } else {
+              // Between noon and midnight
+              p_x = 50 + (((localTime - noonTime) / (24 - noonTime)) * 50);
+            }
+            
+            if(p_x < 0) p_x = 0;
+            else if(p_x > 100) p_x = 100;
+
             const x = (Math.PI) * (p_x / 100);
             const y = 0.5 * Math.sin((x + c) / a) + 0.5; // 0 to PI = 0 to 1 and back
             const p_y = y * (100 * b);
             return (
-              <div key={i} className="sun-widget-test" style={{ left: `${p_x}%`, bottom: `${p_y}%` }}></div>
+              <div key={i} className="sun-widget-test" style={{ left: `${p_x}%`, bottom: `${p_y}%` }}>
+                <span style={{bottom: 100}}>{_localTime.format("HH:mm")}</span>
+              </div>
             );
           })} */}
           {/* <div className="sun-widget__twilight-indicator" style={pos.}></div> */}

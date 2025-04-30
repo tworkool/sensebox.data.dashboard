@@ -1,35 +1,46 @@
+$bar-size: 13px;
+$indicator-border: 1px;
+$border: #979797;
+$indicator-size: calc($bar-size - $indicator-border * 1);
+
 .sbd-live-analytics-value-indicator {
-  height: 14px;
-  margin: 5px 0;
+  display: none;
 
   &__dot {
-    width: 10px;
-    height: 10px;
-    background: transparent;
+    width: 20px;
+    height: 20px;
+    background: green;
     border-radius: 10px;
-    border: 1px solid var(--app-color-border);
+    border: 1px solid $border;//var(--app-color-border);
   }
 
   &__bar {
-    position: absolute;
-    height: 100%;
     width: 100%;
     inset: 0;
     border-radius: 10px;
-    border: 1px solid var(--app-color-border);
-  }
+    border: 1px solid $border;//var(--app-color-border);
+    height: 12px;
+    /* background: var(--bar-color); */
+    background: gray;
 
-  &__indicator {
-    transition: all 1s;
-    position: absolute;
-    height: 100%;
-    width: 3px;
-    background-color: rgba(255, 255, 255, 0);
-    backdrop-filter: invert(1);
-    border: 1px solid var(--mantine-color-text);
-    border-radius: 4px;
-    bottom: 0;
-    top: 0;
-    left: 0;
+    &__indicator-track {
+      position: absolute;
+      inset: 0;
+      right: $indicator-size;
+    }
+
+    &__indicator {
+      transition: all 1s;
+      position: absolute;
+      width: $indicator-size;
+      height: $indicator-size;
+      background-color: rgba(255, 255, 255, 0.804);
+      border: $indicator-border solid $border;
+      border-radius: $bar-size;
+      bottom: 0;
+      top: calc($indicator-border * -0.5);
+      /* left: var(--bar-progress); */
+      left: 0;
+    }
   }
 }

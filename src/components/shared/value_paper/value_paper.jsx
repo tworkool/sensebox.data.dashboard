@@ -2,7 +2,7 @@ import CustomCopyButton from "@components/shared/custom_copy_button/custom_copy_
 import "./value_paper.scss";
 import { Group } from "@mantine/core";
 import ValueConverter from "@components/shared/value_converter/value_converter";
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useSettingsStore } from "@stores";
 import OsemIcon from "@components/shared/osem_icon/osem_icon";
 import { getTimeFromNow } from "@utils/helpers";
@@ -11,18 +11,24 @@ import DotValueIndicator from "@components/shared/dot_value_indicator/dot_value_
 
 const ValuePaperItem = (props) => {
   const { sensor, withCopyButton = false } = props;
+  const [previousValueUnit, setPreviousValueUnit] = useState();
   const valueRef = useRef(null);
   const settingsStore = useSettingsStore();
 
   useEffect(() => {
-    if (valueRef.current) {
-      valueRef.current.classList.remove("value-paper__value--refresh");
-      valueRef.current.classList.add("value-paper__value--refresh");
-    }
+    if (!valueRef.current) return;
+    if (!sensor.lastMeasurement?.value || !sensor.unit) return;
+    const newValueUnit = `${sensor.lastMeasurement?.value} ${sensor.unit}`;
+    if (previousValueUnit === newValueUnit) return;
+
+    valueRef.current.classList.remove("value-paper__value--refresh");
+    valueRef.current.classList.add("value-paper__value--refresh");
+    setPreviousValueUnit(newValueUnit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sensor.lastMeasurement?.value, sensor.unit]);
 
   return <ValuePaperBare subtitle={sensor.title} withCopyButton={withCopyButton}>
-    {sensor.lastMeasurement?.createdAt && 
+    {sensor.lastMeasurement?.createdAt &&
       <div className="value-paper__last-measure">
         {getTimeFromNow(dayjs(sensor.lastMeasurement.createdAt))}
       </div>
@@ -31,11 +37,11 @@ const ValuePaperItem = (props) => {
     <div className="value-paper__value" ref={valueRef}>
       {/* <span>{value}</span>
       <span>{unit}</span> */}
-      { (sensor.lastMeasurement?.value != undefined && sensor.lastMeasurement?.value != null && sensor.unit) ? 
-        <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> : 
-        <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></> 
+      {(sensor.lastMeasurement?.value != undefined && sensor.lastMeasurement?.value != null && sensor.unit) ?
+        <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> :
+        <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></>
       }
-      {/* <DotValueIndicator unmappedValue={{ PM10: 200 }} /> */}
+      <DotValueIndicator sensor={sensor} />
     </div>
   </ValuePaperBare>;
 };

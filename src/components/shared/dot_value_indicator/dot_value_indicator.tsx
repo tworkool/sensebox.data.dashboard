@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./dot_value_indicator.scss";
 import { HoverCard, Text } from "@mantine/core";
+import { OSEM_Sensor } from "@api/services/boxes/types";
+import { clamp } from "@utils/helpers";
 
 const getAirQualityTable = () => {
   return {
@@ -201,136 +203,252 @@ const calculateLumenIndex = (unmappedValue, handleRowSelection) => {
   return rowItem["index"];
 };
 
-const DotValueIndicator = (props) => {
-  const { unmappedValue } = props;
-  const [selectedSectionDescription, setSelectedSectionDescription] = useState();
-  const [indicatorBarStyle, setIndicatorBarStyle] = useState({});
-  const [indicatorStyle, setIndicatorStyle] = useState({});
+enum SensorType {
+  None = -1,
+  ParticualMatter25,
+  ParticualMatter10,
+  Light,
+  Temperature,
+  Humidity,
+  Pressure,
+}
 
-  const _valueInfo = useMemo(() => {
-    if (!unmappedValue) return;
-    const mappingProperty = Object.keys(unmappedValue)[0];
-    if (mappingProperty === "PM10" || mappingProperty === "PM25") {
-      return {
-        value: { ...unmappedValue }[mappingProperty],
-        mappingProperty,
-        table: getAirQualityTable(),
-        function: calculateAirQualityIndex,
-      };
-    } else if (mappingProperty === "LIGHT") {
-      return {
-        value: { ...unmappedValue }[mappingProperty],
-        mappingProperty,
-        table: getLumenTable(),
-        function: calculateLumenIndex,
-      };
+interface SensorTypeMapping {
+  units: string[];
+  labels: string[];
+  sensors: string[];
+  type: SensorType;
+};
+
+// TODO: integrate convert package
+const SensorTypeMapping: Record<string, SensorTypeMapping> = {
+  ParticualMatter25: {
+    units: ["µg/m³"],
+    labels: ["pm25", "pm 25", "pm 2.5", "pm2.5", "pm2,5", "pm 2,5"],
+    sensors: ["SDS 011", "SDS011"],
+    type: SensorType.ParticualMatter25,
+  },
+  ParticualMatter10: {
+    units: ["µg/m³"],
+    labels: ["pm10", "pm 10"],
+    sensors: ["SDS 011", "SDS011"],
+    type: SensorType.ParticualMatter10,
+  },
+  Light: {
+    units: ["lx"],
+    labels: ["light", "Beleuchtungsstärke"],
+    sensors: ["TSL45315"],
+    type: SensorType.Light,
+  },
+  Temperature: {
+    units: ["°C", "C", "°F", "F", "K", "kelvin", "kelvins", "R", "rankine", "°Ra", "°R", "°K", "fahrenheit", "celsius", "celcius"],
+    labels: ["temperature", "temp", "temperatur"],
+    sensors: ["HDC1080"],
+    type: SensorType.Temperature,
+  },
+  Humidity: {
+    units: ["%"],
+    labels: ["humidity", "rel. Luftfeuchte", "relative humidity", "luftfeuchte"],
+    sensors: ["HDC1080"],
+    type: SensorType.Humidity,
+  },
+  Pressure: {
+    units: ["hPa"],
+    labels: ["pressure"],
+    sensors: ["BMP280", "BMP 280"],
+    type: SensorType.Pressure,
+  },
+};
+
+const sensorTypeMappingTable = {
+  [SensorType.ParticualMatter25]: {
+    table: getAirQualityTable(),
+    func: calculateAirQualityIndex,
+  },
+  [SensorType.ParticualMatter10]: {
+    table: getAirQualityTable(),
+    func: calculateAirQualityIndex,
+  },
+  [SensorType.Light]: {
+    table: getLumenTable(),
+    func: calculateLumenIndex,
+  },
+  [SensorType.Temperature]: null,
+  [SensorType.Humidity]: null,
+  [SensorType.Pressure]: null,
+  [SensorType.None]: null,
+};
+
+const getSensorType = (sensor: OSEM_Sensor): SensorType => {
+  for (const key in SensorTypeMapping) {
+    const typeMapping = SensorTypeMapping[key];
+
+    const isLabel = typeMapping.labels.filter(l => l.toUpperCase() === sensor.title.toUpperCase()).length > 0;
+    const isSensor = typeMapping.sensors.filter(s => s.toUpperCase() === sensor.sensorType.toUpperCase()).length > 0;
+    const isUnit = typeMapping.units.filter(u => u.toUpperCase() === sensor.unit.toUpperCase()).length > 0;
+    if (isLabel && isSensor && isUnit) {
+      return typeMapping.type;
     }
-  }, [unmappedValue]);
+  }
+
+  return SensorType.None;
+};
+
+interface DotValueIndicatorProps {
+  sensor: OSEM_Sensor;
+  dot?: boolean;
+};
+
+const DotValueIndicator = (props: DotValueIndicatorProps) => {
+  const { sensor, dot=false } = props;
+  const [inlineStyle, setInlineStyle] = useState<Record<"bar" | "indicator" | "container", React.CSSProperties | undefined>>({
+    "container": {
+      "display": "none",
+    },
+    "bar": undefined,
+    "indicator": undefined
+  });
+  const ref = useRef(null);
 
   useEffect(() => {
-    if (!_valueInfo) return;
-    const valueInfo = { ..._valueInfo };
+    /* ref?.current?.style.setProperty("display", "none"); */
+    if (!sensor || !sensor?.lastMeasurement?.value) return;
+    const sensorType: SensorType = getSensorType(sensor);
+    const sensorValue: number = sensor.lastMeasurement.value;
+    console.log(sensor, sensorType, sensorValue);
+    if (sensorType === SensorType.None) return;
+    if (!sensorTypeMappingTable?.[sensorType]) return;
+
+    const table = sensorTypeMappingTable[sensorType].table;
+    const func = sensorTypeMappingTable[sensorType].func;
+
+    // access property name TODO: name the dict as is! e.g. value
+    let accessProperty = "value";
+    if (sensorType === SensorType.ParticualMatter25) {
+      accessProperty = "PM25";
+    } else if (sensorType === SensorType.ParticualMatter10) {
+      accessProperty = "PM10";
+    } else if (sensorType === SensorType.Light) {
+      accessProperty = "LIGHT";
+    }
+    // calc index and get description by passing input value for access property
     let itemDescription = "";
-    let calculatedIndexValue = valueInfo.function(
-      { [valueInfo.mappingProperty]: valueInfo.value },
+    let mappedIndexValue = func(
+      { [accessProperty]: sensorValue },
       (d) => {
         itemDescription = d;
       }
     );
-    const sections = valueInfo.table.rows;
+
+    // max-min limiter
+    const sections = table.rows;
     const max = sections[sections.length - 1].index;
     const min = 0;
-    // limit value in range
-    if (calculatedIndexValue > max) {
-      calculatedIndexValue = max;
-    } else if (calculatedIndexValue < min) {
-      calculatedIndexValue = min;
-    }
+    mappedIndexValue = clamp(mappedIndexValue, min, max);
 
-    // calculate section percentages
-    let indicatorSection = undefined;
-    for (let i = 0; i < sections.length; i++) {
-      const element = sections[i];
-
-      const _previousIndex = i === 0 ? min : sections[i - 1].index;
-      let _absolutePercentage, _relativePercentage;
-      if (valueInfo.table?.viewProperties?.evenDistribution === true) {
-        const oneSectionPercentageLength = (100 / sections.length);
-        _absolutePercentage = oneSectionPercentageLength * i;
-        _relativePercentage = oneSectionPercentageLength;
-      } else {
-        _absolutePercentage = (element.index / max) * 100;
-        _relativePercentage = ((element.index - _previousIndex) / max) * 100; // same as e.index/max - _previousIndex/max
+    // calculate section percentages by using IIFE (immidiately invoked function expression)
+    const useEvenGraphDistribution = !!table?.viewProperties?.evenDistribution;
+    const indicatorSection = (() => {
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const previousIndex = i === 0 ? min : sections[i - 1].index;
+        let absolutePercentage, relativePercentage;
+    
+        if (useEvenGraphDistribution) {
+          const sectionPercentage = 100 / sections.length;
+          absolutePercentage = sectionPercentage * i;
+          relativePercentage = sectionPercentage;
+        } else {
+          absolutePercentage = (section.index / max) * 100;
+          relativePercentage = ((section.index - previousIndex) / max) * 100;
+        }
+    
+        if (mappedIndexValue < section.index) {
+          return {
+            ...section,
+            previousIndex,
+            absolutePercentage,
+            relativePercentage
+          };
+        }
       }
+      return null;
+    })();
 
-      if (calculatedIndexValue < element.index) {
-        indicatorSection = {
-          ...element,
-          _previousIndex,
-          _absolutePercentage,
-          _relativePercentage
-        };
-        break;
-      }
-    }
-
-    if (indicatorSection === undefined) return;
+    if (!indicatorSection) return;
 
     // calculate relative percentage on section based on calculated index and add it to absolute whole graph percentage
-    const d_min_calculated = calculatedIndexValue - indicatorSection._previousIndex;
-    const d_max_min = indicatorSection.index - indicatorSection._previousIndex;
+    const d_min_calculated = mappedIndexValue - indicatorSection.previousIndex;
+    const d_max_min = indicatorSection.index - indicatorSection.previousIndex;
     const relative_section_percentage = d_min_calculated / d_max_min;
-    const absolute_total_percentage = indicatorSection._absolutePercentage + indicatorSection._relativePercentage * relative_section_percentage;
+    const absolute_percentage = indicatorSection.absolutePercentage + indicatorSection.relativePercentage * relative_section_percentage;
+    
+    /* setSelectedSectionDescription(itemDescription); */
+    // setIndicatorStyle({ left: `${absolute_total_percentage}%` });
+    console.log(ref.current);
+    /* ref?.current?.style.setProperty("--bar-progress", `${absolute_percentage}%`); */
 
-    setSelectedSectionDescription(itemDescription);
-    setIndicatorStyle({ left: `${absolute_total_percentage}%` });
-  }, [_valueInfo]);
-
-  useEffect(() => {
-    if (!_valueInfo) return;
-    const valueInfo = { ..._valueInfo };
-    const sections = valueInfo.table.rows;
-    const max = sections[sections.length - 1].index;
+    // calc colors
     sections.forEach((e, i) => {
-      if (valueInfo.table?.viewProperties?.evenDistribution === true) {
-        e._percentage = (100 / sections.length) * i;
+      if (useEvenGraphDistribution) {
+        e.percentage = (100 / sections.length) * i;
       } else {
-        e._percentage = (e.index / max) * 100;
+        e.percentage = (e.index / max) * 100;
       }
     });
 
-    let previousValidColor;
+    let previousValidColor = undefined;
     let colors = sections.reduce((p, c) => {
       if (!c.color) return p;
       let currentColor = "";
-      // hard stops?
-      const gradientStopsMode =
-        valueInfo.table?.viewProperties?.gradientStopsMode;
+      // gradient mode
+      const gradientStopsMode = table?.viewProperties?.gradientStopsMode;
       if (previousValidColor && gradientStopsMode === "hard") {
-        currentColor += ` ${previousValidColor} ${c._percentage}%,`;
+        currentColor += ` ${previousValidColor} ${c.percentage}%,`;
       }
-      currentColor += ` ${c.color} ${c._percentage}%,`;
+      currentColor += ` ${c.color} ${c.percentage}%,`;
       previousValidColor = c.color;
       return p + currentColor;
     }, "linear-gradient(90deg,");
     colors = colors.slice(0, -1);
     colors += ")";
 
-    setIndicatorBarStyle({ background: colors });
-  }, [_valueInfo]);
+    // setIndicatorBarStyle({ background: colors });
+    /* ref?.current?.style.setProperty("--bar-color", colors);
+    ref?.current?.style.setProperty("display", "block"); */
+    setInlineStyle({
+      "container": {
+        "display": "block",
+      },
+      "bar": {
+        "background": colors,
+      },
+      "indicator": {
+        "left": `${absolute_percentage}%`,
+      }
+    });
+  }, [sensor]);
 
-  if (!unmappedValue) return null;
+  console.log(inlineStyle);
 
   return (
-    <div className="sbd-live-analytics-value-indicator">
-      <div
-        className="sbd-live-analytics-value-indicator__bar"
-        style={indicatorBarStyle}
-      />
-      <div
-        className="sbd-live-analytics-value-indicator__indicator"
-        style={indicatorStyle}
-      />
+    <div className="sbd-live-analytics-value-indicator" ref={ref} style={inlineStyle?.container}>
+      { dot ? 
+        <div className="sbd-live-analytics-value-indicator__dot"></div> : 
+        <div
+          className="sbd-live-analytics-value-indicator__bar"
+          style={inlineStyle?.bar}
+        >
+          <div
+            className="sbd-live-analytics-value-indicator__bar__indicator-track"
+          >
+            <div
+              className="sbd-live-analytics-value-indicator__bar__indicator"
+              style={inlineStyle?.indicator}
+            />
+          </div>
+        </div>
+      }
     </div>
   );
 };
