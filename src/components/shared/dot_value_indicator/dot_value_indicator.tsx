@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./dot_value_indicator.scss";
-import { HoverCard, Text } from "@mantine/core";
+import { HoverCard, Text, Tooltip } from "@mantine/core";
 import { OSEM_Sensor } from "@api/services/boxes/types";
 import { clamp } from "@utils/helpers";
 
@@ -300,15 +300,17 @@ interface DotValueIndicatorProps {
 };
 
 const DotValueIndicator = (props: DotValueIndicatorProps) => {
-  const { sensor, dot=false } = props;
-  const [inlineStyle, setInlineStyle] = useState<Record<"bar" | "indicator" | "container", React.CSSProperties | undefined>>({
+  const { sensor, dot = false } = props;
+  const [inlineStyle, setInlineStyle] = useState<Record<"bar" | "indicator" | "container" | "dot", React.CSSProperties | undefined>>({
     "container": {
       "display": "none",
     },
     "bar": undefined,
-    "indicator": undefined
+    "indicator": undefined,
+    "dot": undefined,
   });
   const ref = useRef(null);
+  const [selectedSectionDescription, setSelectedSectionDescription] = useState<string>("");
 
   useEffect(() => {
     /* ref?.current?.style.setProperty("display", "none"); */
@@ -353,7 +355,7 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
         const section = sections[i];
         const previousIndex = i === 0 ? min : sections[i - 1].index;
         let absolutePercentage, relativePercentage;
-    
+
         if (useEvenGraphDistribution) {
           const sectionPercentage = 100 / sections.length;
           absolutePercentage = sectionPercentage * i;
@@ -362,8 +364,9 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
           absolutePercentage = (section.index / max) * 100;
           relativePercentage = ((section.index - previousIndex) / max) * 100;
         }
-    
+
         if (mappedIndexValue < section.index) {
+          console.log("SECTION:", section, previousIndex, absolutePercentage, relativePercentage);
           return {
             ...section,
             previousIndex,
@@ -376,13 +379,14 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
     })();
 
     if (!indicatorSection) return;
+    console.log("SECTION:", indicatorSection);
 
     // calculate relative percentage on section based on calculated index and add it to absolute whole graph percentage
     const d_min_calculated = mappedIndexValue - indicatorSection.previousIndex;
     const d_max_min = indicatorSection.index - indicatorSection.previousIndex;
     const relative_section_percentage = d_min_calculated / d_max_min;
     const absolute_percentage = indicatorSection.absolutePercentage + indicatorSection.relativePercentage * relative_section_percentage;
-    
+
     /* setSelectedSectionDescription(itemDescription); */
     // setIndicatorStyle({ left: `${absolute_total_percentage}%` });
     console.log(ref.current);
@@ -397,7 +401,8 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
       }
     });
 
-    let previousValidColor = undefined;
+    let currentSectionColor: string | null = null;
+    let previousValidColor: string | null = null;
     let colors = sections.reduce((p, c) => {
       if (!c.color) return p;
       let currentColor = "";
@@ -408,10 +413,16 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
       }
       currentColor += ` ${c.color} ${c.percentage}%,`;
       previousValidColor = c.color;
+      // set current section color
+      if (indicatorSection.absolutePercentage >= c.percentage) {
+        currentSectionColor = previousValidColor;
+      }
       return p + currentColor;
     }, "linear-gradient(90deg,");
     colors = colors.slice(0, -1);
     colors += ")";
+
+    setSelectedSectionDescription(itemDescription);
 
     // setIndicatorBarStyle({ background: colors });
     /* ref?.current?.style.setProperty("--bar-color", colors);
@@ -423,6 +434,9 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
       "bar": {
         "background": colors,
       },
+      "dot": {
+        "background": currentSectionColor ?? "transparent",
+      },
       "indicator": {
         "left": `${absolute_percentage}%`,
       }
@@ -433,22 +447,24 @@ const DotValueIndicator = (props: DotValueIndicatorProps) => {
 
   return (
     <div className="sbd-live-analytics-value-indicator" ref={ref} style={inlineStyle?.container}>
-      { dot ? 
-        <div className="sbd-live-analytics-value-indicator__dot"></div> : 
-        <div
-          className="sbd-live-analytics-value-indicator__bar"
-          style={inlineStyle?.bar}
-        >
+      <Tooltip label={selectedSectionDescription ?? "No Data"} withArrow position="top">
+        {dot ?
+          <div className="sbd-live-analytics-value-indicator__dot" style={inlineStyle?.dot}></div> :
           <div
-            className="sbd-live-analytics-value-indicator__bar__indicator-track"
+            className="sbd-live-analytics-value-indicator__bar"
+            style={inlineStyle?.bar}
           >
             <div
-              className="sbd-live-analytics-value-indicator__bar__indicator"
-              style={inlineStyle?.indicator}
-            />
+              className="sbd-live-analytics-value-indicator__bar__indicator-track"
+            >
+              <div
+                className="sbd-live-analytics-value-indicator__bar__indicator"
+                style={inlineStyle?.indicator}
+              />
+            </div>
           </div>
-        </div>
-      }
+        }
+      </Tooltip>
     </div>
   );
 };

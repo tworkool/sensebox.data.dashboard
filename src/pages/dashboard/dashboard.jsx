@@ -4,7 +4,7 @@ import DashboardMenu from "@components/static/dashboard_menu/dashboard_menu";
 import "./dashboard.scss";
 import { useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { Group } from "@mantine/core";
+import { Group, Stack } from "@mantine/core";
 import { version } from "../../../package.json";
 
 const Dashboard = () => {
@@ -45,15 +45,25 @@ const Dashboard = () => {
       <Outlet />
     </div>
     <div className="dashboard__footer">
-      <Group justify="space-between">
-        <Group gap="xs">
-          <span>{`Version ${version}`}</span>
-          <span>© 2025 Oliver Tworkowski</span>
+      <Stack>
+        <Group justify="space-between">
+          <Group gap="xs">
+            <span>{`Version ${version}`}</span>
+            <span>© 2025 Oliver Tworkowski</span>
+          </Group>
+          <span>
+            <a href="https://sensebox-data-dashboard.de/">GitHub Repository</a>
+          </span>
         </Group>
-        <span>
-          <a href="https://sensebox-data-dashboard.de/">GitHub Repository</a>
-        </span>
-      </Group>
+        <Group>
+          <span>
+            <a href="/about">About</a>
+          </span>
+          <span>
+            <a href="/about#how-to-use">How to use</a>
+          </span>
+        </Group>
+      </Stack>
     </div>
   </div>;
 };

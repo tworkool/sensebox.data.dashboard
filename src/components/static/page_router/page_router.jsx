@@ -4,6 +4,7 @@ import Footer from "@components/static/footer/footer";
 import Header from "@components/static/header/header";
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
 import Spinner from "@components/shared/spinner/spinner";
+import ErrorPage from "@components/static/error_page";
 
 // lazy load pages
 const Home = lazy(() => import("@pages/home/home"));
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <div>404</div>
+    element: <ErrorPage.NotFound />
   }
 ]);
 

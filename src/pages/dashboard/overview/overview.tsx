@@ -234,7 +234,7 @@ const DashboardOverview = () => {
             </Grid>
 
             <Stack gap="sm">
-              <Group justify="flex-end">
+              <Group justify="flex-end" gap={"xs"}>
                 {/* <div style={{ flex: 1 }}>
                   <Chip.Group>
                     <Group gap="xs">
@@ -244,6 +244,16 @@ const DashboardOverview = () => {
                 </div>
                 <Switch style={{ width: "max-content" }} defaultChecked onLabel="ON" offLabel="OFF" label="automatic updates" /> */}
                 <Popover width={200} position="bottom-end" withArrow shadow="md">
+                  <ActionIcon
+                    display={filter !== "None" ? "block" : "none"}
+                    title="remove filters"
+                    onClick={() => { setFilter("None"); }}
+                    size="md"
+                    variant="light"
+                    color="red"
+                    radius="xl">
+                    <Icon icon="line-md:filter-remove-twotone" width="1rem" height="1rem" />
+                  </ActionIcon>
                   <Popover.Target>
                     <Button
                       disabled={isPending}

@@ -38,18 +38,26 @@ const ValuePaperItem = (props) => {
       {/* <span>{value}</span>
       <span>{unit}</span> */}
       {(sensor.lastMeasurement?.value != undefined && sensor.lastMeasurement?.value != null && sensor.unit) ?
-        <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter> :
-        <><span>{settingsStore?.current?.fallbackNullValue}</span> <span></span></>
+        <Group justify="flex-start" gap="xs" wrap="nowrap">
+          <DotValueIndicator sensor={sensor} dot />
+          <ValueConverter value={sensor.lastMeasurement?.value} unit={sensor.unit}></ValueConverter>
+        </Group> :
+        <>
+          <span>{settingsStore?.current?.fallbackNullValue}</span> 
+          <span></span>
+        </>
       }
-      <DotValueIndicator sensor={sensor} />
     </div>
   </ValuePaperBare>;
 };
 
 const ValuePaperItemEmpty = () => {
-  return <ValuePaperBare subtitle={"N/A"}>
+  const settingsStore = useSettingsStore();
+  const fallbackNullValue = settingsStore?.current?.fallbackNullValue ?? "N/A";
+
+  return <ValuePaperBare subtitle={fallbackNullValue}>
     <div className="value-paper__value">
-      <ValueConverter value={"N/A"} unit={"N/A"}></ValueConverter>
+      <ValueConverter value={fallbackNullValue} unit={fallbackNullValue}></ValueConverter>
     </div>
   </ValuePaperBare>;
 };

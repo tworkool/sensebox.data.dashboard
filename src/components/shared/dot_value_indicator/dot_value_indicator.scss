@@ -9,9 +9,10 @@ $indicator-size: calc($bar-size - $indicator-border * 1);
   &__dot {
     width: 20px;
     height: 20px;
-    background: green;
+    background: transparent;
     border-radius: 10px;
-    border: 1px solid $border;//var(--app-color-border);
+    border: 1px solid black;//var(--app-color-border);
+    box-shadow: 2px 4px 0 0px #000;
   }
 
   &__bar {
