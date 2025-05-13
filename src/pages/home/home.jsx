@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./home.scss";
-import { Badge, Button, Center, Container, Flex, Image, Text } from "@mantine/core";
+import { Badge, Button, Center, Container, Flex, Image, Text, Title } from "@mantine/core";
 import GermanyMap from "@assets/content/germanymap.png";
 import Header from "@components/static/header/header";
 import Footer from "@components/static/footer/footer";
@@ -106,6 +106,23 @@ const Home = (props) => {
             <Attribute key={index} className="homepage__attribute" {...attribute} />
           ))}
         </Container>
+        <Title order={2}>Announcements</Title>
+        <Text>
+          After a long break, I decided to keep this project alive by overhauling the whole codebase.
+          The old code was just not fun to work on anymore and there were many logically and technologically outdated and personally unfavorable concepts.
+          Such concepts being: slow bundler, messy redux setup for state management, outdated design system and styling and much more.
+          <br />
+          With version 1.0.0, many of these things have been done right from the beginning, which makes it much easier to work with and develop further.
+          I took a step back and re-evaluated the whole project and its goals.
+          I thought to myself: "who will likely use this project?" and came to the conclusion that I want to broaden the target audience.
+          In the future, this is going to be a platform for open environmental data aggregation and visualization with the main focus currently on SenseBoxes!
+          This is an exciting future in my opinion and I am looking forward to the next steps.
+          <br />
+          If you want to contribute to this project, please feel free to do so! I am looking forward to your pull requests and issues on GitHub.
+          And if you want to support me, please consider donating via the link in the footer.
+          I am also open to ideas and suggestions for the future of this project, so please feel free to reach out to me via the contact form in the footer.
+          <br />
+        </Text>
       </main>
       <Footer />
     </>

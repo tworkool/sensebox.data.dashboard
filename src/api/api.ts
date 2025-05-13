@@ -1,5 +1,10 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios"; // Ensure all imports are used
 import { CONSTANTS, ENVIRONMENT } from "@utils/environment.js";
+
+const isUsingMockApi = (config: InternalAxiosRequestConfig<string>) => 
+  config.baseURL?.includes(CONSTANTS.MOCKOON_MOCK_API_URL) || 
+  config.baseURL?.includes("localhost") || 
+  config.baseURL?.includes("127.0.0.1");
 
 const OSEMApiClient = axios.create({
   baseURL: CONSTANTS.OSEM_API_URL,
@@ -24,15 +29,31 @@ const SunriseSunsetApiClient = axios.create({
 SunriseSunsetApiClient.interceptors.request.use((config) => {
   const currentHostname = window.location.hostname;
   const isLocalhostRequester = currentHostname === "localhost" || currentHostname === "127.0.0.1";
-  const isMockApi = config.baseURL?.includes(CONSTANTS.MOCKOON_MOCK_API_URL) || config.baseURL?.includes("localhost") || config.baseURL?.includes("127.0.0.1");
 
-  if (isLocalhostRequester && !isMockApi) {
+  if (isLocalhostRequester && !isUsingMockApi(config)) {
     const controller = new AbortController();
     config.signal = controller.signal;
     controller.abort(); // Cancel immediately
 
     console.warn("Requests from localhost are blocked!");
     throw new axios.Cancel("Requests from localhost are blocked.");
+  }
+
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+LocationIQApiClient.interceptors.request.use((config) => {
+  const hasApiKey = ENVIRONMENT.LOCATION_IQ_API_TOKEN && ENVIRONMENT.LOCATION_IQ_API_TOKEN.toString().length > 0;
+
+  if (!isUsingMockApi(config) && !hasApiKey) {
+    const controller = new AbortController();
+    config.signal = controller.signal;
+    controller.abort(); // Cancel immediately
+
+    console.warn("API Key for LocationIQ API is missing!");
+    throw new axios.Cancel("API Key for LocationIQ API is missing!");
   }
 
   return config;
